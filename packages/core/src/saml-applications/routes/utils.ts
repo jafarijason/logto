@@ -1,6 +1,6 @@
 import { parseJson } from '@logto/connector-kit';
 import { generateStandardId } from '@logto/shared';
-import { tryThat } from '@silverhand/essentials';
+import { cond, tryThat } from '@silverhand/essentials';
 import camelcaseKeys from 'camelcase-keys';
 import { got } from 'got';
 import saml from 'samlify';
@@ -166,7 +166,8 @@ export const exchangeAuthorizationCode = async (
 export const createSamlResponse = async (
   idp: saml.IdentityProviderInstance,
   sp: saml.ServiceProviderInstance,
-  userInfo: IdTokenProfileStandardClaims
+  userInfo: IdTokenProfileStandardClaims,
+  encryptThenSign?: boolean
 ): Promise<{ context: string; entityEndpoint: string }> => {
   // TODO: fix binding method
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -176,7 +177,8 @@ export const createSamlResponse = async (
     null,
     'post',
     userInfo,
-    createSamlTemplateCallback(idp, sp, userInfo)
+    createSamlTemplateCallback(idp, sp, userInfo),
+    encryptThenSign
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -259,13 +261,17 @@ export const setupSamlProviders = (
   metadata: string,
   privateKey: string,
   entityId: string,
-  acsUrl: { binding: string; url: string }
+  acsUrl: { binding: string; url: string },
+  encryptAssertion?: boolean,
+  encryptionAlgorithm?: string,
+  spCertificate?: string
 ) => {
   // eslint-disable-next-line new-cap
   const idp = saml.IdentityProvider({
     metadata,
     privateKey,
-    isAssertionEncrypted: false,
+    isAssertionEncrypted: encryptAssertion ?? false,
+    ...cond(encryptionAlgorithm && { encryptionAlgorithm }),
     loginResponseTemplate: {
       context: samlLogInResponseTemplate,
       attributes: [
@@ -295,7 +301,29 @@ export const setupSamlProviders = (
         Location: acsUrl.url,
       },
     ],
+    ...cond(spCertificate && { encryptCert: spCertificate }),
   });
 
   return { idp, sp };
 };
+
+export const samlAppCustomDataGuard = z.object({
+  spCertificate: z.string().optional(),
+  encryptThenSign: z.boolean().optional(),
+  encryptAssertion: z.boolean().optional(),
+  encryptionAlgorithm: z
+    .enum([
+      'http://www.w3.org/2001/04/xmlenc#aes128-cbc', // AES_128
+      'http://www.w3.org/2001/04/xmlenc#aes256-cbc', // AES_256
+      'http://www.w3.org/2001/04/xmlenc#tripledes-cbc', // TRI_DEC
+      'http://www.w3.org/2009/xmlenc11#aes128-gcm', // AES_128_GCM
+    ])
+    .optional(),
+  // Canonicalization and transformation Algorithms
+  transformationAlgorithm: z
+    .enum([
+      'http://www.w3.org/2000/09/xmldsig#enveloped-signature',
+      'http://www.w3.org/2001/10/xml-exc-c14n#',
+    ])
+    .optional(),
+});

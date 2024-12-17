@@ -10,6 +10,7 @@ import {
   createSamlResponse,
   handleOidcCallbackAndGetUserInfo,
   setupSamlProviders,
+  samlAppCustomDataGuard,
 } from './utils.js';
 
 const samlApplicationSignInCallbackQueryParametersGuard = z.union([
@@ -75,9 +76,22 @@ export default function samlApplicationAnonymousRoutes<T extends AnonymousRouter
       const {
         secret,
         oidcClientMetadata: { redirectUris },
+        customData,
       } = await applications.findApplicationById(id);
 
       assertThat(redirectUris[0], 'oidc.redirect_uri_not_set');
+
+      // For demo purpose
+      const result = samlAppCustomDataGuard.safeParse(customData);
+
+      if (!result.success) {
+        throw new RequestError(
+          {
+            code: 'application.invalid_custom_data',
+          },
+          { details: result.error.flatten() }
+        );
+      }
 
       // TODO: should be able to handle `state` and code verifier etc.
       const { code } = query;
@@ -102,8 +116,21 @@ export default function samlApplicationAnonymousRoutes<T extends AnonymousRouter
       assertThat(acsUrl, 'application.saml.acs_url_required');
 
       // Setup SAML providers and create response
-      const { idp, sp } = setupSamlProviders(metadata, privateKey, entityId, acsUrl);
-      const { context, entityEndpoint } = await createSamlResponse(idp, sp, userInfo);
+      const { idp, sp } = setupSamlProviders(
+        metadata,
+        privateKey,
+        entityId,
+        acsUrl,
+        result.data.encryptAssertion,
+        result.data.encryptionAlgorithm,
+        result.data.spCertificate
+      );
+      const { context, entityEndpoint } = await createSamlResponse(
+        idp,
+        sp,
+        userInfo,
+        result.data.encryptThenSign
+      );
 
       // Return auto-submit form
       ctx.body = generateAutoSubmitForm(entityEndpoint, context);
