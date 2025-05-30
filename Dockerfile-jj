@@ -1,1 +1,1 @@
-FROM svhd/logto:1.22.0
+FROM svhd/logto:1.28.0
