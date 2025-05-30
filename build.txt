@@ -1,14 +1,14 @@
-docker build --platform linux/amd64 -f Dockerfile -t jafarijason/logto:v.1.28.0-jj-01 .
+docker build --platform linux/amd64 -f Dockerfile -t jafarijason/logto:v.1.28.0-jj-02 .
 
-docker push jafarijason/logto:v.1.28.0-jj-01
-
- 
+docker push jafarijason/logto:v.1.28.0-jj-02
 
 
-docker build --platform linux/amd64 -f Dockerfile-jj -t jafarijason/logto:v.1.28.0-jj-source-01 .
 
-docker push jafarijason/logto:v.1.28.0-jj-source-01
 
-docker build --platform linux/amd64 -f Dockerfile-jj -t registry.ovh1.jrjsolutions.com/logto:v.1.28.0-jj-01 .
+docker build --platform linux/amd64 -f Dockerfile-jj -t jafarijason/logto:v.1.28.0-jj-source-02 .
 
-docker push registry.ovh1.jrjsolutions.com/logto:v.1.28.0-jj-01
+docker push jafarijason/logto:v.1.28.0-jj-source-02
+
+docker build --platform linux/amd64 -f Dockerfile-jj -t registry.ovh1.jrjsolutions.com/logto:v.1.28.0-jj-02 .
+
+docker push registry.ovh1.jrjsolutions.com/logto:v.1.28.0-jj-02
