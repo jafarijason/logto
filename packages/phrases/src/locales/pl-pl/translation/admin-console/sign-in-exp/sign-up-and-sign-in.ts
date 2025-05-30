@@ -10,8 +10,10 @@ const sign_up_and_sign_in = {
     title: 'REJESTRACJA',
     sign_up_identifier: 'Identyfikator rejestracji',
     identifier_description:
-      'Identyfikator rejestracji jest wymagany do utworzenia konta i musi być uwzględniony na ekranie logowania.',
+      'Wszystkie wybrane identyfikatory rejestracji są wymagane przy tworzeniu nowego konta.',
     sign_up_authentication: 'Ustawienia uwierzytelniania dla rejestracji',
+    verification_tip:
+      'Użytkownicy muszą zweryfikować skonfigurowany adres e-mail lub numer telefonu, wprowadzając kod weryfikacyjny podczas rejestracji.',
     authentication_description:
       'Wszystkie wybrane czynności będą obowiązkowe dla użytkowników, aby ukończyć proces rejestracji.',
     set_a_password_option: 'Utwórz hasło',
@@ -21,9 +23,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: 'LOGOWANIE',
     sign_in_identifier_and_auth: 'Identyfikator i ustawienia uwierzytelniania dla logowania',
-    description:
-      'Użytkownicy mogą się zalogować za pomocą dowolnej dostępnej opcji. Dostosuj układ, przeciągając i upuszczając poniżej opcji.',
+    description: 'Użytkownicy mogą się zalogować za pomocą dowolnej dostępnej opcji.',
     add_sign_in_method: 'Dodaj metodę logowania',
+    add_sign_up_method: 'Dodaj metodę rejestracji',
     password_auth: 'Hasło',
     verification_code_auth: 'Kod weryfikacyjny',
     auth_swap_tip:
@@ -55,12 +57,14 @@ const sign_up_and_sign_in = {
       'Jest to istotne, ponieważ umożliwiłeś wyłącznie opcję podania kodu weryfikacyjnego podczas rejestracji. Możesz odznaczyć pole wyboru, gdy dozwolone jest ustawienie hasła podczas procesu rejestracji.',
     delete_sign_in_method:
       'Jest to istotne, ponieważ wybrałeś {{identifier}} jako wymagany identyfikator.',
+    password_disabled_notification:
+      'Opcja "Utwórz hasło" jest wyłączona dla rejestracji z użyciem nazwy użytkownika, co może uniemożliwić użytkownikom zalogowanie się. Potwierdź, aby kontynuować zapisywanie.',
   },
   advanced_options: {
     title: 'USTAWIENIA ZAAWANSOWANE',
     enable_single_sign_on: 'Włącz jednokrotne logowanie przedsiębiorstwa (SSO)',
     enable_single_sign_on_description:
-      'Enable users to sign-in to the application using Single Sign-On with their enterprise identities.',
+      'Włącz użytkownikom logowanie się do aplikacji za pomocą jednokrotnego logowania przy użyciu ich tożsamości przedsiębiorstwa.',
     single_sign_on_hint: {
       prefix: 'Przejdź do ',
       link: '"Enterprise SSO"',
@@ -69,6 +73,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: 'Włącz rejestrację użytkowników',
     enable_user_registration_description:
       'Włącz lub wyłącz rejestrację użytkowników. Po wyłączeniu użytkownicy nadal mogą być dodawani w konsoli administratora, ale nie mogą już zakładać kont za pomocą interfejsu logowania.',
+    unknown_session_redirect_url: 'Nieznany URL przekierowania sesji',
+    unknown_session_redirect_url_tip:
+      'Czasami Logto może nie rozpoznać sesji użytkownika na stronie logowania, na przykład gdy sesja wygasa lub użytkownik dodaje stronę logowania do zakładek lub udostępnia link do logowania. Domyślnie pojawia się błąd 404 „nieznana sesja”. Aby poprawić doświadczenia użytkowników, ustaw domyślny URL na przekierowanie użytkowników z powrotem do Twojej aplikacji i ponowne rozpoczęcie uwierzytelniania.',
   },
 };
 

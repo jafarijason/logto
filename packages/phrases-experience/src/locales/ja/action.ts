@@ -1,6 +1,7 @@
 const action = {
   sign_in: 'サインイン',
   continue: '続ける',
+  continue_as: '{{name}} として続ける',
   create_account: 'アカウントを作成する',
   create_account_without_linking: '代わりに新しいアカウントを作成する',
   create: '作成する',
@@ -29,10 +30,9 @@ const action = {
   verify_via_passkey: 'パスキー経由で確認',
   download: 'ダウンロード',
   single_sign_on: 'シングルサインオン',
-  /** UNTRANSLATED */
-  authorize: 'Authorize',
-  /** UNTRANSLATED */
-  use_another_account: 'Use another account',
+  authorize: '認証する',
+  use_another_account: '別のアカウントを使用する',
+  back_to_current_account: '現在のアカウントに戻る',
 };
 
 export default Object.freeze(action);

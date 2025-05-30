@@ -1,6 +1,6 @@
 {
   "name": "@logto/shared",
-  "version": "3.1.2",
+  "version": "3.3.0",
   "main": "lib/index.js",
   "author": "Silverhand Inc. <contact@silverhand.io>",
   "license": "MPL-2.0",
@@ -40,16 +40,16 @@
     "@jest/globals": "^29.7.0",
     "@silverhand/eslint-config": "6.0.1",
     "@silverhand/ts-config": "6.0.0",
-    "@types/node": "^20.9.5",
-    "@vitest/coverage-v8": "^2.0.0",
+    "@types/node": "^22.14.0",
+    "@vitest/coverage-v8": "^3.1.1",
     "eslint": "^8.56.0",
     "lint-staged": "^15.0.0",
-    "prettier": "^3.0.0",
+    "prettier": "^3.5.3",
     "typescript": "^5.5.3",
-    "vitest": "^2.0.0"
+    "vitest": "^3.1.1"
   },
   "engines": {
-    "node": "^20.9.0"
+    "node": "^22.14.0"
   },
   "eslintConfig": {
     "extends": "@silverhand",
@@ -62,7 +62,7 @@
     "@silverhand/essentials": "^2.9.1",
     "chalk": "^5.3.0",
     "find-up": "^7.0.0",
-    "libphonenumber-js": "^1.9.49",
-    "nanoid": "^5.0.1"
+    "libphonenumber-js": "^1.12.6",
+    "nanoid": "^5.0.9"
   }
 }

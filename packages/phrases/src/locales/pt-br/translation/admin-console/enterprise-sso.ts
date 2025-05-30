@@ -1,8 +1,7 @@
 const enterprise_sso = {
   page_title: 'SSO Empresarial',
   title: 'SSO Empresarial',
-  subtitle:
-    'Conecte-se ao provedor de identidade empresarial e habilite o Logon Único iniciado pelo provedor de serviço (SP).',
+  subtitle: 'Conecte o provedor de identidade empresarial e habilite o Single Sign-On.',
   create: 'Adicionar conector empresarial',
   col_connector_name: 'Nome do conector',
   col_type: 'Tipo',
@@ -28,7 +27,12 @@ const enterprise_sso = {
       'Crie uma nova integração de aplicativo por SAML 2.0 em seu provedor de identidade {{name}}. Em seguida, cole o seguinte valor nele.',
     saml: {
       acs_url_field_name: 'URL do serviço de consumidor de afirmações (URL de resposta)',
-      audience_uri_field_name: 'URI da audiência (ID da Entidade do SP)',
+      audience_uri_field_name: 'URI do público (ID da entidade SP)',
+      entity_id_field_name: 'ID da entidade do provedor de serviço (SP)',
+      entity_id_field_tooltip:
+        'O ID da entidade SP pode estar em qualquer formato de string, normalmente usando um formato de URI ou URL como identificador, mas isso não é obrigatório.',
+      acs_url_field_placeholder: 'https://seu-dominio.com/api/saml/callback',
+      entity_id_field_placeholder: 'urn:seu-dominio.com:sp:saml:{serviceProviderId}',
     },
     oidc: {
       redirect_uri_field_name: 'URL de redirecionamento (URL de retorno de chamada)',

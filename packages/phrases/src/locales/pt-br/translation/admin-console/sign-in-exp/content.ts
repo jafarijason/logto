@@ -1,6 +1,7 @@
 const content = {
   terms_of_use: {
     title: 'TERMS',
+    description: 'Adicione Termos e Privacidade para atender aos requisitos de conformidade.',
     terms_of_use: 'Terms of use URL',
     terms_of_use_placeholder: 'https://your.terms.of.use/',
     privacy_policy: 'Privacy policy URL',
@@ -23,6 +24,14 @@ const content = {
       'The default language will be used when the detected user language isn’t covered in the current language library.',
     default_language_description_fixed:
       'When auto-detect is off, the default language is the only language your software will show. Turn on auto-detect for language extension.',
+  },
+  support: {
+    title: 'SUPORTE',
+    subtitle: 'Exiba seus canais de suporte em páginas de erro para assistência rápida ao usuário.',
+    support_email: 'Email de suporte',
+    support_email_placeholder: 'support@email.com',
+    support_website: 'Site de suporte',
+    support_website_placeholder: 'https://your.website/support',
   },
   manage_language: {
     title: 'Manage language',

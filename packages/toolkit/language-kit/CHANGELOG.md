@@ -1,5 +1,33 @@
 # Change Log
 
+## 1.2.0
+
+### Minor Changes
+
+- 2961d355d: bump node version to ^22.14.0
+
+## 1.1.3
+
+### Patch Changes
+
+- 5da01bc47: make method `isLanguageTag` case-insensitive
+
+  The language tags should be case insensitive. In `phrases` and `phrases-experience` packages, the language tags are all in lowercase. However, in the language kit, the language tags are in mixed cases, such as `pt-BR` and `zh-CN`.
+
+  Therefore, some of the i18n phrases were not translated by the translate CLI tool. The fix is to update the language kit to ignore cases in `isLanguageTag` function, so that the previously mismatched language tags can be detected and translated.
+
+## 1.1.2
+
+### Patch Changes
+
+- 59f6b8eda: update supported language list for better compatibility
+
+## 1.1.1
+
+### Patch Changes
+
+- e11e57de8: bump dependencies for security update
+
 ## 1.1.0
 
 ### Minor Changes

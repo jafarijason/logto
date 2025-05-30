@@ -10,8 +10,10 @@ const sign_up_and_sign_in = {
     title: 'REGISTRARSE',
     sign_up_identifier: 'Identificador de registro',
     identifier_description:
-      'El identificador de registro es necesario para la creación de la cuenta y debe incluirse en la pantalla de inicio de sesión.',
+      'Se requieren todos los identificadores de registro seleccionados al crear una nueva cuenta.',
     sign_up_authentication: 'Configuración de autenticación para el registro',
+    verification_tip:
+      'Los usuarios deben verificar el correo electrónico o el número de teléfono que hayas configurado ingresando un código de verificación durante el registro.',
     authentication_description:
       'Todas las acciones seleccionadas serán obligatorias para que los usuarios completen el proceso.',
     set_a_password_option: 'Crear una contraseña',
@@ -24,8 +26,9 @@ const sign_up_and_sign_in = {
     sign_in_identifier_and_auth:
       'Identificador y configuración de autenticación para iniciar sesión',
     description:
-      'Los usuarios pueden iniciar sesión usando cualquiera de las opciones disponibles. Ajusta el diseño arrastrando y soltando las opciones a continuación.',
+      'Los usuarios pueden iniciar sesión usando cualquiera de las opciones disponibles.',
     add_sign_in_method: 'Agregar método de inicio de sesión',
+    add_sign_up_method: 'Agregar método de registro',
     password_auth: 'Contraseña',
     verification_code_auth: 'Código de verificación',
     auth_swap_tip:
@@ -58,6 +61,8 @@ const sign_up_and_sign_in = {
       'Es esencial ya que solo has habilitado la opción de proporcionar un código de verificación al registrarse. Se puede desactivar la opción si se permite la configuración de contraseña durante el proceso de registro.',
     delete_sign_in_method:
       'Es esencial ya que has seleccionado {{identifier}} como identificador obligatorio.',
+    password_disabled_notification:
+      'La opción "Crear tu contraseña" está deshabilitada para el registro con nombre de usuario, lo que puede impedir que los usuarios inicien sesión. Confirma para proceder con el guardado.',
   },
   advanced_options: {
     title: 'OPCIONES AVANZADAS',
@@ -72,6 +77,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: 'Habilitar registro de usuario',
     enable_user_registration_description:
       'Habilitar o deshabilitar el registro de usuarios. Una vez deshabilitado, los usuarios aún se pueden agregar en la consola de administración, pero los usuarios ya no pueden establecer cuentas a través de la interfaz de inicio de sesión.',
+    unknown_session_redirect_url: 'URL de redirección de sesión desconocida',
+    unknown_session_redirect_url_tip:
+      'A veces, Logto puede no reconocer la sesión de un usuario en la página de inicio de sesión, como cuando una sesión expira o el usuario marca como favorito o comparte el enlace de inicio de sesión. Por defecto, aparece un error 404 de “sesión desconocida”. Para mejorar la experiencia del usuario, establece una URL de respaldo para redirigir a los usuarios de vuelta a tu aplicación y reiniciar la autenticación.',
   },
 };
 

@@ -19,6 +19,10 @@ const error = {
   timeout: 'انتهت مهلة الطلب. يرجى المحاولة مرة أخرى لاحقًا.',
   password_rejected,
   sso_not_enabled: 'تسجيل الدخول الموحد غير ممكّن لحساب البريد الإلكتروني هذا.',
+  invalid_link: 'رابط غير صالح',
+  invalid_link_description: 'ربما يكون رمز الدخول المؤقت قد انتهى أو لم يعد صالحًا.',
+  captcha_verification_failed: 'فشل التحقق من رمز التحقق.',
+  something_went_wrong: 'حدث خطأ ما.',
 };
 
 export default Object.freeze(error);

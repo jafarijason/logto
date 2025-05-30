@@ -9,8 +9,9 @@ const sign_up_and_sign_in = {
   sign_up: {
     title: '注册',
     sign_up_identifier: '注册标识',
-    identifier_description: '创建账户时你需要设定注册标识。这些信息在用户登录时，属于必选项。',
+    identifier_description: '创建新账户时，所有选定的注册标识都是必需的。',
     sign_up_authentication: '注册身份认证设置',
+    verification_tip: '用户必须在注册时通过输入验证码，验证你已配置的邮箱或手机号。',
     authentication_description: '注册时，你的用户将要完成以下所有勾选的任务。',
     set_a_password_option: '创建密码',
     verify_at_sign_up_option: '注册时验证身份',
@@ -19,8 +20,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: '登录',
     sign_in_identifier_and_auth: '登录标识和身份认证设置',
-    description: '用户可以使用任何可用的选项进行登录。拖拽选项即可调整页面布局。',
+    description: '用户可以使用任何可用的选项进行登录。',
     add_sign_in_method: '添加登录方式',
+    add_sign_up_method: '添加注册方式',
     password_auth: '密码',
     verification_code_auth: '验证码',
     auth_swap_tip: '交换以下选项的位置即可设定它们在用户登录流程中出现的先后。',
@@ -49,6 +51,8 @@ const sign_up_and_sign_in = {
       '因注册设置里你启用了验证码标识，验证码属于用户必选项。开启密码注册后，你可以选择关闭验证码登录。',
     delete_sign_in_method:
       '因注册设置里你启用了{{identifier}}标识。这些信息在用户登录时，属于必选项。',
+    password_disabled_notification:
+      '用户名注册时，"创建密码" 选项已禁用，这可能会阻止用户登录。确认后继续保存。',
   },
   advanced_options: {
     title: '高级选项',
@@ -62,6 +66,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: '启用用户注册',
     enable_user_registration_description:
       '启用或禁用用户注册。禁用后，管理员仍然可以添加用户，但用户无法通过登录界面建立账户。',
+    unknown_session_redirect_url: '未知会话重定向 URL',
+    unknown_session_redirect_url_tip:
+      '有时，Logto 可能无法识别用户在登录页面的会话，例如会话过期，或用户收藏或分享了登录链接。默认情况下，会出现“未知会话” 404 错误。为提升用户体验，请设置一个备用 URL ，将用户重定向回你的应用程序并重新开始身份验证。',
   },
 };
 

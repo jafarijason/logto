@@ -51,6 +51,15 @@ const session = {
   },
   sso_enabled:
     'La connexion unique est activée pour cet e-mail donné. Veuillez vous connecter avec SSO.',
+  captcha_required: 'Le captcha est requis.',
+  captcha_failed: 'La vérification du captcha a échoué.',
+  email_blocklist: {
+    disposable_email_validation_failed: "Échec de la validation de l'adresse e-mail.",
+    invalid_email: 'Adresse e-mail invalide.',
+    email_subaddressing_not_allowed: "Le sous-adressage des e-mails n'est pas autorisé.",
+    email_not_allowed:
+      'L\'adresse e-mail "{{email}}" est restreinte. Veuillez en choisir une autre.',
+  },
 };
 
 export default Object.freeze(session);

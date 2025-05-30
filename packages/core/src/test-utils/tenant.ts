@@ -12,6 +12,8 @@ import Libraries from '#src/tenants/Libraries.js';
 import Queries from '#src/tenants/Queries.js';
 import type TenantContext from '#src/tenants/TenantContext.js';
 
+import { SubscriptionLibrary } from '../libraries/subscription.js';
+
 import { mockEnvSet } from './env-set.js';
 import type { GrantMock } from './oidc-provider.js';
 import { createMockProvider } from './oidc-provider.js';
@@ -67,6 +69,7 @@ export class MockTenant implements TenantContext {
   public connectors: ConnectorLibrary;
   public libraries: Libraries;
   public sentinel: Sentinel;
+  public readonly subscription: SubscriptionLibrary;
 
   // eslint-disable-next-line max-params
   constructor(
@@ -84,15 +87,22 @@ export class MockTenant implements TenantContext {
       ...createConnectorLibrary(this.queries, this.cloudConnection),
       ...connectorsOverride,
     };
+    this.sentinel = new MockSentinel();
+    this.subscription = new SubscriptionLibrary(
+      this.id,
+      this.queries,
+      this.cloudConnection,
+      new TtlCache<string, string>(60_000)
+    );
     this.libraries = new Libraries(
       this.id,
       this.queries,
       this.connectors,
       this.cloudConnection,
-      this.logtoConfigs
+      this.logtoConfigs,
+      this.subscription
     );
     this.setPartial('libraries', librariesOverride);
-    this.sentinel = new MockSentinel();
   }
 
   public async invalidateCache() {

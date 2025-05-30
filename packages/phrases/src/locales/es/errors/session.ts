@@ -50,6 +50,17 @@ const session = {
   },
   sso_enabled:
     'El inicio de sesión único está habilitado para este correo electrónico dado. Inicie sesión con SSO, por favor.',
+  captcha_required: 'Se requiere captcha.',
+  captcha_failed: 'La verificación del captcha falló.',
+  email_blocklist: {
+    disposable_email_validation_failed:
+      'La validación de la dirección de correo electrónico falló.',
+    invalid_email: 'Dirección de correo electrónico no válida.',
+    email_subaddressing_not_allowed:
+      'No se permite el subdireccionamiento de correos electrónicos.',
+    email_not_allowed:
+      'La dirección de correo electrónico "{{email}}" está restringida. Por favor, elige otra diferente.',
+  },
 };
 
 export default Object.freeze(session);

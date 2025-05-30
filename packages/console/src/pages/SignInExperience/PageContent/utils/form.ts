@@ -1,9 +1,13 @@
-import type { SignInExperience, SignUp } from '@logto/schemas';
+import type { SignUp } from '@logto/schemas';
 import { diff } from 'deep-object-diff';
 import type { DeepRequired, FieldErrorsImpl } from 'react-hook-form';
 
-import type { SignInExperienceForm, SignInMethod, SignInMethodsObject } from '../../types';
-import { SignUpIdentifier } from '../../types';
+import type {
+  SignInExperienceForm,
+  SignInExperiencePageManagedData,
+  SignInMethod,
+  SignInMethodsObject,
+} from '../../types';
 
 export const convertToSignInMethodsObject = (signInMethods: SignInMethod[]): SignInMethodsObject =>
   signInMethods.reduce<SignInMethodsObject>(
@@ -26,8 +30,8 @@ const hasSocialTargetsChanged = (before: string[], after: string[]) =>
   Object.keys(diff(before.slice().sort(), after.slice().sort())).length > 0;
 
 export const hasSignUpAndSignInConfigChanged = (
-  before: SignInExperience,
-  after: SignInExperience
+  before: SignInExperiencePageManagedData,
+  after: SignInExperiencePageManagedData
 ): boolean => {
   return (
     !hasSignUpSettingsChanged(before.signUp, after.signUp) &&
@@ -54,16 +58,12 @@ export const getSignUpAndSignInErrorCount = (
   errors: FieldErrorsImpl<DeepRequired<SignInExperienceForm>>,
   formData: SignInExperienceForm
 ) => {
-  const signUpIdentifier = formData.signUp.identifier;
-  /**
-   * Note: we treat the `emailOrSms` sign-up identifier as 2 errors when it's invalid.
-   */
-  const signUpIdentifierRelatedErrorCount =
-    signUpIdentifier === SignUpIdentifier.EmailOrSms ? 2 : 1;
-
   const { signUp, signIn } = errors;
 
-  const signUpErrorCount = signUp?.identifier ? signUpIdentifierRelatedErrorCount : 0;
+  const signUpIdentifiersError = signUp?.identifiers;
+  const signUpErrorCount = Array.isArray(signUpIdentifiersError)
+    ? signUpIdentifiersError.filter(Boolean).length
+    : 0;
 
   const signInMethodErrors = signIn?.methods;
 

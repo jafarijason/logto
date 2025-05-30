@@ -18,7 +18,6 @@ import { type WithLogContext } from '#src/middleware/koa-audit-log.js';
 import SamlConnector from '#src/sso/SamlConnector/index.js';
 import { ssoConnectorFactories, type SingleSignOnConnectorSession } from '#src/sso/index.js';
 import { type ExtendedSocialUserInfo } from '#src/sso/types/saml.js';
-import type Queries from '#src/tenants/Queries.js';
 import type TenantContext from '#src/tenants/TenantContext.js';
 import assertThat from '#src/utils/assert-that.js';
 import { safeParseUnknownJson } from '#src/utils/json.js';
@@ -39,7 +38,7 @@ type AuthorizationUrlPayload = z.infer<typeof authorizationUrlPayloadGuard>;
 
 export const getSsoAuthorizationUrl = async (
   ctx: WithLogContext,
-  { provider, id: tenantId, queries }: TenantContext,
+  { provider, queries, envSet }: TenantContext,
   connectorData: SupportedSsoConnector,
   payload: AuthorizationUrlPayload
 ): Promise<string> => {
@@ -58,7 +57,7 @@ export const getSsoAuthorizationUrl = async (
     // Will throw ConnectorError if the config is invalid
     const connectorInstance = new ssoConnectorFactories[providerName].constructor(
       connectorData,
-      tenantId
+      envSet.endpoint
     );
 
     assertThat(payload, 'session.insufficient_info');
@@ -143,7 +142,7 @@ type SsoAuthenticationResult = {
  */
 export const verifySsoIdentity = async (
   ctx: WithLogContext,
-  { provider, id: tenantId }: TenantContext,
+  { provider, envSet }: TenantContext,
   connectorData: SupportedSsoConnector,
   data: Record<string, unknown>
 ): Promise<SsoAuthenticationResult> => {
@@ -159,7 +158,7 @@ export const verifySsoIdentity = async (
     // Will throw ConnectorError if the config is invalid
     const connectorInstance = new ssoConnectorFactories[providerName].constructor(
       connectorData,
-      tenantId
+      envSet.endpoint
     );
     const issuer = await connectorInstance.getIssuer();
     const userInfo = await connectorInstance.getUserInfo(singleSignOnSession, data);
@@ -223,7 +222,7 @@ export const handleSsoAuthentication = async (
 
   // SignIn
   if (userSsoIdentity) {
-    return signInWithSsoAuthentication(ctx, queries, {
+    return signInWithSsoAuthentication(ctx, tenant, {
       connectorData,
       userSsoIdentity,
       ssoAuthentication,
@@ -252,7 +251,7 @@ export const handleSsoAuthentication = async (
 
 const signInWithSsoAuthentication = async (
   ctx: WithInteractionHooksContext<WithLogContext>,
-  { userSsoIdentities: userSsoIdentitiesQueries, users: usersQueries }: Queries,
+  { queries: { userSsoIdentities: userSsoIdentitiesQueries, users: usersQueries } }: TenantContext,
   {
     connectorData: { id: connectorId, syncProfile },
     userSsoIdentity: { id, userId },

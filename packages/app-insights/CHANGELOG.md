@@ -1,5 +1,17 @@
 # @logto/app-insights
 
+## 2.1.0
+
+### Minor Changes
+
+- 2961d355d: bump node version to ^22.14.0
+
+## 2.0.1
+
+### Patch Changes
+
+- e11e57de8: bump dependencies for security update
+
 ## 2.0.0
 
 ### Major Changes

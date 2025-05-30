@@ -1,4 +1,4 @@
-import { MfaPolicy, SignInIdentifier } from '@logto/schemas';
+import { MfaPolicy, OrganizationRequiredMfaPolicy, SignInIdentifier } from '@logto/schemas';
 import { HTTPError, type ResponsePromise } from 'ky';
 
 import {
@@ -8,6 +8,7 @@ import {
   getSignInExperience,
   updateSignInExperience,
 } from '#src/api/index.js';
+import { setEmailConnector } from '#src/helpers/connector.js';
 import { expectRejects } from '#src/helpers/index.js';
 import { generatePassword } from '#src/utils.js';
 
@@ -32,8 +33,9 @@ describe('admin console sign-in experience', () => {
       termsOfUseUrl: 'mock://fake-url/terms',
       privacyPolicyUrl: 'mock://fake-url/privacy',
       mfa: {
-        policy: MfaPolicy.UserControlled,
+        policy: MfaPolicy.PromptAtSignInAndSignUp,
         factors: [],
+        organizationRequiredMfaPolicy: OrganizationRequiredMfaPolicy.Mandatory,
       },
       singleSignOnEnabled: true,
       supportEmail: 'contact@logto.io',
@@ -47,14 +49,15 @@ describe('admin console sign-in experience', () => {
   it('throw 400 when fail to validate SIE', async () => {
     const newSignInExperience = {
       signUp: {
-        identifiers: [SignInIdentifier.Username],
+        identifiers: [SignInIdentifier.Email],
         password: false,
         verify: false,
       },
     };
 
+    await setEmailConnector();
     await expectRejects(updateSignInExperience(newSignInExperience), {
-      code: 'sign_in_experiences.username_requires_password',
+      code: 'sign_in_experiences.passwordless_requires_verify',
       status: 400,
     });
   });

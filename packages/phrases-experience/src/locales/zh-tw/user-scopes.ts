@@ -1,23 +1,14 @@
 const user_scopes = {
   descriptions: {
-    /** UNTRANSLATED */
-    custom_data: 'Your custom data',
-    /** UNTRANSLATED */
-    email: 'Your email address',
-    /** UNTRANSLATED */
-    phone: 'Your phone number',
-    /** UNTRANSLATED */
-    profile: 'Your name, username, avatar, and other profile info',
-    /** UNTRANSLATED */
-    roles: 'Your roles',
-    /** UNTRANSLATED */
-    identities: 'Your linked social identities',
-    /** UNTRANSLATED */
-    'urn:logto:scope:organizations': 'Your organizations info',
-    /** UNTRANSLATED */
-    'urn:logto:scope:organization_roles': 'Your organization roles',
-    /** UNTRANSLATED */
-    address: 'Your address',
+    custom_data: '你的自訂資料',
+    email: '你的電子郵件地址',
+    phone: '你的電話號碼',
+    profile: '你的姓名、用戶名、頭像和其他個人資訊',
+    roles: '你的角色',
+    identities: '你的關聯社交身份',
+    'urn:logto:scope:organizations': '你的組織資訊',
+    'urn:logto:scope:organization_roles': '你的組織角色',
+    address: '你的地址',
   },
 };
 

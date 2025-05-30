@@ -48,6 +48,10 @@ const buildConfig = (mode: string): UserConfig => ({
     'import.meta.env.ADMIN_ENDPOINT': JSON.stringify(process.env.ADMIN_ENDPOINT),
     'import.meta.env.DEV_FEATURES_ENABLED': JSON.stringify(process.env.DEV_FEATURES_ENABLED),
     'import.meta.env.INTEGRATION_TEST': JSON.stringify(process.env.INTEGRATION_TEST),
+    'import.meta.env.CONSOLE_EMBEDDED_PRICING_URL': JSON.stringify(
+      process.env.CONSOLE_EMBEDDED_PRICING_URL
+    ),
+    'import.meta.env.INKEEP_API_KEY': JSON.stringify(process.env.INKEEP_API_KEY),
     // `@withtyped/client` needs this to be defined. We can optimize this later.
     'process.env': {},
   },
@@ -58,6 +62,16 @@ const buildConfig = (mode: string): UserConfig => ({
         manualChunks: (id, meta) => {
           if (/\/node_modules\/(cose-base|layout-base|cytoscape|cytoscape-[^/]*)\//.test(id)) {
             return 'cytoscape';
+          }
+
+          if (/\/node_modules\/(|@inkeep|@radix-ui|prism-react-renderer)\//.test(id)) {
+            return '@inkeep';
+          }
+
+          // When this dependency is introduced by @inkeep/cxkit-react, it will cause runtime errors
+          // if it is not bundled with react.
+          if (id.includes('/hastscript/')) {
+            return 'react';
           }
 
           for (const largePackage of [

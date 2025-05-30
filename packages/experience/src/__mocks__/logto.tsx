@@ -109,7 +109,7 @@ export const mockSignInExperience: SignInExperience = {
   customUiAssets: null,
   passwordPolicy: {},
   mfa: {
-    policy: MfaPolicy.UserControlled,
+    policy: MfaPolicy.PromptAtSignInAndSignUp,
     factors: [],
   },
   singleSignOnEnabled: true,
@@ -117,6 +117,9 @@ export const mockSignInExperience: SignInExperience = {
   supportEmail: null,
   supportWebsiteUrl: null,
   unknownSessionRedirectUrl: null,
+  captchaPolicy: {},
+  sentinelPolicy: {},
+  emailBlocklistPolicy: {},
 };
 
 export const mockSignInExperienceSettings: SignInExperienceResponse = {
@@ -146,7 +149,7 @@ export const mockSignInExperienceSettings: SignInExperienceResponse = {
   customUiAssets: null,
   passwordPolicy: {},
   mfa: {
-    policy: MfaPolicy.UserControlled,
+    policy: MfaPolicy.PromptAtSignInAndSignUp,
     factors: [],
   },
   isDevelopmentTenant: false,
@@ -155,6 +158,9 @@ export const mockSignInExperienceSettings: SignInExperienceResponse = {
   supportEmail: null,
   supportWebsiteUrl: null,
   unknownSessionRedirectUrl: null,
+  captchaPolicy: {},
+  sentinelPolicy: {},
+  emailBlocklistPolicy: {},
 };
 
 const usernameSettings = {

@@ -1,12 +1,11 @@
 import content from './content.js';
-import password_policy from './password-policy.js';
 import sign_up_and_sign_in from './sign-up-and-sign-in.js';
 
 const sign_in_exp = {
   page_title: 'Опыт входа в систему',
   title: 'Опыт входа в систему',
   description:
-    'Настройте пользовательский интерфейс входа в систему в соответствии с вашим брендом и просматривайте в режиме реального времени',
+    'Настройте потоки аутентификации и пользовательский интерфейс, и просматривайте готовый опыт в реальном времени.',
   tabs: {
     branding: 'Брендирование',
     sign_up_and_sign_in: 'Регистрация и вход в систему',
@@ -87,7 +86,6 @@ const sign_in_exp = {
   },
   sign_up_and_sign_in,
   content,
-  password_policy,
   setup_warning: {
     no_connector_sms:
       'Еще не настроен коннектор SMS. Пока не завершено настройка, пользователи не смогут войти с помощью этого метода. <a>{{link}}</a> в «Коннекторах»',

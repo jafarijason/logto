@@ -10,6 +10,7 @@ const description = {
   sign_in: 'Entrar',
   privacy_policy: 'Política de privacidade',
   create_account: 'Criar conta',
+  switch_account: 'Trocar conta',
   or: 'ou',
   and: 'e',
   enter_passcode: 'O código de verificação foi enviado para o seu {{address}} {{target}}',
@@ -61,9 +62,18 @@ const description = {
   password_requirements: 'Senha {{items, list}}.',
   password_requirement: {
     length_one: 'requer no mínimo 1 caractere.',
+    length_two: 'requer no mínimo {{count}} caracteres',
+    length_few: 'requer no mínimo {{count}} caracteres',
+    length_many: 'requer no mínimo {{count}} caracteres',
     length_other: 'requer no mínimo {{count}} caracteres.',
     character_types_one:
       'deve conter pelo menos 1 tipo de letra maiúscula, letra minúscula, dígito e símbolo.',
+    character_types_two:
+      'deve conter pelo menos {{count}} tipos de letras maiúsculas, letras minúsculas, dígitos e símbolos',
+    character_types_few:
+      'deve conter pelo menos {{count}} tipos de letras maiúsculas, letras minúsculas, dígitos e símbolos',
+    character_types_many:
+      'deve conter pelo menos {{count}} tipos de letras maiúsculas, letras minúsculas, dígitos e símbolos',
     character_types_other:
       'deve conter pelo menos {{count}} tipos de letra maiúscula, letra minúscula, dígito e símbolo.',
   },
@@ -72,30 +82,18 @@ const description = {
   single_sign_on_connectors_list:
     'Sua empresa ativou o Single Sign-On para a conta de email {{email}}. Você pode continuar a fazer login com os seguintes provedores de SSO.',
   single_sign_on_enabled: 'Esta conta tem Single Sign-On ativado.',
-  /** UNTRANSLATED */
-  authorize_title: 'Authorize {{name}}',
-  /** UNTRANSLATED */
-  request_permission: '{{name}} is requesting access to:',
-  /** UNTRANSLATED */
-  grant_organization_access: 'Grant the organization access:',
-  /** UNTRANSLATED */
-  authorize_personal_data_usage: 'Authorize the use of your personal data:',
-  /** UNTRANSLATED */
-  authorize_organization_access: 'Authorize access to the specific organization:',
-  /** UNTRANSLATED */
-  user_scopes: 'Personal user data',
-  /** UNTRANSLATED */
-  organization_scopes: 'Organization access',
-  /** UNTRANSLATED */
-  authorize_agreement: `By authorizing the access, you agree to the {{name}}'s <link></link>.`,
-  /** UNTRANSLATED */
-  authorize_agreement_with_redirect: `By authorizing the access, you agree to the {{name}}'s <link></link>, and will be redirected to {{uri}}.`,
-  /** UNTRANSLATED */
-  not_you: 'Not you?',
-  /** UNTRANSLATED */
-  user_id: 'User ID: {{id}}',
-  /** UNTRANSLATED */
-  redirect_to: 'You will be redirected to {{name}}.',
+  authorize_title: 'Autorizar {{name}}',
+  request_permission: '{{name}} está solicitando acesso a:',
+  grant_organization_access: 'Conceder acesso à organização:',
+  authorize_personal_data_usage: 'Autorizar o uso dos seus dados pessoais:',
+  authorize_organization_access: 'Autorizar acesso à organização específica:',
+  user_scopes: 'Dados pessoais do usuário',
+  organization_scopes: 'Acesso à organização',
+  authorize_agreement: `Ao autorizar o acesso, você concorda com os <link></link> de {{name}}.`,
+  authorize_agreement_with_redirect: `Ao autorizar o acesso, você concorda com os <link></link> de {{name}}, e será redirecionado para {{uri}}.`,
+  not_you: 'Você não é?',
+  user_id: 'ID do usuário: {{id}}',
+  redirect_to: 'Você será redirecionado para {{name}}.',
   auto_agreement: 'Ao continuar, você concorda com os <link></link>.',
   identifier_sign_in_description: 'Digite seu {{types, list(type: disjunction;)}} para entrar.',
   all_sign_in_options: 'Todas as opções de login',
@@ -105,6 +103,9 @@ const description = {
   back_to_sign_in: 'Voltar para o login',
   support_email: 'E-mail de suporte: <link></link>',
   support_website: 'Site de suporte: <link></link>',
+  switch_account_title: 'Você está atualmente conectado como {{account}}',
+  switch_account_description:
+    'Para continuar, você será desconectado da conta atual e automaticamente trocado para a nova conta.',
 };
 
 export default Object.freeze(description);

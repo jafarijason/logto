@@ -1,6 +1,7 @@
 const content = {
   terms_of_use: {
     title: 'TERMS',
+    description: '컴플라이언스 요구 사항을 충족하기 위해 이용 약관과 개인정보 보호를 추가하세요.',
     terms_of_use: 'Terms of use URL',
     terms_of_use_placeholder: 'https://your.terms.of.use/',
     privacy_policy: 'Privacy policy URL',
@@ -23,6 +24,14 @@ const content = {
       'The default language will be used when the detected user language isn’t covered in the current language library.',
     default_language_description_fixed:
       'When auto-detect is off, the default language is the only language your software will show. Turn on auto-detect for language extension.',
+  },
+  support: {
+    title: '지원',
+    subtitle: '오류 페이지에 지원 채널을 표시하여 사용자에게 빠른 도움을 제공합니다.',
+    support_email: '지원 이메일',
+    support_email_placeholder: 'support@email.com',
+    support_website: '지원 웹사이트',
+    support_website_placeholder: 'https://your.website/support',
   },
   manage_language: {
     title: 'Manage language',

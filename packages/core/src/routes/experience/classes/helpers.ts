@@ -30,7 +30,8 @@ export const getNewUserProfileFromVerificationRecord = async (
   switch (verificationRecord.type) {
     case VerificationType.NewPasswordIdentity:
     case VerificationType.EmailVerificationCode:
-    case VerificationType.PhoneVerificationCode: {
+    case VerificationType.PhoneVerificationCode:
+    case VerificationType.OneTimeToken: {
       return verificationRecord.toUserProfile();
     }
     case VerificationType.EnterpriseSso:
@@ -56,6 +57,7 @@ export const getNewUserProfileFromVerificationRecord = async (
  * @throws {RequestError} -400 if the verification record is not verified.
  * @throws {RequestError} -404 if the user is not found.
  */
+// eslint-disable-next-line complexity
 export const identifyUserByVerificationRecord = async (
   verificationRecord: VerificationRecord,
   linkSocialIdentity?: boolean
@@ -68,7 +70,12 @@ export const identifyUserByVerificationRecord = async (
    */
   syncedProfile?: Pick<
     InteractionProfile,
-    'enterpriseSsoIdentity' | 'syncedEnterpriseSsoIdentity' | 'socialIdentity' | 'avatar' | 'name'
+    | 'enterpriseSsoIdentity'
+    | 'syncedEnterpriseSsoIdentity'
+    | 'jitOrganizationIds'
+    | 'socialIdentity'
+    | 'avatar'
+    | 'name'
   >;
 }> => {
   // Check verification record can be used to identify a user using the `identifyUser` method.
@@ -82,7 +89,17 @@ export const identifyUserByVerificationRecord = async (
     case VerificationType.Password:
     case VerificationType.EmailVerificationCode:
     case VerificationType.PhoneVerificationCode: {
-      return { user: await verificationRecord.identifyUser() };
+      return {
+        user: await verificationRecord.identifyUser(),
+      };
+    }
+    case VerificationType.OneTimeToken: {
+      return {
+        user: await verificationRecord.identifyUser(),
+        syncedProfile: {
+          jitOrganizationIds: verificationRecord.oneTimeTokenContext?.jitOrganizationIds,
+        },
+      };
     }
     case VerificationType.Social: {
       const user = linkSocialIdentity

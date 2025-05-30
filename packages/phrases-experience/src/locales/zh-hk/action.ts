@@ -1,6 +1,7 @@
 const action = {
   sign_in: '登錄',
   continue: '繼續',
+  continue_as: '以 {{name}} 繼續',
   create_account: '註冊',
   create_account_without_linking: '創建新的帳戶',
   create: '註冊',
@@ -29,10 +30,9 @@ const action = {
   verify_via_passkey: '透過 Passkey 驗證',
   download: '下載',
   single_sign_on: '單點登錄',
-  /** UNTRANSLATED */
-  authorize: 'Authorize',
-  /** UNTRANSLATED */
-  use_another_account: 'Use another account',
+  authorize: '授權',
+  use_another_account: '使用其他帳戶',
+  back_to_current_account: '返回當前帳戶',
 };
 
 export default Object.freeze(action);

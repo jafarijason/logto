@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 // This is a generated file, don't update manually.
+
 import { safeLazy } from 'react-safe-lazy';
 
 import apiExpress from './api-express/index';
@@ -12,6 +13,7 @@ import nativeExpo from './native-expo/index';
 import nativeFlutter from './native-flutter/index';
 import nativeIosSwift from './native-ios-swift/index';
 import protectedApp from './protected-app/index';
+import samlIdp from './saml-idp/index';
 import spaAngular from './spa-angular/index';
 import spaChromeExtension from './spa-chrome-extension/index';
 import spaReact from './spa-react/index';
@@ -36,9 +38,11 @@ import webOutline from './web-outline/index';
 import webPassport from './web-passport/index';
 import webPhp from './web-php/index';
 import webPython from './web-python/index';
+import webRemix from './web-remix';
 import webRuby from './web-ruby/index';
 import webSveltekit from './web-sveltekit/index';
 import webWordpress from './web-wordpress/index';
+import webWordpressPlugin from './web-wordpress-plugin';
 
 export const guides: Readonly<Guide[]> = Object.freeze([
   {
@@ -104,6 +108,14 @@ export const guides: Readonly<Guide[]> = Object.freeze([
     DarkLogo: undefined,
     Component: safeLazy(async () => import('./web-sveltekit/README.mdx')),
     metadata: webSveltekit,
+  },
+  {
+    order: 1.2,
+    id: 'web-remix',
+    Logo: safeLazy(async () => import('./web-remix/logo.svg?react')),
+    DarkLogo: safeLazy(async () => import('./web-remix/logo-dark.svg?react')),
+    Component: safeLazy(async () => import('./web-remix/README.mdx')),
+    metadata: webRemix,
   },
   {
     order: 1.3,
@@ -218,6 +230,14 @@ export const guides: Readonly<Guide[]> = Object.freeze([
     metadata: webWordpress,
   },
   {
+    order: 2.3,
+    id: 'web-wordpress-plugin',
+    Logo: safeLazy(async () => import('./web-wordpress-plugin/logo.svg?react')),
+    DarkLogo: undefined,
+    Component: safeLazy(async () => import('./web-wordpress-plugin/README.mdx')),
+    metadata: webWordpressPlugin,
+  },
+  {
     order: 3,
     id: 'web-python',
     Logo: safeLazy(async () => import('./web-python/logo.svg?react')),
@@ -320,6 +340,14 @@ export const guides: Readonly<Guide[]> = Object.freeze([
     DarkLogo: undefined,
     Component: safeLazy(async () => import('./api-spring-boot/README.mdx')),
     metadata: apiSpringBoot,
+  },
+  {
+    order: Number.POSITIVE_INFINITY,
+    id: 'saml-idp',
+    Logo: safeLazy(async () => import('./saml-idp/logo.svg?react')),
+    DarkLogo: undefined,
+    Component: safeLazy(async () => import('./saml-idp/README.mdx')),
+    metadata: samlIdp,
   },
   {
     order: Number.POSITIVE_INFINITY,

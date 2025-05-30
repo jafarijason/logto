@@ -64,7 +64,9 @@ jobs:
       matrix:
         target: [api, experience, console]
     needs: package
-    runs-on: ubuntu-latest
+    # An error will occur if we use a newer version of Ubuntu in the CI environment, as it has restrictions on unprivileged user namespaces and sandbox usage, which prevents Chromium (used by Puppeteer) from launching properly during integration tests. So we lock the Ubuntu version to 22.04.
+    # See error record: https://github.com/logto-io/logto/actions/runs/12803809008/job/35697654974
+    runs-on: ubuntu-22.04
     env:
       INTEGRATION_TEST: true
       DEV_FEATURES_ENABLED: false
@@ -78,13 +80,16 @@ jobs:
           test-target: ${{ matrix.target }}
           db-alteration-target: ${{ github.head_ref }}
           pnpm-version: 9
+          node-version: ^22.14.0
 
   # Automatically rerun the workflow since the integration tests are moody
   # From this genius: https://github.com/orgs/community/discussions/67654#discussioncomment-8038649
   rerun-on-failure:
     needs: run-logto
     if: failure() && fromJSON(github.run_attempt) < 3
-    runs-on: ubuntu-latest
+    # An error will occur if we use a newer version of Ubuntu in the CI environment, as it has restrictions on unprivileged user namespaces and sandbox usage, which prevents Chromium (used by Puppeteer) from launching properly during integration tests. So we lock the Ubuntu version to 22.04.
+    # See error record: https://github.com/logto-io/logto/actions/runs/12803809008/job/35697654974
+    runs-on: ubuntu-22.04
     steps:
       - env:
           GH_REPO: ${{ github.repository }}

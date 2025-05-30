@@ -1,5 +1,55 @@
 # @logto/tunnel
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [35bbc4399]
+  - @logto/shared@3.3.0
+
+## 0.3.0
+
+### Minor Changes
+
+- 2961d355d: bump node version to ^22.14.0
+
+### Patch Changes
+
+- Updated dependencies [2961d355d]
+  - @logto/core-kit@2.6.0
+  - @logto/shared@3.2.0
+
+## 0.2.6
+
+### Patch Changes
+
+- 6144149bb: disallow zstd compression to fix potential garbled text response
+
+## 0.2.5
+
+### Patch Changes
+
+- e11e57de8: bump dependencies for security update
+- Updated dependencies [e11e57de8]
+  - @logto/core-kit@2.5.4
+  - @logto/shared@3.1.4
+
+## 0.2.4
+
+### Patch Changes
+
+- Updated dependencies [62eb8ed8d]
+- Updated dependencies [a8080e891]
+  - @logto/core-kit@2.5.3
+  - @logto/shared@3.1.3
+
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies [239b81e31]
+  - @logto/core-kit@2.5.2
+
 ## 0.2.2
 
 ### Patch Changes

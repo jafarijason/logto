@@ -1,6 +1,7 @@
 const content = {
   terms_of_use: {
     title: 'الشروط',
+    description: 'إضافة الشروط والخصوصية لتلبية متطلبات الامتثال.',
     terms_of_use: 'رابط شروط الاستخدام',
     terms_of_use_placeholder: 'https://your.terms.of.use/',
     privacy_policy: 'رابط سياسة الخصوصية',
@@ -23,6 +24,14 @@ const content = {
       'سيتم استخدام اللغة الافتراضية عندما لا يتم تغطية لغة المستخدم المكتشفة في مكتبة اللغة الحالية.',
     default_language_description_fixed:
       'عند تعطيل الكشف التلقائي، اللغة الافتراضية هي اللغة الوحيدة التي سيعرضها البرنامج الخاص بك. قم بتشغيل الكشف التلقائي لتوسيع اللغة.',
+  },
+  support: {
+    title: 'الدعم',
+    subtitle: 'عرض قنوات الدعم الخاصة بك على صفحات الخطأ لتوفير مساعدة سريعة للمستخدم.',
+    support_email: 'بريد الدعم الإلكتروني',
+    support_email_placeholder: 'support@email.com',
+    support_website: 'موقع الدعم الإلكتروني',
+    support_website_placeholder: 'https://your.website/support',
   },
   manage_language: {
     title: 'إدارة اللغة',

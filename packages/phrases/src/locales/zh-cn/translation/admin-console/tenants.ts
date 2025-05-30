@@ -20,8 +20,8 @@ const tenants = {
     environment_tag_production: '产品',
     tenant_type: '租户类型',
     development_description:
-      '仅用于测试，不应在生产环境中使用。不需要订阅。它具有所有专业功能，但有像登录横幅之类的限制。<a>了解更多</a>',
-    production_description: '适用于由最终用户使用且可能需要付费订阅的应用程序。<a>了解更多</a>',
+      '仅用于测试，不应在生产环境中使用。不需要订阅。它具有所有专业功能，但有像登录横幅之类的限制。',
+    production_description: '适用于由最终用户使用且可能需要付费订阅的应用程序。',
     tenant_info_saved: '租户信息成功保存。',
   },
   full_env_tag: {
@@ -83,18 +83,19 @@ const tenants = {
   tenant_landing_page: {
     title: '您还没有创建租户',
     description:
-      '要开始使用Logto配置项目，请创建一个新的租户。如果您需要注销或删除您的帐户，只需单击右上角的头像按钮。',
+      '要开始使用 Logto 配置项目，请创建一个新的租户。如果您需要注销或删除您的帐户，只需单击右上角的头像按钮。',
     create_tenant_button: '创建租户',
   },
   status: {
     mau_exceeded: '超出 MAU 限制',
+    token_exceeded: '超出 Token 限制',
     suspended: '已暂停',
     overdue: '逾期',
   },
   tenant_suspended_page: {
     title: '租户已暂停，请联系我们以恢复访问。',
     description_1:
-      '我们非常遗憾地通知您，由于不当使用，包括超出MAU限制、逾期付款或其他未经授权的操作，您的租户帐户已被临时停用。',
+      '我们非常遗憾地通知您，由于不当使用，包括超出 MAU 限制、逾期付款或其他未经授权的操作，您的租户帐户已被临时停用。',
     description_2:
       '如果您需要进一步澄清、有任何疑虑或希望恢复全部功能并解锁您的租户，请立即联系我们。',
   },

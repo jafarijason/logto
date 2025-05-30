@@ -10,8 +10,10 @@ const sign_up_and_sign_in = {
     title: 'KAYDOL',
     sign_up_identifier: 'Kayıt tanımlayıcı',
     identifier_description:
-      'Hesap oluşturmak için kayıt tanımlayıcı gereklidir ve giriş ekranınıza dahil edilmelidir.',
+      'Yeni bir hesap oluştururken seçilen tüm kayıt tanımlayıcılar gereklidir.',
     sign_up_authentication: 'Kaydolma doğrulama ayarları',
+    verification_tip:
+      'Kullanıcılar, kaydolma sırasında bir doğrulama kodu girerek yapılandırdığınız e-posta veya telefon numarasını doğrulamalıdır.',
     authentication_description:
       'Seçilen tüm işlemler, kullanıcıların akışı tamamlamaları zorunlu olacaktır.',
     set_a_password_option: 'Şifrenizi oluşturun',
@@ -21,9 +23,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: 'OTURUM AÇIN',
     sign_in_identifier_and_auth: 'Oturum açma tanımlayıcısı ve doğrulama ayarları',
-    description:
-      'Kullanıcılar mevcut seçeneklerden herhangi biriyle oturum açabilir. Aşağıdaki seçenekleri sürükleyip bırakarak düzenleyin.',
+    description: 'Kullanıcılar mevcut seçeneklerden herhangi biriyle oturum açabilir.',
     add_sign_in_method: 'Oturum açma yöntemi ekle',
+    add_sign_up_method: 'Kayıt yöntemi ekle',
     password_auth: 'Şifre',
     verification_code_auth: 'Doğrulama kodu',
     auth_swap_tip:
@@ -54,6 +56,8 @@ const sign_up_and_sign_in = {
     verification_code_auth:
       'Bu, yalnızca doğrulama kodu sağlama seçeneğini etkinleştirdiğiniz için önemlidir. Kayıt işlemi sırasında şifre oluşturma izni verildiğinde kutuyu kaldırabilirsiniz.',
     delete_sign_in_method: 'Bu, {{identifier}} gerekliliğini belirlediğiniz için önemlidir.',
+    password_disabled_notification:
+      'Kullanıcı adı ile kaydolma için "Şifrenizi oluşturun" seçeneği devre dışı bırakıldı, bu da kullanıcıların oturum açmasını engelleyebilir. Kaydetmeye devam etmek için onaylayın.',
   },
   advanced_options: {
     title: 'GELİŞMİŞ SEÇENEKLER',
@@ -68,6 +72,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: 'Kullanıcı Kaydını Etkinleştir',
     enable_user_registration_description:
       'Kullanıcı kaydını etkinleştir veya devre dışı bırak. Devre dışı bırakıldığında, kullanıcılar yönetici konsolunda hala eklenilebilir, ancak kullanıcılar artık oturum açma arayüzü üzerinden hesap oluşturamaz.',
+    unknown_session_redirect_url: "Bilinmeyen oturum yönlendirme URL'si",
+    unknown_session_redirect_url_tip:
+      "Bazen oturumun süresi dolduğunda veya kullanıcı oturum açma bağlantısını yer imlerine eklediğinde ya da paylaştığında Logto, kullanıcının oturumunu oturum açma sayfasında tanımayabilir. Varsayılan olarak, “bilinmeyen oturum” 404 hatası görünür. Kullanıcı deneyimini geliştirmek için, kullanıcıları uygulamanıza geri yönlendirmek ve kimlik doğrulamasını yeniden başlatmak için bir geri dönüş URL'si ayarlayın.",
   },
 };
 

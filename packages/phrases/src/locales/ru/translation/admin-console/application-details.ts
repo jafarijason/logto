@@ -24,6 +24,7 @@ const application_details = {
   description_placeholder: 'Введите описание своего приложения',
   config_endpoint: 'Конечная точка конфигурации OpenID Provider',
   issuer_endpoint: 'Конечная точка издателя',
+  jwks_uri: 'URI JWKS',
   authorization_endpoint: 'Конечная точка авторизации',
   authorization_endpoint_tip:
     'Конечная точка для аутентификации и авторизации. Он используется для аутентификации <a>OpenID Connect</a>.',
@@ -41,6 +42,8 @@ const application_details = {
   redirect_uri_placeholder_native: 'io.logto://callback',
   redirect_uri_tip:
     'URI перенаправляется после входа пользователя (успешного или нет). См. OpenID Connect <a>AuthRequest</a> для получения дополнительной информации.',
+  mixed_redirect_uri_warning:
+    'Тип вашего приложения несовместим как минимум с одним из URI перенаправления. Это не соответствует лучшим практикам, и мы настоятельно рекомендуем держать URI перенаправления согласованными.',
   post_sign_out_redirect_uri: 'URI перенаправления после выхода из системы',
   post_sign_out_redirect_uris: 'URI перенаправления после выхода из системы',
   post_sign_out_redirect_uri_placeholder: 'https://ваш.вебсайт.com/домашняя страница',
@@ -64,6 +67,8 @@ const application_details = {
   rotate_refresh_token: 'Поворот Refresh Token',
   rotate_refresh_token_label:
     'При включении Logto будет выдавать новый Refresh Token для запросов токенов, когда пройдет 70% изначального Time to Live (TTL) или будут выполнены определенные условия. <a>Узнать больше</a>',
+  rotate_refresh_token_label_for_public_clients:
+    'При включении Logto будет выдавать новый Refresh Token для каждого запроса токена. <a>Узнать больше</a>',
   backchannel_logout: 'Отключение обратного канала',
   backchannel_logout_description:
     'Настройте конечную точку отключения обратного канала OpenID Connect и требуется ли сеанс для этого приложения.',
@@ -92,6 +97,8 @@ const application_details = {
   protect_origin_server: 'Защита вашего исходного сервера',
   protect_origin_server_description:
     'Обеспечьте защиту вашего исходного сервера от прямого доступа. Обратитесь к руководству для получения более <a>подробных инструкций</a>.',
+  third_party_settings_description:
+    'Интегрируйте сторонние приложения с Logto в качестве вашего провайдера идентификации (IdP), используя OIDC / OAuth 2.0, с экраном согласия для авторизации пользователя.',
   session_duration: 'Продолжительность сеанса (дни)',
   try_it: 'Попробуйте',
   no_organization_placeholder: 'Организация не найдена. <a>Перейти к организациям</a>',
@@ -178,6 +185,9 @@ const application_details = {
     create_new_secret: 'Создать новый секрет',
     delete_confirmation:
       'Это действие нельзя отменить. Вы уверены, что хотите удалить этот секрет?',
+    deleted: 'Секрет был успешно удален.',
+    activated: 'Секрет был успешно активирован.',
+    deactivated: 'Секрет был успешно деактивирован.',
     legacy_secret: 'Устаревший секрет',
     expired: 'Истек',
     expired_tooltip: 'Секрет истек {{date}}.',
@@ -189,12 +199,66 @@ const application_details = {
         'Секрет никогда не истечет. Мы рекомендуем установить дату истечения для повышения безопасности.',
       days: '{{count}} день',
       days_other: '{{count}} дней',
+      years: '{{count}} год',
+      years_other: '{{count}} лет',
       created: 'Секрет {{name}} успешно создан.',
     },
     edit_modal: {
       title: 'Изменить секрет приложения',
       edited: 'Секрет {{name}} успешно изменен.',
     },
+  },
+  saml_idp_config: {
+    title: 'Метаданные SAML IdP',
+    description:
+      'Используйте следующие метаданные и сертификат, чтобы настроить SAML IdP в вашем приложении.',
+    metadata_url_label: 'URL метаданных IdP',
+    single_sign_on_service_url_label: 'URL сервиса единого входа',
+    idp_entity_id_label: 'ID сущности IdP',
+  },
+  saml_idp_certificates: {
+    title: 'Сертификат подписи SAML',
+    expires_at: 'Истекает в',
+    finger_print: 'Отпечаток',
+    status: 'Статус',
+    active: 'Активный',
+    inactive: 'Неактивный',
+  },
+  saml_idp_name_id_format: {
+    title: 'Формат идентификатора имени',
+    description: 'Выберите формат идентификатора имени SAML IdP.',
+    persistent: 'Постоянный',
+    persistent_description: 'Использовать ID пользователя Logto как идентификатор имени',
+    transient: 'Временный',
+    transient_description: 'Использовать одноразовый ID пользователя как идентификатор имени',
+    unspecified: 'Неопределенный',
+    unspecified_description: 'Использовать ID пользователя Logto как идентификатор имени',
+    email_address: 'Адрес электронной почты',
+    email_address_description: 'Использовать адрес электронной почты как идентификатор имени',
+  },
+  saml_encryption_config: {
+    encrypt_assertion: 'Зашифровать утверждение SAML',
+    encrypt_assertion_description: 'Включив эту опцию, утверждение SAML будет зашифровано.',
+    encrypt_then_sign: 'Зашифровать, затем подписать',
+    encrypt_then_sign_description:
+      'Включив эту опцию, утверждение SAML будет зашифровано, а затем подписано; иначе утверждение SAML будет подписано, а затем зашифровано.',
+    certificate: 'Сертификат',
+    certificate_tooltip:
+      'Скопируйте и вставьте сертификат x509, который вы получили от вашего поставщика услуг, чтобы зашифровать утверждение SAML.',
+    certificate_placeholder:
+      '-----BEGIN CERTIFICATE-----\nMIICYDCCAcmgAwIBA...\n-----END CERTIFICATE-----\n',
+    certificate_missing_error: 'Требуется сертификат.',
+    certificate_invalid_format_error:
+      'Обнаружен недопустимый формат сертификата. Пожалуйста, проверьте формат сертификата и попробуйте снова.',
+  },
+  saml_app_attribute_mapping: {
+    name: 'Отображение атрибутов',
+    title: 'Базовое отображение атрибутов',
+    description:
+      'Добавьте отображения атрибутов, чтобы синхронизировать профиль пользователя из Logto в ваше приложение.',
+    col_logto_claims: 'Значение Logto',
+    col_sp_claims: 'Название значения вашего приложения',
+    add_button: 'Добавить еще',
   },
 };
 

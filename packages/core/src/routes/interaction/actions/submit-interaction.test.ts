@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {
   InteractionEvent,
   adminConsoleApplicationId,
@@ -6,7 +7,7 @@ import {
   type User,
 } from '@logto/schemas';
 import { createMockUtils, pickDefault } from '@logto/shared/esm';
-import type Provider from 'oidc-provider';
+import type { Provider } from 'oidc-provider';
 
 import { type InsertUserResult } from '#src/libraries/user.js';
 import { createMockLogContext } from '#src/test-utils/koa-audit-log.js';
@@ -55,10 +56,11 @@ const userQueries = {
   updateUserById: jest.fn(async (id: string, user: Partial<User>) => user as User),
   hasActiveUsers: jest.fn().mockResolvedValue(true),
   hasUserWithEmail: jest.fn().mockResolvedValue(false),
-  hasUserWithPhone: jest.fn().mockResolvedValue(false),
+  hasUserWithNormalizedPhone: jest.fn().mockResolvedValue(false),
 };
 
-const { hasActiveUsers, updateUserById, hasUserWithEmail, hasUserWithPhone } = userQueries;
+const { hasActiveUsers, updateUserById, hasUserWithEmail, hasUserWithNormalizedPhone } =
+  userQueries;
 
 const userLibraries = {
   generateUserId: jest.fn().mockResolvedValue('uid'),
@@ -251,7 +253,7 @@ describe('submit action', () => {
 
   it('register new social user should not sync email and phone if already exists', async () => {
     hasUserWithEmail.mockResolvedValueOnce(true);
-    hasUserWithPhone.mockResolvedValueOnce(true);
+    hasUserWithNormalizedPhone.mockResolvedValueOnce(true);
 
     const interaction: VerifiedRegisterInteractionResult = {
       event: InteractionEvent.Register,
@@ -462,3 +464,4 @@ describe('submit action', () => {
     });
   });
 });
+/* eslint-enable max-lines */

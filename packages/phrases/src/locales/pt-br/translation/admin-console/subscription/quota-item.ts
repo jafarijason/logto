@@ -171,6 +171,31 @@ const quota_item = {
     unlimited: 'Traga sua IU',
     not_eligible: 'Remova seus ativos de IU personalizados',
   },
+  idp_initiated_sso_enabled: {
+    name: 'SSO iniciado por IDP',
+    limited: 'SSO iniciado por IDP',
+    unlimited: 'SSO iniciado por IDP',
+    not_eligible: 'SSO iniciado por IDP não permitido',
+  },
+  saml_applications_limit: {
+    name: 'Aplicações SAML',
+    limited: '{{count, number}} aplicação SAML',
+    limited_other: '{{count, number}} aplicações SAML',
+    unlimited: 'Aplicações SAML ilimitadas',
+    not_eligible: 'Remova suas aplicações SAML',
+  },
+  captcha_enabled: {
+    name: 'CAPTCHA',
+    limited: 'CAPTCHA',
+    unlimited: 'CAPTCHA',
+    not_eligible: 'Remova seu CAPTCHA',
+  },
+  security_features_enabled: {
+    name: 'Segurança avançada',
+    limited: 'Segurança avançada',
+    unlimited: 'Segurança avançada',
+    not_eligible: 'Remova suas configurações avançadas de segurança',
+  },
 };
 
 export default Object.freeze(quota_item);

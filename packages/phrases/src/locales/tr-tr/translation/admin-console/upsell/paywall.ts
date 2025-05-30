@@ -45,6 +45,11 @@ const paywall = {
     '{{count, number}} <planName/> rol başına izin sınırına ulaşıldı. İlave roller ve izinler eklemek için planı yükseltin. Yardım için ihtiyacınız olursa, <a>iletişime geçin</a>.',
   scopes_per_role_other:
     '{{count, number}} <planName/> rol başına izin sınırına ulaşıldı. İlave roller ve izinler eklemek için planı yükseltin. Yardım için ihtiyacınız olursa, <a>iletişime geçin</a>.',
+  saml_applications_oss:
+    'Ek SAML uygulaması, Logto Enterprise planı ile mevcuttur. Yardıma ihtiyacınız olursa, bizimle iletişime geçin.',
+  logto_pricing_button_text: 'Logto Bulut Fiyatlandırması',
+  saml_applications:
+    'Ek SAML uygulaması, Logto Enterprise planı ile mevcuttur. Yardım için bize ulaşın.',
   hooks:
     '{{count, number}} <planName/> webhook sınırına ulaşıldı. Daha fazla webhook oluşturmak için planı yükseltin. Yardım için ihtiyacınız olursa, <a>iletişime geçin</a>.',
   hooks_other:
@@ -67,6 +72,8 @@ const paywall = {
   },
   bring_your_ui:
     'Özel kullanıcı arayüzü işlevselliği ve prim avantajları için ücretli bir plana geçin.',
+  security_features:
+    'Gelişmiş güvenlik özelliklerinin kilidini açmak için Pro planına yükseltin. Sorularınız varsa, <a>bizimle iletişime geçmekten</a> çekinmeyin.',
 };
 
 export default Object.freeze(paywall);

@@ -9,8 +9,9 @@ const sign_up_and_sign_in = {
   sign_up: {
     title: '註冊',
     sign_up_identifier: '註冊標識',
-    identifier_description: '創建帳戶時你需要設定註冊標識。這些資訊在用戶登錄時，屬於必選項。',
+    identifier_description: '創建新帳戶時，所有選擇的註冊標識都是必需的。',
     sign_up_authentication: '註冊身份認證設置',
+    verification_tip: '用戶必須在註冊時通過輸入驗證碼來驗證你配置的電子郵件或手機號碼。',
     authentication_description: '註冊時，你的用戶將要完成以下所有勾選的任務。',
     set_a_password_option: '創建密碼',
     verify_at_sign_up_option: '註冊時驗證身份',
@@ -19,8 +20,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: '登錄',
     sign_in_identifier_and_auth: '登錄標識和身份認證設置',
-    description: '用戶可以使用任何可用的選項進行登錄。拖拽選項即可調整頁面佈局。',
+    description: '用戶可以使用任何可用的選項進行登錄。',
     add_sign_in_method: '添加登錄方式',
+    add_sign_up_method: '添加註冊方式',
     password_auth: '密碼',
     verification_code_auth: '驗證碼',
     auth_swap_tip: '交換以下選項的位置即可設定它們在用戶登錄流程中出現的先後。',
@@ -49,6 +51,8 @@ const sign_up_and_sign_in = {
       '因註冊設置裏你啟用了驗證碼標識，驗證碼屬於用戶必選項。開啟密碼註冊後，你可以選擇關閉驗證碼登錄。',
     delete_sign_in_method:
       '因註冊設置裏你啟用了{{identifier}}標識。這些資訊在用戶登錄時，屬於必選項。',
+    password_disabled_notification:
+      '用戶名註冊的“創建密碼”選項已禁用，這可能會阻止用戶登錄。確認以繼續保存。',
   },
   advanced_options: {
     title: '進階選項',
@@ -62,6 +66,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: '啟用用戶註冊',
     enable_user_registration_description:
       '啟用或禁止用戶註冊。禁用後，管理控制臺仍然可以添加用戶，但用戶無法通過登錄界面建立帳戶。',
+    unknown_session_redirect_url: '未知 Session 重新導向 URL',
+    unknown_session_redirect_url_tip:
+      '有時，Logto 可能無法識別用戶在登錄頁面的 Session，比如 Session 過期或用戶書籤或分享錄入連結時。預設顯示"未知 Session" 404 錯誤。為增強用戶體驗，設定一個回退 URL，將用戶重定向回應用程式並重啟身份認證。',
   },
 };
 

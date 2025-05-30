@@ -65,9 +65,6 @@ function SignInMethodItem({
               label={t('sign_in_exp.sign_up_and_sign_in.sign_in.password_auth')}
               checked={password}
               disabled={!isPasswordCheckable}
-              tooltip={conditional(
-                !isPasswordCheckable && t('sign_in_exp.sign_up_and_sign_in.tip.password_auth')
-              )}
               onChange={(checked) => {
                 onVerificationStateChange('password', checked);
               }}

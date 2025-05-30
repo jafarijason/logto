@@ -61,9 +61,9 @@ const usage = {
   tokens: {
     title: 'Tokens',
     tooltip:
-      'Add-on feature priced at ${{price, number}} per million tokens. The first 1 million tokens is included.',
+      'Add-on feature priced at ${{price, number}} per {{tokenLimit}} tokens. The first {{basicQuota}} tokens is included.',
     tooltip_for_enterprise:
-      'The first {{basicQuota}} tokens is included and free to use in your contract-based plan. If you need more, ${{price, number}} per million tokens per month.',
+      'The first {{basicQuota}} tokens is included and free to use in your contract-based plan. If you need more, ${{price, number}} per {{tokenLimit}} tokens per month.',
   },
   hooks: {
     title: 'Hooks',
@@ -71,6 +71,11 @@ const usage = {
       'Add-on feature priced at ${{price, number}} per hook. The first 10 hooks are included.',
     tooltip_for_enterprise:
       'The first {{basicQuota}} hooks are included and free to use in your contract-based plan. If you need more, ${{price, number}} per hook per month.',
+  },
+  security_features: {
+    title: 'Advanced security',
+    tooltip:
+      'Add-on feature with a price of ${{price, number}}/month for the full advanced security bundle, including CAPTCHA, identifier lockout, email blocklist (coming soon), and more.',
   },
   pricing: {
     add_on_changes_in_current_cycle_notice:

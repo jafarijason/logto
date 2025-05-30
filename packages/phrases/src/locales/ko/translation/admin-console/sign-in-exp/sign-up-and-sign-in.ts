@@ -9,9 +9,10 @@ const sign_up_and_sign_in = {
   sign_up: {
     title: '회원가입',
     sign_up_identifier: '회원가입 ID',
-    identifier_description:
-      '회원가입 ID는 계정을 생성하기 위해 필수이며, 회원가입 화면에서 반드시 포함되어야 해요.',
+    identifier_description: '새 계정을 만들 때 모든 선택한 회원가입 식별자가 필요합니다.',
     sign_up_authentication: '회원가입 인증 설정',
+    verification_tip:
+      '사용자는 회원가입 시 인증 코드를 입력하여 설정한 이메일 또는 전화번호를 인증해야 합니다.',
     authentication_description: '선택된 모든 작업들은 사용자가 모두 마무리해야 해요.',
     set_a_password_option: '비밀번호 생성',
     verify_at_sign_up_option: '회원가입 인증',
@@ -20,9 +21,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: '로그인',
     sign_in_identifier_and_auth: '로그인을 위한 ID 그리고 인증 설정',
-    description:
-      '사용자는 주어진 옵션 중에 아무 방법으로 로그인할 수 있어요. 주어진 옵션을 드래그하여 조절해 주세요.',
+    description: '사용자는 주어진 옵션 중에 아무 방법으로 로그인할 수 있어요. ',
     add_sign_in_method: '로그인 방법 추가',
+    add_sign_up_method: '회원가입 방법 추가',
     password_auth: '비밀번호',
     verification_code_auth: '인증 코드',
     auth_swap_tip: '아래 옵션을 변경하여 흐름에 가장 먼저 나타나는 옵션을 설정할 수 있어요.',
@@ -52,6 +53,8 @@ const sign_up_and_sign_in = {
     verification_code_auth:
       '가입 시 인증 코드를 제공하는 옵션만 활성화했기 때문에 이것은 필수예요. 회원가입에서 비밀번호 설정이 허용되면 이 옵션을 취소할 수 있어요.',
     delete_sign_in_method: '{{identifier}}를 필수 ID로 설정했기 때문에 이 옵션은 필수예요.',
+    password_disabled_notification:
+      '\'사용자 이름으로 회원가입할 때 "비밀번호 생성" 옵션이 비활성화되어 있어 사용자가 로그인하지 못할 수 있습니다. 저장을 진행하시겠습니까?\'',
   },
   advanced_options: {
     title: '고급 옵션',
@@ -66,6 +69,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: '사용자 등록 활성화',
     enable_user_registration_description:
       '사용자 등록을 활성화하거나 비활성화합니다. 비활성화된 경우 사용자는 관리 콘솔에서는 추가할 수 있지만 사용자는 더 이상 로그인 UI를 통해 계정을 설정할 수 없습니다.',
+    unknown_session_redirect_url: '알 수 없는 세션 리다이렉트 URL',
+    unknown_session_redirect_url_tip:
+      '때때로 Logto는 로그인 페이지에서 사용자의 세션을 인식하지 못할 수 있어요. 예를 들어 세션이 만료되었거나 사용자가 로그인 링크를 즐겨찾기하거나 공유한 경우입니다. 기본적으로는 "알 수 없는 세션" 404 오류가 나타납니다. 사용자 경험을 향상시키기 위해, 대체 URL을 설정하여 사용자들이 다시 앱으로 리다이렉트되어 인증을 재시작할 수 있게 하세요.',
   },
 };
 

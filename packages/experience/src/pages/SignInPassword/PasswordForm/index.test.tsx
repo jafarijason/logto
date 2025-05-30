@@ -71,13 +71,16 @@ describe('PasswordSignInForm', () => {
       });
 
       await waitFor(() => {
-        expect(signInWithPasswordIdentifier).toBeCalledWith({
-          identifier: {
-            type: identifier,
-            value,
+        expect(signInWithPasswordIdentifier).toBeCalledWith(
+          {
+            identifier: {
+              type: identifier,
+              value,
+            },
+            password,
           },
-          password,
-        });
+          undefined
+        );
       });
 
       if (isVerificationCodeEnabled) {
@@ -90,7 +93,7 @@ describe('PasswordSignInForm', () => {
         });
 
         await waitFor(() => {
-          expect(initInteraction).toBeCalledWith(InteractionEvent.SignIn);
+          expect(initInteraction).toBeCalledWith(InteractionEvent.SignIn, undefined);
           expect(sendVerificationCode).toBeCalledWith(InteractionEvent.SignIn, {
             type: identifier,
             value,

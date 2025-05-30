@@ -5,6 +5,7 @@ import { conditional } from '@silverhand/essentials';
 import { useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import CaptchaContext from '@/Providers/CaptchaContextProvider/CaptchaContext';
 import UserInteractionContext from '@/Providers/UserInteractionContextProvider/UserInteractionContext';
 import { sendVerificationCodeApi } from '@/apis/utils';
 import useApi from '@/hooks/use-api';
@@ -16,9 +17,15 @@ import {
 } from '@/types';
 import { codeVerificationTypeMap } from '@/utils/sign-in-experience';
 
+type Payload = {
+  identifier: VerificationCodeIdentifier;
+  value: string;
+};
+
 const useSendVerificationCode = (flow: UserFlow, replaceCurrentPage?: boolean) => {
   const [errorMessage, setErrorMessage] = useState<string>();
   const navigate = useNavigate();
+  const { executeCaptcha } = useContext(CaptchaContext);
 
   const handleError = useErrorHandler();
   const asyncSendVerificationCode = useApi(sendVerificationCodeApi);
@@ -28,20 +35,18 @@ const useSendVerificationCode = (flow: UserFlow, replaceCurrentPage?: boolean) =
     setErrorMessage('');
   }, []);
 
-  type Payload = {
-    identifier: VerificationCodeIdentifier;
-    value: string;
-  };
-
   const onSubmit = useCallback(
     async ({ identifier, value }: Payload, interactionEvent?: ContinueFlowInteractionEvent) => {
+      const captchaToken = await executeCaptcha();
+
       const [error, result] = await asyncSendVerificationCode(
         flow,
         {
           type: identifier,
           value,
         },
-        interactionEvent
+        interactionEvent,
+        captchaToken
       );
 
       if (error) {
@@ -50,6 +55,12 @@ const useSendVerificationCode = (flow: UserFlow, replaceCurrentPage?: boolean) =
             setErrorMessage(
               identifier === SignInIdentifier.Email ? 'invalid_email' : 'invalid_phone'
             );
+          },
+          'session.email_blocklist.email_not_allowed': (error) => {
+            setErrorMessage(error.message);
+          },
+          'session.email_blocklist.email_subaddressing_not_allowed': (error) => {
+            setErrorMessage(error.message);
           },
         });
 
@@ -77,7 +88,15 @@ const useSendVerificationCode = (flow: UserFlow, replaceCurrentPage?: boolean) =
         );
       }
     },
-    [asyncSendVerificationCode, flow, handleError, navigate, replaceCurrentPage, setVerificationId]
+    [
+      asyncSendVerificationCode,
+      flow,
+      handleError,
+      navigate,
+      replaceCurrentPage,
+      setVerificationId,
+      executeCaptcha,
+    ]
   );
 
   return {

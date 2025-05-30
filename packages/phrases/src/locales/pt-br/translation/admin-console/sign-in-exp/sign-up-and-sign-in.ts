@@ -10,8 +10,10 @@ const sign_up_and_sign_in = {
     title: 'INSCREVER-SE',
     sign_up_identifier: 'Identificador de inscrição',
     identifier_description:
-      'O identificador de inscrição é necessário para a criação da conta e deve ser incluído na tela de login.',
+      'Todos os identificadores de inscrição selecionados são obrigatórios ao criar uma nova conta.',
     sign_up_authentication: 'Configuração de autenticação para inscrição',
+    verification_tip:
+      'Os usuários devem verificar o e-mail ou número de telefone que você configurou inserindo um código de verificação durante a inscrição.',
     authentication_description:
       'Todas as ações selecionadas serão obrigatórias para os usuários completarem o fluxo.',
     set_a_password_option: 'Crie sua senha',
@@ -21,9 +23,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: 'ENTRAR',
     sign_in_identifier_and_auth: 'Configurações de identificador e autenticação para login',
-    description:
-      'Os usuários podem entrar usando qualquer uma das opções disponíveis. Ajuste o layout arrastando e soltando as opções abaixo.',
+    description: 'Os usuários podem entrar usando qualquer uma das opções disponíveis.',
     add_sign_in_method: 'Adicionar método de login',
+    add_sign_up_method: 'Adicionar método de inscrição',
     password_auth: 'Senha',
     verification_code_auth: 'Código de verificação',
     auth_swap_tip: 'Troque as opções abaixo para determinar qual aparece primeiro no fluxo.',
@@ -54,6 +56,8 @@ const sign_up_and_sign_in = {
       'Isso é essencial, pois você habilitou apenas a opção de fornecer o código de verificação ao se inscrever. Você pode desmarcar a caixa quando a configuração de senha for permitida no processo de inscrição.',
     delete_sign_in_method:
       'Isso é essencial, pois você selecionou {{identifier}} como um identificador obrigatório.',
+    password_disabled_notification:
+      'A opção "Crie sua senha" está desativada para inscrição com nome de usuário, o que pode impedir que os usuários façam login. Confirme para continuar com a salvamento.',
   },
   advanced_options: {
     title: 'OPÇÕES AVANÇADAS',
@@ -68,6 +72,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: 'Habilitar registro de usuário',
     enable_user_registration_description:
       'Habilitar ou desabilitar o registro de usuários. Depois de desabilitado, os usuários ainda podem ser adicionados no console de administração, mas os usuários não poderão mais criar contas através da interface de login.',
+    unknown_session_redirect_url: 'URL de redirecionamento de sessão desconhecida',
+    unknown_session_redirect_url_tip:
+      'Às vezes, o Logto pode não reconhecer a sessão de um usuário na página de login, como quando uma sessão expira ou o usuário salva ou compartilha o link de login. Por padrão, um erro 404 de “sessão desconhecida” aparece. Para melhorar a experiência do usuário, defina uma URL de fallback para redirecionar os usuários de volta ao seu aplicativo e reiniciar a autenticação.',
   },
 };
 

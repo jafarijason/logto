@@ -11,7 +11,11 @@ const sign_in_experiences = {
   unsupported_default_language: '{{language}} 無法選擇為默認語言。',
   at_least_one_authentication_factor: '至少要選擇一個登錄要素',
   backup_code_cannot_be_enabled_alone: '備份碼不能單獨啟用。',
-  duplicated_mfa_factors: '重複的MFA要素。',
+  duplicated_mfa_factors: '重複的 MFA 要素。',
+  duplicated_sign_up_identifiers: '檢測到重複的註冊識別符。',
+  missing_sign_up_identifiers: '主要註冊識別符不能為空。',
+  invalid_custom_email_blocklist_format:
+    '無效的自訂電子郵件封鎖清單項目：{{items, list(type:conjunction)}}。每個項目必須是有效的電子郵件地址或電子郵件域，例如：foo@example.com 或 @example.com。',
 };
 
 export default Object.freeze(sign_in_experiences);

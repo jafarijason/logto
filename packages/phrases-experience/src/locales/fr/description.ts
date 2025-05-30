@@ -10,6 +10,7 @@ const description = {
   sign_in: 'Connexion',
   privacy_policy: 'Politique de confidentialité',
   create_account: 'Créer un compte',
+  switch_account: 'Changer de compte',
   or: 'ou',
   and: 'et',
   enter_passcode: 'Le code a été envoyé à {{address}} {{target}}',
@@ -66,9 +67,18 @@ const description = {
   password_requirements: 'Mot de passe {{items, list}}.',
   password_requirement: {
     length_one: 'doit contenir au minimum {{count}} caractère',
+    length_two: 'doit contenir au minimum {{count}} caractères',
+    length_few: 'doit contenir au minimum {{count}} caractères',
+    length_many: 'doit contenir au minimum {{count}} caractères',
     length_other: 'doit contenir au minimum {{count}} caractères',
     character_types_one:
       'doit contenir au moins {{count}} type de lettres majuscules, lettres minuscules, chiffres et symboles',
+    character_types_two:
+      'doit contenir au moins {{count}} types de lettres majuscules, lettres minuscules, chiffres et symboles',
+    character_types_few:
+      'doit contenir au moins {{count}} types de lettres majuscules, lettres minuscules, chiffres et symboles',
+    character_types_many:
+      'doit contenir au moins {{count}} types de lettres majuscules, lettres minuscules, chiffres et symboles',
     character_types_other:
       'doit contenir au moins {{count}} types de lettres majuscules, lettres minuscules, chiffres et symboles',
   },
@@ -77,30 +87,18 @@ const description = {
   single_sign_on_connectors_list:
     'Votre entreprise a activé la connexion unique (Single Sign-On) pour le compte email {{email}}. Vous pouvez continuer à vous connecter avec les fournisseurs SSO suivants.',
   single_sign_on_enabled: 'La connexion unique (Single Sign-On) est activée pour ce compte',
-  /** UNTRANSLATED */
-  authorize_title: 'Authorize {{name}}',
-  /** UNTRANSLATED */
-  request_permission: '{{name}} is requesting access to:',
-  /** UNTRANSLATED */
-  grant_organization_access: 'Grant the organization access:',
-  /** UNTRANSLATED */
-  authorize_personal_data_usage: 'Authorize the use of your personal data:',
-  /** UNTRANSLATED */
-  authorize_organization_access: 'Authorize access to the specific organization:',
-  /** UNTRANSLATED */
-  user_scopes: 'Personal user data',
-  /** UNTRANSLATED */
-  organization_scopes: 'Organization access',
-  /** UNTRANSLATED */
-  authorize_agreement: `By authorizing the access, you agree to the {{name}}'s <link></link>.`,
-  /** UNTRANSLATED */
-  authorize_agreement_with_redirect: `By authorizing the access, you agree to the {{name}}'s <link></link>, and will be redirected to {{uri}}.`,
-  /** UNTRANSLATED */
-  not_you: 'Not you?',
-  /** UNTRANSLATED */
-  user_id: 'User ID: {{id}}',
-  /** UNTRANSLATED */
-  redirect_to: 'You will be redirected to {{name}}.',
+  authorize_title: 'Autoriser {{name}}',
+  request_permission: "{{name}} demande l'accès à :",
+  grant_organization_access: "Accorder l'accès à l'organisation :",
+  authorize_personal_data_usage: "Autoriser l'utilisation de vos données personnelles :",
+  authorize_organization_access: "Autoriser l'accès à l'organisation spécifique :",
+  user_scopes: 'Données utilisateur personnelles',
+  organization_scopes: "Accès à l'organisation",
+  authorize_agreement: `En autorisant l'accès, vous acceptez les termes de {{name}} <link></link>.`,
+  authorize_agreement_with_redirect: `En autorisant l'accès, vous acceptez les termes de {{name}} <link></link>, et vous serez redirigé vers {{uri}}.`,
+  not_you: 'Pas vous ?',
+  user_id: 'ID utilisateur : {{id}}',
+  redirect_to: 'Vous serez redirigé vers {{name}}.',
   auto_agreement: 'En continuant, vous acceptez les <link></link>.',
   identifier_sign_in_description:
     'Entrez votre {{types, list(type: disjunction;)}} pour vous connecter.',
@@ -111,6 +109,9 @@ const description = {
   back_to_sign_in: 'Retour à la connexion',
   support_email: 'Email de support: <link></link>',
   support_website: 'Site web de support: <link></link>',
+  switch_account_title: 'Vous êtes actuellement connecté en tant que {{account}}',
+  switch_account_description:
+    'Pour continuer, vous serez déconnecté du compte actuel, et le passage au nouveau compte se fera automatiquement.',
 };
 
 export default Object.freeze(description);

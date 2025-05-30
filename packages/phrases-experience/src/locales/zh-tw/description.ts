@@ -10,6 +10,7 @@ const description = {
   sign_in: '登錄',
   privacy_policy: '隱私政策',
   create_account: '創建帳號',
+  switch_account: '切換帳號',
   or: '或',
   and: '和',
   enter_passcode: '驗證碼已經發送至你的{{address}} {{target}}',
@@ -27,7 +28,7 @@ const description = {
   social_link_email: '你可以綁定其他郵箱',
   social_link_phone: '你可以綁定其他手機號碼',
   social_link_email_or_phone: '你可以綁定其他郵箱或手機號碼',
-  social_bind_with_existing: '我們發現一個已註冊的相關帳戶，您可以直接連接它。',
+  social_bind_with_existing: '我們發現一個已註冊的相關帳戶，你可以直接連接它。',
   skip_social_linking: '跳過連接現有帳戶？',
   reset_password: '忘記密碼',
   reset_password_description: '輸入{{types, list(type: disjunction;)}}，獲取驗證碼以重設密碼。',
@@ -55,47 +56,43 @@ const description = {
   password_requirements: '密碼{{items, list}}。',
   password_requirement: {
     length_one: '長度至少為 {{count}} 個字符',
+    length_two: '長度至少為 {{count}} 個字符',
+    length_few: '長度至少為 {{count}} 個字符',
+    length_many: '長度至少為 {{count}} 個字符',
     length_other: '長度至少為 {{count}} 個字符',
     character_types_one: '需包含 {{count}} 類型的大寫字母、小寫字母、數字和符號',
+    character_types_two: '需包含 {{count}} 類型的大寫字母、小寫字母、數字和符號',
+    character_types_few: '需包含 {{count}} 類型的大寫字母、小寫字母、數字和符號',
+    character_types_many: '需包含 {{count}} 類型的大寫字母、小寫字母、數字和符號',
     character_types_other: '需包含 {{count}} 類型的大寫字母、小寫字母、數字和符號',
   },
   use: '使用',
   single_sign_on_email_form: '輸入你的企業電子郵件地址',
   single_sign_on_connectors_list:
-    '您的企業已為電子郵件帳戶{{email}}啟用單一登入。您可以繼續使用以下的SSO供應商登入。',
+    '你的企業已為電子郵件帳戶{{email}}啟用單一登入。你可以繼續使用以下的SSO供應商登入。',
   single_sign_on_enabled: '該帳戶已啟用單一登入',
-  /** UNTRANSLATED */
-  authorize_title: 'Authorize {{name}}',
-  /** UNTRANSLATED */
-  request_permission: '{{name}} is requesting access to:',
-  /** UNTRANSLATED */
-  grant_organization_access: 'Grant the organization access:',
-  /** UNTRANSLATED */
-  authorize_personal_data_usage: 'Authorize the use of your personal data:',
-  /** UNTRANSLATED */
-  authorize_organization_access: 'Authorize access to the specific organization:',
-  /** UNTRANSLATED */
-  user_scopes: 'Personal user data',
-  /** UNTRANSLATED */
-  organization_scopes: 'Organization access',
-  /** UNTRANSLATED */
-  authorize_agreement: `By authorizing the access, you agree to the {{name}}'s <link></link>.`,
-  /** UNTRANSLATED */
-  authorize_agreement_with_redirect: `By authorizing the access, you agree to the {{name}}'s <link></link>, and will be redirected to {{uri}}.`,
-  /** UNTRANSLATED */
-  not_you: 'Not you?',
-  /** UNTRANSLATED */
-  user_id: 'User ID: {{id}}',
-  /** UNTRANSLATED */
-  redirect_to: 'You will be redirected to {{name}}.',
-  auto_agreement: '繼續即表示您同意<link></link>。',
-  identifier_sign_in_description: '輸入您的{{types, list(type: disjunction;)}}以登入。',
+  authorize_title: '授權 {{name}}',
+  request_permission: '{{name}} 請求訪問權限：',
+  grant_organization_access: '授予組織訪問權限：',
+  authorize_personal_data_usage: '授權使用你的個人數據：',
+  authorize_organization_access: '授權訪問指定組織：',
+  user_scopes: '個人用戶數據',
+  organization_scopes: '組織訪問',
+  authorize_agreement: `通過授權訪問，你同意{{name}}的<link></link>。`,
+  authorize_agreement_with_redirect: `通過授權訪問，你同意{{name}}的<link></link>，並將被重定向至{{uri}}。`,
+  not_you: '不是你？',
+  user_id: '用戶 ID：{{id}}',
+  redirect_to: '你將被重定向到 {{name}}。',
+  auto_agreement: '繼續即表示你同意<link></link>。',
+  identifier_sign_in_description: '輸入你的{{types, list(type: disjunction;)}}以登入。',
   all_sign_in_options: '所有登入選項',
-  identifier_register_description: '輸入您的{{types, list(type: disjunction;)}}以建立新帳戶。',
+  identifier_register_description: '輸入你的{{types, list(type: disjunction;)}}以建立新帳戶。',
   all_account_creation_options: '所有帳戶創建選項',
   back_to_sign_in: '返回登入',
   support_email: '支援郵箱: <link></link>',
   support_website: '支援網站: <link></link>',
+  switch_account_title: '目前以 {{account}} 登錄',
+  switch_account_description: '若要繼續，你將退出當前帳號，並自動切換到新帳號。',
 };
 
 export default Object.freeze(description);

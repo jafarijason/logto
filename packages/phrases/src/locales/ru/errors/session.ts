@@ -47,6 +47,15 @@ const session = {
   },
   sso_enabled:
     'Единый вход в систему включен для этого указанного адреса электронной почты. Войдите в систему с помощью SSO.',
+  captcha_required: 'Требуется Capctha.',
+  captcha_failed: 'Проверка Captcha не удалась.',
+  email_blocklist: {
+    disposable_email_validation_failed: 'Проверка адреса электронной почты не удалась.',
+    invalid_email: 'Недействительный адрес электронной почты.',
+    email_subaddressing_not_allowed: 'Субадресация электронной почты не разрешена.',
+    email_not_allowed:
+      'Адрес электронной почты "{{email}}" ограничен. Пожалуйста, выберите другой.',
+  },
 };
 
 export default Object.freeze(session);

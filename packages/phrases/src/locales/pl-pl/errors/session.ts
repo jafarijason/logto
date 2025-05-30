@@ -46,6 +46,14 @@ const session = {
     mfa_factor_not_enabled: 'Czynnik MFA nie jest włączony.',
   },
   sso_enabled: 'Single sign on jest włączony dla tego adresu e-mail. Zaloguj się za pomocą SSO.',
+  captcha_required: 'Wymagana jest captcha.',
+  captcha_failed: 'Weryfikacja captchy nie powiodła się.',
+  email_blocklist: {
+    disposable_email_validation_failed: 'Weryfikacja adresu email nie powiodła się.',
+    invalid_email: 'Nieprawidłowy adres email.',
+    email_subaddressing_not_allowed: 'Dodawanie subadresów do emaila nie jest dozwolone.',
+    email_not_allowed: 'Adres email "{{email}}" jest zastrzeżony. Proszę wybrać inny.',
+  },
 };
 
 export default Object.freeze(session);

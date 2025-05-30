@@ -28,11 +28,15 @@ import {
 export const signInWithPassword = async ({
   identifier,
   password,
+  captchaToken,
 }: {
   identifier: InteractionIdentifier;
   password: string;
+  captchaToken?: string;
 }) => {
-  const client = await initExperienceClient();
+  const client = await initExperienceClient({
+    captchaToken,
+  });
 
   const { verificationId } = await client.verifyPassword({
     identifier,
@@ -102,7 +106,9 @@ export const registerNewUserWithVerificationCode = async (
   identifier: VerificationCodeIdentifier,
   options?: { fulfillPassword?: boolean }
 ) => {
-  const client = await initExperienceClient(InteractionEvent.Register);
+  const client = await initExperienceClient({
+    interactionEvent: InteractionEvent.Register,
+  });
 
   const { verificationId, code } = await successfullySendVerificationCode(client, {
     identifier,
@@ -259,8 +265,15 @@ export const signInWithEnterpriseSso = async (
   return userId;
 };
 
-export const registerNewUserUsernamePassword = async (username: string, password: string) => {
-  const client = await initExperienceClient(InteractionEvent.Register);
+export const registerNewUserUsernamePassword = async (
+  username: string,
+  password: string,
+  captchaToken?: string
+) => {
+  const client = await initExperienceClient({
+    interactionEvent: InteractionEvent.Register,
+    captchaToken,
+  });
 
   const { verificationId } = await client.createNewPasswordIdentityVerification({
     identifier: {

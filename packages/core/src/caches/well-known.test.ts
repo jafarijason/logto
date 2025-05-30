@@ -1,3 +1,4 @@
+import { TemplateType } from '@logto/schemas';
 import { TtlCache } from '@logto/shared';
 import { pick } from '@silverhand/essentials';
 
@@ -35,6 +36,20 @@ describe('Well-known cache basics', () => {
     expect(await cache.get('sie', WellKnownCache.defaultKey)).toBe(undefined);
   });
 
+  it('should be able to set the value with expire time', async () => {
+    jest.useFakeTimers();
+    const cache = new WellKnownCache(tenantId, cacheStore);
+
+    await cache.set('sie', WellKnownCache.defaultKey, mockSignInExperience, 100);
+    expect(await cache.get('sie', WellKnownCache.defaultKey)).toStrictEqual(mockSignInExperience);
+
+    jest.advanceTimersByTime(101);
+
+    expect(await cache.get('sie', WellKnownCache.defaultKey)).toBe(undefined);
+
+    jest.useRealTimers();
+  });
+
   it('should NOT be able to set the value with wrong structure', async () => {
     const cache = new WellKnownCache(tenantId, cacheStore);
 
@@ -53,6 +68,16 @@ describe('Well-known cache basics', () => {
       // @ts-expect-error
       await cache.get('custom-phrases-tags-', WellKnownCache.defaultKey)
     ).toBe(undefined);
+  });
+
+  it('should be able to get, set, and delete null value', async () => {
+    const cache = new WellKnownCache(tenantId, cacheStore);
+
+    await cache.set('email-templates', 'en:SignIn', null);
+    expect(await cache.get('email-templates', 'en:SignIn')).toBe(null);
+
+    await cache.delete('email-templates', 'en:SignIn');
+    expect(await cache.get('email-templates', 'en:SignIn')).toBe(undefined);
   });
 });
 
@@ -113,6 +138,69 @@ describe('Well-known cache function wrappers', () => {
       { foo: '1', bar: 1 },
       { foo: '2', bar: 2 },
     ]);
+  });
+
+  it('can memoize function with null value', async () => {
+    const run = jest.fn(
+      async (languageTag: string, templateType: TemplateType) =>
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        new Promise<null>((resolve) => {
+          setTimeout(() => {
+            resolve(null);
+          }, 0);
+        })
+    );
+    const cache = new WellKnownCache(tenantId, cacheStore);
+    const memoized = cache.memoize(run, [
+      'email-templates',
+      (languageTag, templateType) => `${languageTag}:${templateType}`,
+    ]);
+
+    expect(await memoized('en', TemplateType.SignIn)).toBe(null);
+
+    run.mockClear();
+    expect(await cache.get('email-templates', 'en:SignIn')).toBe(null);
+    expect(run).not.toBeCalled();
+  });
+
+  it('can memoize function with expire time', async () => {
+    jest.useFakeTimers();
+
+    const run = jest.fn(
+      async (foo: string, bar: number) =>
+        new Promise<Record<string, unknown>>((resolve) => {
+          setTimeout(() => {
+            resolve({ foo, bar });
+          }, 0);
+          jest.runOnlyPendingTimers(); // Ensure this runs in fake timers
+        })
+    );
+
+    const cache = new WellKnownCache(tenantId, cacheStore);
+
+    const memoized = cache.memoize(
+      run,
+      ['custom-phrases', (foo, bar) => `${foo}+${bar}`],
+      () => 100
+    );
+
+    const [result1, result2] = await Promise.all([memoized('1', 1), memoized('2', 2)]);
+    expect(result1).toStrictEqual({ foo: '1', bar: 1 });
+    expect(result2).toStrictEqual({ foo: '2', bar: 2 });
+
+    expect(
+      await Promise.all([cache.get('custom-phrases', '1+1'), cache.get('custom-phrases', '2+2')])
+    ).toStrictEqual([
+      { foo: '1', bar: 1 },
+      { foo: '2', bar: 2 },
+    ]);
+
+    jest.advanceTimersByTime(101);
+
+    expect(await cache.get('custom-phrases', '1+1')).toBe(undefined);
+    expect(await cache.get('custom-phrases', '2+2')).toBe(undefined);
+
+    jest.useRealTimers();
   });
 
   it('can create mutate function wrapper with default cache key builder', async () => {

@@ -1,5 +1,96 @@
 # Change Log
 
+## 1.13.0
+
+### Minor Changes
+
+- 35bbc4399: add phone number validation and parsing to ensure the correct format when updating an existing user’s primary phone number or creating a new user with a phone number
+
+## 1.12.0
+
+### Minor Changes
+
+- 6fafcefef: add one-time token verification method to support magic link authentication
+
+  You can now use the "one-time token" to compose magic links, and send them to the end user's email.
+  With a magic link, one can register a new account or sign in directly to the application, without the need to enter a password, or input verification codes.
+
+  You can also use magic link to invite users to your organizations.
+
+  ### Example API request to create a one-time token
+
+  ```bash
+  POST /api/one-time-tokens
+  ```
+
+  Request payload:
+
+  ```jsonc
+  {
+    "email": "user@example.com",
+    // Optional. Defaults to 600 (10 mins).
+    "expiresIn": 3600,
+    // Optional. User will be provisioned to the specified organizations upon successful verification.
+    "context": {
+      "jitOrganizationIds": ["your-org-id"],
+    },
+  }
+  ```
+
+  ### Compose your magic link
+
+  After you get the one-time token, you can compose a magic link and send it to the end user's email address. The magic link should at least contain the token and the user email as parameters, and should navigate to a landing page in your own application. E.g. `https://yourapp.com/landing-page`.
+
+  Here's a simple example of what the magic link may look like:
+
+  ```http
+  https://yourapp.com/landing-page?token=YHwbXSXxQfL02IoxFqr1hGvkB13uTqcd&email=user@example.com
+  ```
+
+  Refer to [our docs](https://docs.logto.io/docs/end-user-flows/one-time-token) for more details.
+
+- 2961d355d: bump node version to ^22.14.0
+
+## 1.11.1
+
+### Patch Changes
+
+- e11e57de8: bump dependencies for security update
+
+## 1.11.0
+
+### Minor Changes
+
+- f1b1d9e95: new MFA prompt policy
+
+  You can now cutomize the MFA prompt policy in the Console.
+
+  First, choose if you want to enable **Require MFA**:
+
+  - **Enable**: Users will be prompted to set up MFA during the sign-in process which cannot be skipped. If the user fails to set up MFA or deletes their MFA settings, they will be locked out of their account until they set up MFA again.
+  - **Disable**: Users can skip the MFA setup process during sign-up flow.
+
+  If you choose to **Disable**, you can choose the MFA setup prompt:
+
+  - Do not ask users to set up MFA.
+  - Ask users to set up MFA during registration (skippable, one-time prompt). **The same prompt as previous policy (UserControlled)**
+  - Ask users to set up MFA on their sign-in after registration (skippable, one-time prompt)
+
+### Patch Changes
+
+- 239b81e31: loose redirect uri restrictions
+
+  Logto has been following the industry best practices for OAuth2.0 and OIDC from the start. However, in the real world, there are things we cannot control, like third-party services or operation systems like Windows.
+
+  This update relaxes restrictions on redirect URIs to allow the following:
+
+  1. A mix of native and HTTP(S) redirect URIs. For example, a native app can now use a redirect URI like `https://example.com`.
+  2. Native schemes without a period (`.`). For example, `myapp://callback` is now allowed.
+
+  When such URIs are configured, Logto Console will display a prominent warning. This change is backward-compatible and will not affect existing applications.
+
+  We hope this change will make it easier for you to integrate Logto with your applications.
+
 ## 1.10.0
 
 ### Minor Changes

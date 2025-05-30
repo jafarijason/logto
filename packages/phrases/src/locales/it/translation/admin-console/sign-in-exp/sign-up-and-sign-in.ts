@@ -10,8 +10,10 @@ const sign_up_and_sign_in = {
     title: 'REGISTRATI',
     sign_up_identifier: 'Identificatore di registrazione',
     identifier_description:
-      "L'identificatore di registrazione è necessario per la creazione dell'account e deve essere incluso nella schermata di accesso.",
+      'Tutti gli identificatori di registrazione selezionati sono richiesti quando si crea un nuovo account.',
     sign_up_authentication: "Impostazione dell'autenticazione per la registrazione",
+    verification_tip:
+      "Gli utenti devono verificare l'email o il numero di telefono che hai configurato inserendo un codice di verifica durante la registrazione.",
     authentication_description:
       'Tutte le azioni selezionate saranno obbligatorie per gli utenti per completare il flusso.',
     set_a_password_option: 'Crea la tua password',
@@ -22,9 +24,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: 'ACCEDI',
     sign_in_identifier_and_auth: "Identificatore e impostazioni di autenticazione per l'accesso",
-    description:
-      'Gli utenti possono accedere utilizzando una qualsiasi delle opzioni disponibili. Regola il layout trascinando e rilasciando le opzioni sottostanti.',
+    description: 'Gli utenti possono accedere utilizzando una qualsiasi delle opzioni disponibili.',
     add_sign_in_method: 'Aggiungi metodo di accesso',
+    add_sign_up_method: 'Aggiungi metodo di registrazione',
     password_auth: 'Password',
     verification_code_auth: 'Codice di verifica',
     auth_swap_tip: 'Scambia le opzioni sottostanti per determinare quale appare prima nel flusso.',
@@ -55,6 +57,8 @@ const sign_up_and_sign_in = {
       "Questo è essenziale poiché hai abilitato solo l'opzione di fornire un codice di verifica durante la registrazione. Se consenti l'impostazione della password durante il processo di registrazione, puoi deselezionare la casella.",
     delete_sign_in_method:
       'Questo è essenziale in quanto hai selezionato {{identifier}} come identificatore obbligatorio.',
+    password_disabled_notification:
+      'L\'opzione "Crea la tua password" è disabilitata per la registrazione del nome utente, il che potrebbe impedire agli utenti di accedere. Conferma per procedere con il salvataggio.',
   },
   advanced_options: {
     title: 'OPZIONI AVANZATE',
@@ -69,6 +73,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: 'Abilita registrazione utente',
     enable_user_registration_description:
       "Abilita o disabilita la registrazione degli utenti. Una volta disabilitata, gli utenti possono comunque essere aggiunti nella console di amministrazione, ma gli utenti non possono più creare account tramite l'interfaccia di accesso.",
+    unknown_session_redirect_url: 'URL di reindirizzamento sessione sconosciuta',
+    unknown_session_redirect_url_tip:
+      "A volte, Logto potrebbe non riconoscere la sessione di un utente nella pagina di accesso, come quando una sessione scade o l'utente aggiunge ai segnalibri o condivide il link di accesso. Per impostazione predefinita, appare un errore 404 di \"sessione sconosciuta\". Per migliorare l'esperienza utente, imposta un URL di fallback per reindirizzare gli utenti alla tua app e riavviare l'autenticazione.",
   },
 };
 

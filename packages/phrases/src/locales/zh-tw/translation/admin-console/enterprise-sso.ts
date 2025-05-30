@@ -1,7 +1,7 @@
 const enterprise_sso = {
   page_title: '企業單一登入',
   title: '企業單一登入',
-  subtitle: '連接企業身份提供者，啟用 SP 啟動的單一登入。',
+  subtitle: '連接企業身份提供者並啟用單一登入。',
   create: '新增企業連接器',
   col_connector_name: '連接器名稱',
   col_type: '類型',
@@ -27,6 +27,11 @@ const enterprise_sso = {
     saml: {
       acs_url_field_name: '斷言消費服務 URL（回覆 URL）',
       audience_uri_field_name: '受眾 URI（SP 實體 ID）',
+      entity_id_field_name: '服務提供者（SP）實體 ID',
+      entity_id_field_tooltip:
+        'SP 實體 ID 可以是任何字符串格式，通常使用 URI 或 URL 形式作為標識符，但這並不是強制的。',
+      acs_url_field_placeholder: 'https://your-domain.com/api/saml/callback',
+      entity_id_field_placeholder: 'urn:your-domain.com:sp:saml:{serviceProviderId}',
     },
     oidc: {
       redirect_uri_field_name: '重定向 URI（回撥 URL）',

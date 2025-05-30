@@ -1,11 +1,10 @@
 import content from './content.js';
-import password_policy from './password-policy.js';
 import sign_up_and_sign_in from './sign-up-and-sign-in.js';
 
 const sign_in_exp = {
   page_title: '登录体验',
   title: '登录体验',
-  description: '自定义登录界面，并实时预览真实效果',
+  description: '自定义身份验证流程和用户界面，并实时预览开箱即用的体验。',
   tabs: {
     branding: '品牌',
     sign_up_and_sign_in: '注册与登录',
@@ -84,7 +83,6 @@ const sign_in_exp = {
   },
   sign_up_and_sign_in,
   content,
-  password_policy,
   setup_warning: {
     no_connector_sms:
       '尚未设置 SMS 短信连接器。在完成该配置前，用户将无法通过此登录方式登录。<a>{{link}}</a>连接器。',

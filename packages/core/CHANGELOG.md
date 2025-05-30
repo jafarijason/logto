@@ -1,5 +1,619 @@
 # Change Log
 
+## 1.28.0
+
+### Minor Changes
+
+- 35bbc4399: add phone number validation and parsing to ensure the correct format when updating an existing user’s primary phone number or creating a new user with a phone number
+- 613305ec8: refactor: make the `userinfo_endpoint` field optional in the OIDC connector configuration to support providers like Azure AD B2C that do not expose a userinfo endpoint
+
+  Azure AD B2C SSO applications do not provide a userinfo_endpoint in their OIDC metadata. This has been a blocker for users attempting to integrate Azure AD B2C SSO with Logto, as our current implementation strictly follows the OIDC spec and relies on the userinfo endpoint to retrieve user claims after authentication.
+
+  - Updated the OIDC config response schema to make the userinfo_endpoint optional for OIDC based SSO providers.
+  - If the `userinfo_endpoint` is missing from the provider's OIDC metadata, the system will now extract user data directly from the `id_token` claims.
+  - If the `userinfo_endpoint` is present, the system will continue to retrieve user claims by calling the endpoint (existing behavior).
+
+  `userinfo_endpoint` is a standard OIDC field that specifies the endpoint for retrieving user information. For most of the OIDC providers, this update will not affect this existing implementation. However, for Azure AD B2C, this change allows users to successfully authenticate and retrieve user claims without the need for a userinfo endpoint.
+
+- e8df19b7e: feat: introduce email blocklist policy
+
+  We have added a new `emailBlocklistPolicy` in the `signInExperience` settings. This policy allows you to customize the email restriction rules for all users. Once this policy is set, users will be restricted from signing up or linking their accounts with any email addresses that are against the specified blocklist.
+  This feature is particularly useful for organizations that want to prevent users from signing up with personal email addresses or any other specific domains.
+
+  Available settings include:
+
+  - `customBlocklist`: A custom blocklist of email addresses or domains that you want to restrict.
+  - `blockSubaddressing`: Restrict email subaddressing (e.g., 'user+tag@example.com').
+
+- 494148355: refactor: enhanced user lookup by phone with phone number normalization
+
+  In some countries, local phone numbers are often entered with a leading '0'. However, in the context of the international format this leading '0' should be stripped. E.g., +61 (0)2 1234 5678 should be normalized to +61 2 1234 5678.
+
+  In the previous implementation, Logto did not normalize the user's phone number during the user sign-up process. Both 61021345678 and 61212345678 were considered as valid phone numbers, and we do not normalize them before storing them in the database. This could lead to confusion when users try to sign-in with their phone numbers, as they may not remember the exact format they used during sign-up. Users may also end up with different accounts for the same phone number, depending on how they entered it during sign-up.
+
+  To address this issue, especially for legacy users, we have added a new enhenced user lookup by phone with either format (with or without leading '0') to the user sign-in process. This means that users can now sign-in with either format of their phone number, and Logto will try to match it with the one stored in the database, even if they might have different formats. This will help to reduce confusion and improve the user experience when logging in with phone numbers.
+
+  For example:
+
+  - If a user signs up with the phone number +61 2 1234 5678, they can now sign-in with either +61 2 1234 5678 or +61 02 1234 5678.
+  - The same applies to the phone number +61 02 1234 5678, which can be used to sign-in with either +61 2 1234 5678 or +61 02 1234 5678.
+
+  For users who might have created two different accounts with the same phone number but different formats. The lookup process will always return the one with an exact match. This means that if a user has two accounts with the same phone number but different formats, they will still be able to sign-in with either format, but they will only be able to access the account that matches the format they used during sign-up.
+
+  For example:
+
+  - If a user has two accounts with the phone numbers +61 2 1234 5678 and +61 02 1234 5678. They will need to sign-in to each account using the exact format they used during sign-up.
+
+  related github issue [#7371](https://github.com/logto-io/logto/issues/7371).
+
+### Patch Changes
+
+- Updated dependencies [35bbc4399]
+- Updated dependencies [80112708d]
+- Updated dependencies [e8df19b7e]
+- Updated dependencies [c1dfbfdd2]
+  - @logto/experience@1.14.0
+  - @logto/console@1.25.0
+  - @logto/shared@3.3.0
+  - @logto/schemas@1.28.0
+  - @logto/cli@1.28.0
+
+## 1.27.0
+
+### Minor Changes
+
+- 6fafcefef: add one-time token verification method to support magic link authentication
+
+  You can now use the "one-time token" to compose magic links, and send them to the end user's email.
+  With a magic link, one can register a new account or sign in directly to the application, without the need to enter a password, or input verification codes.
+
+  You can also use magic link to invite users to your organizations.
+
+  ### Example API request to create a one-time token
+
+  ```bash
+  POST /api/one-time-tokens
+  ```
+
+  Request payload:
+
+  ```jsonc
+  {
+    "email": "user@example.com",
+    // Optional. Defaults to 600 (10 mins).
+    "expiresIn": 3600,
+    // Optional. User will be provisioned to the specified organizations upon successful verification.
+    "context": {
+      "jitOrganizationIds": ["your-org-id"],
+    },
+  }
+  ```
+
+  ### Compose your magic link
+
+  After you get the one-time token, you can compose a magic link and send it to the end user's email address. The magic link should at least contain the token and the user email as parameters, and should navigate to a landing page in your own application. E.g. `https://yourapp.com/landing-page`.
+
+  Here's a simple example of what the magic link may look like:
+
+  ```http
+  https://yourapp.com/landing-page?token=YHwbXSXxQfL02IoxFqr1hGvkB13uTqcd&email=user@example.com
+  ```
+
+  Refer to [our docs](https://docs.logto.io/docs/end-user-flows/one-time-token) for more details.
+
+- e69ea0373: feat: support custom identifier lockout (sentinel) settings
+
+  We have introduced a new field, `sentinelPolicy`, in the `signInExperience` settings. This field allows customization of lockout settings for identifiers in your Logto application. By default, it is set to an empty object, which means the default lockout policy will apply. The properties of the new field are as follows:
+
+  ```ts
+  type SentinelPolicy = {
+    maxAttempts?: number;
+    lockoutDuration?: number;
+  };
+  ```
+
+  1. Maximum failed attempts:
+
+     - This limits the number of consecutive failed authentication attempts per identifier within an hour. If the limit is exceeded, the identifier will be temporarily locked out.
+     - Default Value: 100
+
+  2. Lockout duration (minutes):
+
+     - This specifies the period during which all authentication attempts for the given identifier are blocked after exceeding the maximum failed attempts.
+     - Default Value: 60 minutes
+
+  3. Manual unblock:
+
+     A new API endpoint has been introduced to manually unblock a specified list of identifiers. This feature is useful for administrators to unlock users who have been temporarily locked out due to exceeding the maximum failed attempts.
+
+     Endpoint: `POST /api/sentinel-activities/delete`
+
+     This endpoint allows for the bulk deletion of all sentinel activities within an hour in the database based on the provided identifiers, effectively unblocking them.
+
+- 2961d355d: bump node version to ^22.14.0
+- 0a76f3389: add captcha bot protection
+
+  You can now enable CAPTCHA bot protection for your sign-in experience with providers like Google reCAPTCHA enterprise and Cloudflare Turnstile.
+
+  To enable CAPTCHA bot protection, you need to:
+
+  1. Go to Console > Security > CAPTCHA > Bot protection.
+  2. Select the CAPTCHA provider you want to use.
+  3. Configure the CAPTCHA provider.
+  4. Save the settings.
+  5. Enable CAPTCHA in the Security page.
+
+  Then take a preview of your sign-in experience to see the CAPTCHA in action.
+
+### Patch Changes
+
+- f41938257: respond 404 for non-existing paths in `/assets`
+
+  Our single-page application proxy now responds with a 404 for non-existing paths in `/assets` instead of falling back to the `index.html` file.
+
+  This prevents the browser and CDN from caching the `index.html` file for non-existing paths in `/assets`, which can lead to confusion and unexpected behavior.
+  Since the `/assets` path is used only for static assets, it is safe and improves the user experience.
+
+- 7dbcedaa1: move password encyption to separate worker thread
+
+  This update refactors the password encryption process by moving it to a separate Node.js worker thread. The Argon2i encryption method, known for its resource-intensive and time-consuming nature, is now handled in a dedicated worker. This change aims to prevent the encryption process from blocking other requests, thereby improving the overall performance and responsiveness of the application.
+
+- cfedfb306: clean up legacy experience package
+
+  The migration to the new experience package is now complete, offering improved flexibility and maintainability through our Experience API. (see release [1.26.0](https://github.com/logto-io/logto/releases/tag/v1.26.0) for more details)
+
+  Key updates:
+
+  - Removed feature flags and migration-related logic
+  - Cleaned up transitional code used during gradual rollout
+  - Deprecated and removed `@logto/experience-legacy` package
+  - Fully adopted `@logto/experience` package with Experience API for all user interactions
+
+  This marks the completion of our authentication UI modernization, providing a more maintainable and extensible foundation for future enhancements.
+
+- Updated dependencies [6fafcefef]
+- Updated dependencies [e69ea0373]
+- Updated dependencies [2961d355d]
+- Updated dependencies [0a76f3389]
+- Updated dependencies [83e7be741]
+- Updated dependencies [e69ea0373]
+- Updated dependencies [e69ea0373]
+  - @logto/experience@1.13.0
+  - @logto/schemas@1.27.0
+  - @logto/connector-kit@4.3.0
+  - @logto/language-kit@1.2.0
+  - @logto/phrases-experience@1.10.0
+  - @logto/core-kit@2.6.0
+  - @logto/app-insights@2.1.0
+  - @logto/demo-app@1.5.0
+  - @logto/console@1.24.0
+  - @logto/phrases@1.19.0
+  - @logto/shared@3.2.0
+  - @logto/cli@1.27.0
+
+## 1.26.0
+
+### Minor Changes
+
+- 13d04d776: feat: support multiple sign-up identifiers in sign-in experience
+
+  ## New update
+
+  Introduces a new optional field, `secondaryIdentifiers`, to the sign-in experience sign-up settings. This enhancement allows developers to specify multiple required user identifiers during the user sign-up process. Available options include `email`, `phone`, `username` and `emailOrPhone`.
+
+  ### Explanation of the difference between `signUp.identifiers` and new `signUp.secondaryIdentifiers`
+
+  The existing `signUp.identifiers` field represents the sign-up identifiers enabled for user sign-up and is an array type. In this legacy setup, if multiple identifiers are provided, users can complete the sign-up process using any one of them. The only multi-value case allowed is `[email, phone]`, which signifies that users can provide either an email or a phone number.
+
+  To enhance flexibility and support multiple required sign-up identifiers, the existing `signUp.identifiers` field does not suffice. To maintain backward compatibility with existing data, we have introduced this new `secondaryIdentifiers` field.
+
+  Unlike the `signUp.identifiers` field, the `signUp.secondaryIdentifiers` array follows an `AND` logic, meaning that all elements listed in this field are required during the sign-up process, in addition to the primary identifiers. This new field also accommodates the `emailOrPhone` case by defining an exclusive `emailOrPhone` value type, which indicates that either a phone number or an email address must be provided.
+
+  In summary, while `identifiers` allows for optional selection among email and phone, `secondaryIdentifiers` enforces mandatory inclusion of all specified identifiers.
+
+  ### Examples
+
+  1. `username` as the primary identifier. In addition, user will be required to provide a verified `email` and `phone number` during the sign-up process.
+
+  ```json
+  {
+    "identifiers": ["username"],
+    "secondaryIdentifiers": [
+      {
+        "type": "email",
+        "verify": true
+      },
+      {
+        "type": "phone",
+        "verify": true
+      }
+    ],
+    "verify": true,
+    "password": true
+  }
+  ```
+
+  2. `username` as the primary identifier. In addition, user will be required to provide either a verified `email` or `phone number` during the sign-up process.
+
+  ```json
+  {
+    "identifiers": ["username"],
+    "secondaryIdentifiers": [
+      {
+        "type": "emailOrPhone",
+        "verify": true
+      }
+    ],
+    "verify": true,
+    "password": true
+  }
+  ```
+
+  3. `email` or `phone number` as the primary identifier. In addition, user will be required to provide a `username` during the sign-up process.
+
+  ```json
+  {
+    "identifiers": ["email", "phone"],
+    "secondaryIdentifiers": [
+      {
+        "type": "username",
+        "verify": true
+      }
+    ],
+    "verify": true,
+    "password": false
+  }
+  ```
+
+  ### Sign-in experience settings
+
+  - `@logto/core`: Update the `/api/sign-in-experience` endpoint to support the new `secondaryIdentifiers` field in the sign-up settings.
+  - `@logto/console`: Replace the sign-up identifier single selector with a multi-selector to support multiple sign-up identifiers. The order of the identifiers can be rearranged by dragging and dropping the items in the list. The first item in the list will be considered the primary identifier and stored in the `signUp.identifiers` field, while the rest will be stored in the `signUp.secondaryIdentifiers` field.
+
+  ### End-user experience
+
+  The sign-up flow is now split into two stages:
+
+  - Primary identifiers (`signUp.identifiers`) are collected in the first-screen registration screen.
+  - Secondary identifiers (`signUp.secondaryIdentifiers`) are requested in subsequent steps after the primary registration has been submitted.
+
+  ## Other refactors
+
+  We have fully decoupled the sign-up identifier settings from the sign-in methods. Developers can now require as many user identifiers as needed during the sign-up process without impacting the sign-in process.
+
+  The following restrictions on sign-in and sign-up settings have been removed:
+
+  1. Password requirement is now optional when `username` is configured as a sign-up identifier. However, users without passwords cannot sign in using username authentication.
+  2. Removed the constraint requiring sign-up identifiers to be enabled as sign-in methods.
+  3. Removed the requirement for password verification across all sign-in methods when password is enabled for sign-up.
+
+- 3594e1316: refactor: switch to `@logto/experience` package with latest [Experience API](https://openapi.logto.io/group/endpoint-experience)
+
+  In this release, we have transitioned the user sign-in experience from the legacy `@logto/experience-legacy` package to the latest `@logto/experience` package. This change fully adopts our new [Experience API](https://openapi.logto.io/group/endpoint-experience), enhancing the underlying architecture while maintaining the same user experience.
+
+  - Package update: The user sign-in experience now utilizes the `@logto/experience` package by default.
+    API Transition: The new package leverages our latest [Experience API](https://openapi.logto.io/group/endpoint-experience).
+  - No feature changes: Users will notice no changes in functionality or experience compared to the previous implementation.
+
+### Patch Changes
+
+- 7b342f7ef: remove `client_id` from OIDC SSO connector's token request body for better compatibility
+
+  This updates addresses an issue with client authentication methods in the token request process. Previously, the `client_id` was included in the request body while also using the authentication header for client credentials authentication.
+
+  This dual method of client authentication can lead to errors with certain OIDC providers, such as Okta, which only support one authentication method at a time.
+
+  ### Key changes
+
+  Removal of `client_id` from request body: The `client_id` parameter has been removed from the token request body. According to the [OAuth 2.0 specification](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3), `client_id` in the body is required only for public clients.
+
+- eb802f4c4: remove multiple sign-in experience settings restrictions
+
+  For better customization flexibility, we have removed following restrictions in the sign-in experience "sign-in and sign-up" settings:
+
+  1. The `password` field in sign-up settings is no longer required when username is set as the sign-up identifier. Developers may request a username without requiring a password during the sign-up process.
+
+  Note: If username is the only sign-up identifier, users without a password will not be able to sign in. Developers or administrators should carefully configure the sign-up and sign-in settings to ensure a smooth user experience.
+
+  Users can still set password via [account API](https://docs.logto.io/end-user-flows/account-settings/by-account-api) after sign-up.
+
+  2. The requirement that all sign-up identifiers must also be enabled as sign-in identifiers has been removed.
+
+- Updated dependencies [13d04d776]
+- Updated dependencies [dc13cc73d]
+- Updated dependencies [5da01bc47]
+  - @logto/schemas@1.26.0
+  - @logto/console@1.23.0
+  - @logto/experience@1.12.0
+  - @logto/language-kit@1.1.3
+  - @logto/cli@1.26.0
+
+## 1.25.0
+
+### Minor Changes
+
+- 1c7bdf9ba: add legacy password type supporting custom hasing function, credits @fre2d0m
+
+  You can now set the type of `password_encryption_method` to `legacy`, and store info with a JSON string format (containing a hash algorithm, arguments, and an encrypted password) in the `password_encrypted` field. By doing this, you can use any hash algorithm supported by Node.js, this is useful when migrating from other password hash algorithms, especially for the ones that include salt.
+
+  The format of the JSON string is as follows:
+
+  ```json
+  ["hash_algorithm", ["argument1", "argument2", ...], "expected_hashed_value"]
+  ```
+
+  And you can use `@` as the input password in the arguments.
+
+  For example, if you are using SHA256 with a salt, you can store the password in the following format:
+
+  ```json
+  [
+    "sha256",
+    ["salt123", "@"],
+    "c465f66c6ac481a7a17e9ed5b4e2e7e7288d892f12bf1c95c140901e9a70436e"
+  ]
+  ```
+
+  Then when the user uses the password (`password123`), the `legacyVerify` function will use the `sha256` algorithm with the `salt123` and the input password to verify the password.
+
+  In this case, `salt123` is the first argument, `@` is the input password, then the following code will be executed:
+
+  ```ts
+  const hash = crypto.createHash("sha256");
+  hash.update("salt123" + "password123");
+  const expectedHashedValue = hash.digest("hex");
+  ```
+
+- 03ea1f96c: feat: custom email templates in multiple languages via Management API
+
+  ## Details
+
+  Introduce localized email template customization capabilities. This update allows administrators to create and manage multiple email templates for different languages and template types (e.g., SignIn, ForgotPassword) via the management API.
+
+  Email connectors now support automatic template selection based on the user's preferred language. If a template is not available in the user's preferred language, the default template will be used.
+
+  - For client-side API requests, like experience API and user account API, the user's preferred language is determined by the `Accept-Language` header.
+  - For server-side API requests, like organization invitation API, email language preference can be set by passing extra `locale` parameter in the `messagePayload`.
+  - The email template selection logic is based on the following priority order:
+    1. Find the template that matches the user's preferred language detected from the request.
+    2. Find the template that matches the default language set in the sign-in experience settings.
+    3. Use the default template set in the email connector settings.
+
+  ### Management API
+
+  - `PUT /email-templates`: Bulk create or update email templates.
+  - `GET /email-templates`: List all email templates with filter by language and type support.
+  - `DELETE /email-templates`: Bulk delete email templates by language and type.
+  - `GET /email-templates/{id}`: Get a specific email template by ID.
+  - `DELETE /email-templates/{id}`: Delete a specific email template by ID.
+  - `PATCH /email-templates/{id}/details`: Update email template details by ID.
+
+  ### Supported email connectors
+
+  - `@logto/connector-aliyun-dm`
+  - `@logto/connector-aws-ses`
+  - `@logto/connector-mailgun`
+  - `@logto/connector-sendgrid-email`
+  - `@logto/connector-smtp`
+
+  ### Unsupported email connectors
+
+  The following email connectors have their templates managed at the provider side and do not support reading templates from Logto.
+  The user's preferred language will be passed to the provider as the `locale` parameter in the email sending request payload. For i18n support, administrators must manage the template selection logic at the provider side.
+
+  - `@logto/connector-postmark`
+  - `@logto/connector-http-email`
+
+- 03ea1f96c: pass additional context variables to email templates
+
+  Enhanced email template customization by introducing additional context variables that developers can utilize in message templates. These new variables provide deeper contextual information about the authentication workflow, enabling more personalized and scenario-specific email content.
+
+  - user: `UserInfo` - Contains basic user profile data (name, primaryEmail, etc.) for personalization
+  - application: `ApplicationInfo` - Contains basic application-specific data (name, logo, etc.) for personalization
+  - organization: `OrganizationInfo` - Contains basic organization-specific data (name, logo, etc.) for personalization
+  - inviter: `UserInfo` - Contains basic inviter profile data (name, primaryEmail, etc.) for personalization
+
+  | usageType                | Scenario                                                                                                                                                                                                                                                                                                                                                                      | Variables                                                                             |
+  | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+  | SignIn                   | Users sign in using their email and verify by entering verification code instead of entering a password.                                                                                                                                                                                                                                                                      | code: string<br/>application: `ApplicationInfo`<br/>organization?: `OrganizationInfo` |
+  | Register                 | Users create an account using their email and verify it by entering a verification code sent by Logto to their email.                                                                                                                                                                                                                                                         | code: string<br/>application: `ApplicationInfo`<br/>organization?: `OrganizationInfo` |
+  | ForgotPassword           | If users forget their password during login, they can choose to verify their identity using the email they've already verified with Logto.                                                                                                                                                                                                                                    | code: string<br/>application: `ApplicationInfo`<br/>organization?: `OrganizationInfo` |
+  | Generic                  | This template can be used as a general backup option for various scenarios, including testing connector configurations and so on.                                                                                                                                                                                                                                             | code: string                                                                          |
+  | OrganizationInvitation   | Use this template to send users an invitation link to join the organization.                                                                                                                                                                                                                                                                                                  | link: string<br/>organization: `OrganizationInfo`<br/>inviter?: `UserInfo`            |
+  | UserPermissionValidation | During app usage, there may be some high-risk operations or operations with a relatively high risk level that require additional user verification, such as bank transfers, deleting resources in use, and canceling memberships. The `UserPermissionValidation` template can be used to define the content of the email verification code users receive in these situations. | code: string<br/>user: `UserInfo`<br/>application?: `ApplicationInfo`                 |
+  | BindNewIdentifier        | When a user modifies their profile, they may bind an email address to their current account. In this case, the `BindNewIdentifier` template can be used to customize the content of the verification email.                                                                                                                                                                   | code: string<br/>user: `UserInfo`<br/>application?: `ApplicationInfo`                 |
+
+  Check [Email templates](https://docs.logto.io/connectors/email-connectors/email-templates) for more information on how to use these new context variables in your email templates.
+
+- c87424025: feat: support role names alongside role IDs in organization user role assignment/replacement with merge capability
+
+  This update enhances organization user role management APIs to support role assignment by both names and IDs, improving integration flexibility.
+
+  ### Updates
+
+  - Added `organizationRoleNames` parameter to:
+    - POST `/api/organizations/{id}/users/{userId}/roles` (assign roles)
+    - PUT `/api/organizations/{id}/users/{userId}/roles` (replace roles)
+  - Make both `organizationRoleNames` and `organizationRoleIds` optional in the above APIs
+    - If both are not provided, or empty, an invalid data error will be thrown
+  - Merge logic when both parameters are provided:
+    - Combines roles from `organizationRoleNames` and `organizationRoleIds`
+    - Automatically deduplicates entries
+    - Validates all names/IDs exist before applying changes
+  - Maintains backward compatibility with existing integrations using role IDs
+
+### Patch Changes
+
+- bca4177c6: add `AuthnStatement` to SAML app assertion response
+- 20b61e05e: refactor: adjust TOTP secret length to 20 bytes
+
+  Update the TOTP secret generation to use 20 bytes (160 bits), following the recommendation in RFC 6238 (TOTP) and RFC 4226 (HOTP).
+
+  This aligns with the standard secret length used by most 2FA applications and provides better security while maintaining compatibility with existing TOTP validators.
+
+  Reference:
+
+  - RFC 6238 (TOTP) Section 5.1: https://www.rfc-editor.org/rfc/rfc6238#section-5.1
+  - RFC 4226 (HOTP) Section 4, Requirement 6: https://www.rfc-editor.org/rfc/rfc4226#section-4
+
+- f15602f19: fix: incorrect pagination behavior in organization role scopes APIs
+
+  - Fix `/api/organization-roles/{id}/scopes` and `/api/organization-roles/{id}/resource-scopes` endpoints to:
+    - Return all scopes when no pagination parameters are provided
+    - Support optional pagination when query parameters are present
+  - Fix Console to properly display all organization role scopes on the organization template page
+
+- Updated dependencies [1c7bdf9ba]
+- Updated dependencies [b0135bcd3]
+- Updated dependencies [31adfb6ac]
+  - @logto/schemas@1.25.0
+  - @logto/connector-kit@4.2.0
+  - @logto/console@1.22.1
+  - @logto/cli@1.25.0
+
+## 1.24.1
+
+### Patch Changes
+
+- e7accfdab: prevent i18n context contamination by using request-scoped instances
+
+  This bug fix resolves a concurrency issue in i18n handling by moving from a global i18next instance to request-scoped instances.
+
+  ### Problem
+
+  When handling concurrent requests:
+
+  - The shared global `i18next` instance's language was being modified via `changeLanguage()` calls.
+  - This could lead to race conditions where requests might receive translations in unexpected languages.
+  - Particularly problematic in multi-tenant environments with different language requirements.
+
+  ### Solution
+
+  - Updated `koaI18next` middleware to create a cloned i18next instance for each request.
+  - Attach the request-scoped instance to Koa context (`ctx.i18n`) All subsequent middleware and handlers should now use `ctx.i18n` instead of the global `i18next` instance.
+  - Maintains the global instance for initialization while preventing cross-request contamination
+
+- a5990ec57: fixes an incorrect condition check in the verification code flow where `isNewIdentifier` was using inverted logic for email and phone comparisons.
+
+  ### Changes
+
+  - Corrected `isNewIdentifier` boolean logic to use `identifier.value !== user.primaryEmail` for email checks
+  - Fixed phone number comparison to properly use `identifier.value !== user.primaryPhone`
+
+  ### Impact
+
+  This fixes a regression where:
+
+  - Verification codes for existing emails/phones were incorrectly using the`BindNewIdentifier` template
+  - New identifiers were mistakenly getting the `UserPermissionValidation` template
+  - Affected both email and phone verification flows
+
+- e11e57de8: bump dependencies for security update
+- d44007faa: apply custom domain to SAML SSO and SAML applications
+- Updated dependencies [096367ff5]
+- Updated dependencies [28643c1f1]
+- Updated dependencies [bd18da4cf]
+- Updated dependencies [0b785ee0d]
+- Updated dependencies [cb261024b]
+- Updated dependencies [5086f4bd2]
+- Updated dependencies [e11e57de8]
+- Updated dependencies [d44007faa]
+  - @logto/console@1.22.0
+  - @logto/experience@1.11.2
+  - @logto/experience-legacy@1.11.1
+  - @logto/phrases@1.18.0
+  - @logto/cli@1.24.1
+  - @logto/connector-kit@4.1.1
+  - @logto/language-kit@1.1.1
+  - @logto/core-kit@2.5.4
+  - @logto/app-insights@2.0.1
+  - @logto/schemas@1.24.1
+  - @logto/shared@3.1.4
+  - @logto/demo-app@1.4.2
+  - @logto/phrases-experience@1.9.1
+
+## 1.24.0
+
+### Minor Changes
+
+- 1337669e1: add support on SAML applications
+
+  Logto now supports acting as a SAML identity provider (IdP), enabling enterprise users to achieve secure Single Sign-On (SSO) through the standardized SAML protocol. Key features include:
+
+  - Full support for SAML 2.0 protocol
+  - Flexible attribute mapping configuration
+  - Metadata auto-configuration support
+  - Enterprise-grade encryption and signing
+
+  [View full documentation](https://docs.logto.io/integrate-logto/saml-app) for more details.
+
+### Patch Changes
+
+- bf2d3007c: fix(core): trigger the `Organization.Membership.Updated` webhook when a user accepts an invitation and join an organization.
+
+  Added a new `Organization.Membership.Accepted` webhook event in the `PUT /api/organization-invitations/{id}/status` endpoint. This event will be triggered when the organization-invitation status is updated to `accepted`, and user is added to the organization.
+
+- Updated dependencies [1337669e1]
+  - @logto/console@1.21.0
+  - @logto/phrases@1.17.0
+  - @logto/schemas@1.24.0
+  - @logto/cli@1.24.0
+
+## 1.23.1
+
+### Patch Changes
+
+- 39cef8ea4: support custom endpoint and addressing style for S3
+- Updated dependencies [d2468683c]
+  - @logto/experience@1.11.1
+  - @logto/schemas@1.23.1
+  - @logto/cli@1.23.1
+
+## 1.23.0
+
+### Minor Changes
+
+- f1b1d9e95: new MFA prompt policy
+
+  You can now cutomize the MFA prompt policy in the Console.
+
+  First, choose if you want to enable **Require MFA**:
+
+  - **Enable**: Users will be prompted to set up MFA during the sign-in process which cannot be skipped. If the user fails to set up MFA or deletes their MFA settings, they will be locked out of their account until they set up MFA again.
+  - **Disable**: Users can skip the MFA setup process during sign-up flow.
+
+  If you choose to **Disable**, you can choose the MFA setup prompt:
+
+  - Do not ask users to set up MFA.
+  - Ask users to set up MFA during registration (skippable, one-time prompt). **The same prompt as previous policy (UserControlled)**
+  - Ask users to set up MFA on their sign-in after registration (skippable, one-time prompt)
+
+### Patch Changes
+
+- 239b81e31: loose redirect uri restrictions
+
+  Logto has been following the industry best practices for OAuth2.0 and OIDC from the start. However, in the real world, there are things we cannot control, like third-party services or operation systems like Windows.
+
+  This update relaxes restrictions on redirect URIs to allow the following:
+
+  1. A mix of native and HTTP(S) redirect URIs. For example, a native app can now use a redirect URI like `https://example.com`.
+  2. Native schemes without a period (`.`). For example, `myapp://callback` is now allowed.
+
+  When such URIs are configured, Logto Console will display a prominent warning. This change is backward-compatible and will not affect existing applications.
+
+  We hope this change will make it easier for you to integrate Logto with your applications.
+
+- Updated dependencies [217858950]
+- Updated dependencies [f1b1d9e95]
+- Updated dependencies [239b81e31]
+  - @logto/cli@1.23.0
+  - @logto/experience-legacy@1.11.0
+  - @logto/experience@1.11.0
+  - @logto/console@1.20.0
+  - @logto/phrases@1.16.0
+  - @logto/schemas@1.23.0
+  - @logto/core-kit@2.5.2
+
 ## 1.22.0
 
 ### Minor Changes

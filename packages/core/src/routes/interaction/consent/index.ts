@@ -1,8 +1,10 @@
 import { UserScope } from '@logto/core-kit';
 import {
   applicationSignInExperienceGuard,
+  buildDemoAppDataForTenant,
   type ConsentInfoResponse,
   consentInfoResponseGuard,
+  demoAppApplicationId,
   Organizations,
   publicApplicationGuard,
   publicUserInfoGuard,
@@ -136,7 +138,7 @@ export default function consentRoutes<T extends IRouterParamContext>(
               ({ resource, scopes }) => [resource.indicator, scopes.map(({ name }) => name)]
             );
 
-            // The entries whoes resource indecator is not in the prev entries
+            // The entries whose resource indicator is not present in the previous entries
             const newEntries: Array<[string, string[]]> = organizationEntries.filter(
               ([resourceIndicator]) =>
                 !entries.some(([indicator]) => indicator === resourceIndicator)
@@ -222,7 +224,10 @@ export default function consentRoutes<T extends IRouterParamContext>(
 
       const { accountId } = session;
 
-      const application = await queries.applications.findApplicationById(clientId);
+      const application =
+        clientId === demoAppApplicationId
+          ? buildDemoAppDataForTenant('')
+          : await queries.applications.findApplicationById(clientId);
 
       const applicationSignInExperience =
         await queries.applicationSignInExperiences.safeFindSignInExperienceByApplicationId(

@@ -10,8 +10,10 @@ const sign_up_and_sign_in = {
     title: 'INSCRIPTION',
     sign_up_identifier: "Identificateur d'inscription",
     identifier_description:
-      "L'identificateur d'inscription est nécessaire pour la création de compte et doit être inclus dans vote écran de connexion.",
+      "Tous les identifiants d'inscription sélectionnés sont requis lors de la création d'un nouveau compte.",
     sign_up_authentication: "Paramètres d'authentification pour l'inscription",
+    verification_tip:
+      "Les utilisateurs doivent vérifier l'adresse e-mail ou le numéro de téléphone que vous avez configuré en entrant un code de vérification lors de l'inscription.",
     authentication_description:
       "Toutes les actions sélectionnées seront obligatoires pour que les utilisateurs terminent le processus d'inscription.",
     set_a_password_option: 'Créer votre mot de passe',
@@ -24,8 +26,9 @@ const sign_up_and_sign_in = {
     sign_in_identifier_and_auth:
       "Identificateurs et paramètres d'authentification pour la connexion",
     description:
-      "Les utilisateurs peuvent se connecter en utilisant n'importe quelle option disponible. Ajustez la mise en page en faisant glisser et en déposant les options ci-dessous.",
+      "Les utilisateurs peuvent se connecter en utilisant n'importe quelle option disponible.",
     add_sign_in_method: 'Ajouter une méthode de connexion',
+    add_sign_up_method: "Ajouter une méthode d'inscription",
     password_auth: 'Mot de passe',
     verification_code_auth: 'Code de vérification',
     auth_swap_tip:
@@ -58,6 +61,8 @@ const sign_up_and_sign_in = {
       "Ceci est essentiel car vous avez uniquement activé l'option de fourniture d'un code de vérification lors de l'inscription. Vous pouvez décocher la case lorsque la configuration d'un mot de passe est autorisée lors du processus d'inscription.",
     delete_sign_in_method:
       'Ceci est essentiel car vous avez sélectionné {{identifier}} comme identificateur requis.',
+    password_disabled_notification:
+      "L'option \"Créer votre mot de passe\" est désactivée pour l'inscription avec un nom d'utilisateur, ce qui peut empêcher les utilisateurs de se connecter. Confirmez pour procéder à l'enregistrement.",
   },
   advanced_options: {
     title: 'OPTIONS AVANCÉES',
@@ -72,6 +77,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: "Activer l'inscription des utilisateurs",
     enable_user_registration_description:
       "Activer ou interdire l'inscription des utilisateurs. Une fois désactivée, les utilisateurs peuvent toujours être ajoutés à la console d'administration mais ne peuvent plus créer de compte via l'interface de connexion.",
+    unknown_session_redirect_url: 'URL de redirection de session inconnue',
+    unknown_session_redirect_url_tip:
+      "Parfois, Logto peut ne pas reconnaître la session d’un utilisateur sur la page de connexion, comme lorsque la session expire ou que l’utilisateur met en signet ou partage le lien de connexion. Par défaut, une erreur 404 de “session inconnue” apparaît. Pour améliorer l'expérience utilisateur, définissez une URL de secours pour rediriger les utilisateurs vers votre application et redémarrer l'authentification.",
   },
 };
 

@@ -1,9 +1,11 @@
 const content = {
   terms_of_use: {
     title: 'TERMS',
-    terms_of_use: 'Terms of use URL',
+    description:
+      'Adiciona os Termos e a Política de Privacidade para cumprir os requisitos de conformidade.',
+    terms_of_use: 'URL dos termos de uso',
     terms_of_use_placeholder: 'https://your.terms.of.use/',
-    privacy_policy: 'Privacy policy URL',
+    privacy_policy: 'URL da política de privacidade',
     privacy_policy_placeholder: 'https://your.privacy.policy/',
     agree_to_terms: 'Aceitar os termos',
     agree_policies: {
@@ -23,6 +25,15 @@ const content = {
       'The default language will be used when the detected user language isn’t covered in the current language library.',
     default_language_description_fixed:
       'When auto-detect is off, the default language is the only language your software will show. Turn on auto-detect for language extension.',
+  },
+  support: {
+    title: 'SUPORTE',
+    subtitle:
+      'Mostra os teus canais de suporte nas páginas de erro para assistência rápida ao utilizador.',
+    support_email: 'Email de suporte',
+    support_email_placeholder: 'support@email.com',
+    support_website: 'Website de suporte',
+    support_website_placeholder: 'https://your.website/support',
   },
   manage_language: {
     title: 'Manage language',

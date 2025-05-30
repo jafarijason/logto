@@ -10,6 +10,7 @@ const description = {
   sign_in: 'Sign in',
   privacy_policy: 'Privacy Policy',
   create_account: 'Create account',
+  switch_account: 'Switch account',
   or: 'or',
   and: 'and',
   enter_passcode: 'The verification code has been sent to your {{address}} {{target}}',
@@ -42,7 +43,7 @@ const description = {
   set_password: 'Set password',
   password_changed: 'Password changed',
   no_account: 'No account yet? ',
-  have_account: 'Already had an account?',
+  have_account: 'Already have an account?',
   enter_password: 'Enter password',
   enter_password_for: 'Sign in with the password to {{method}} {{value}}',
   enter_username: 'Set username',
@@ -64,9 +65,18 @@ const description = {
   password_requirements: 'Password {{items, list}}.',
   password_requirement: {
     length_one: 'requires a minimum of {{count}} character',
+    length_two: 'requires a minimum of {{count}} characters',
+    length_few: 'requires a minimum of {{count}} characters',
+    length_many: 'requires a minimum of {{count}} characters',
     length_other: 'requires a minimum of {{count}} characters',
     character_types_one:
       'should contain at least {{count}} type of uppercase letters, lowercase letters, digits, and symbols',
+    character_types_two:
+      'should contain at least {{count}} types of uppercase letters, lowercase letters, digits, and symbols',
+    character_types_few:
+      'should contain at least {{count}} types of uppercase letters, lowercase letters, digits, and symbols',
+    character_types_many:
+      'should contain at least {{count}} types of uppercase letters, lowercase letters, digits, and symbols',
     character_types_other:
       'should contain at least {{count}} types of uppercase letters, lowercase letters, digits, and symbols',
   },
@@ -96,6 +106,9 @@ const description = {
   back_to_sign_in: 'Back to sign in',
   support_email: 'Support email: <link></link>',
   support_website: 'Support website: <link></link>',
+  switch_account_title: 'You are currently signed in as {{account}}',
+  switch_account_description:
+    'To continue, you will be signed out of the current account, and switch to the new account automatically.',
 };
 
 export default Object.freeze(description);

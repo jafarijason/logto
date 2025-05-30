@@ -1,6 +1,6 @@
 {
   "name": "@logto/app-insights",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "main": "lib/index.js",
   "author": "Silverhand Inc. <contact@silverhand.io>",
   "license": "MPL-2.0",
@@ -31,16 +31,16 @@
   "devDependencies": {
     "@silverhand/eslint-config": "6.0.1",
     "@silverhand/ts-config": "6.0.0",
-    "@types/node": "^20.9.5",
-    "@vitest/coverage-v8": "^2.0.0",
+    "@types/node": "^22.14.0",
+    "@vitest/coverage-v8": "^3.1.1",
     "eslint": "^8.56.0",
     "lint-staged": "^15.0.0",
-    "prettier": "^3.0.0",
+    "prettier": "^3.5.3",
     "typescript": "^5.5.3",
-    "vitest": "^2.0.0"
+    "vitest": "^3.1.1"
   },
   "engines": {
-    "node": "^20.9.0"
+    "node": "^22.14.0"
   },
   "eslintConfig": {
     "extends": "@silverhand"

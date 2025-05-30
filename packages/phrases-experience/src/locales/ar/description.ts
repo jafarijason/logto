@@ -10,6 +10,7 @@ const description = {
   sign_in: 'تسجيل الدخول',
   privacy_policy: 'سياسة الخصوصية',
   create_account: 'إنشاء حساب',
+  switch_account: 'تبديل الحساب',
   or: 'أو',
   and: 'و',
   enter_passcode: 'تم إرسال رمز التحقق إلى {{address}} {{target}} الخاص بك',
@@ -60,9 +61,18 @@ const description = {
   password_requirements: 'متطلبات كلمة المرور {{items, list}}.',
   password_requirement: {
     length_one: 'يتطلب حرف واحد على الأقل',
+    length_two: 'يتطلب {{count}} حرفان على الأقل',
+    length_few: 'يتطلب {{count}} أحرف على الأقل',
+    length_many: 'يتطلب {{count}} حرفًا على الأقل',
     length_other: 'يتطلب {{count}} أحرف على الأقل',
     character_types_one:
       'يجب أن يحتوي على حرف واحد على الأقل من الأحرف الكبيرة والصغيرة والأرقام والرموز',
+    character_types_two:
+      'يجب أن يحتوي على {{count}} أنواع على الأقل من الأحرف الكبيرة والصغيرة والأرقام والرموز',
+    character_types_few:
+      'يجب أن يحتوي على {{count}} أنواع على الأقل من الأحرف الكبيرة والصغيرة والأرقام والرموز',
+    character_types_many:
+      'يجب أن يحتوي على {{count}} أنواع على الأقل من الأحرف الكبيرة والصغيرة والأرقام والرموز',
     character_types_other:
       'يجب أن يحتوي على {{count}} أنواع على الأقل من الأحرف الكبيرة والصغيرة والأرقام والرموز',
   },
@@ -84,21 +94,18 @@ const description = {
   user_id: 'معرف المستخدم: {{id}}',
   redirect_to: 'سيتم توجيهك إلى {{name}}.',
   auto_agreement: 'من خلال المتابعة، فإنك توافق على <link></link>.',
-  /** UNTRANSLATED */
-  identifier_sign_in_description: 'Enter you {{types, list(type: disjunction;)}} to sign in.',
-  /** UNTRANSLATED */
-  all_sign_in_options: 'All sign-in options',
-  /** UNTRANSLATED */
+  identifier_sign_in_description:
+    'أدخل {{types, list(type: disjunction;)}} الخاص بك لتسجيل الدخول.',
+  all_sign_in_options: 'جميع خيارات تسجيل الدخول',
   identifier_register_description:
-    'Enter you {{types, list(type: disjunction;)}} to create a new account.',
-  /** UNTRANSLATED */
-  all_account_creation_options: 'All account creation options',
-  /** UNTRANSLATED */
-  back_to_sign_in: 'Back to sign in',
-  /** UNTRANSLATED */
-  support_email: 'Support email: <link></link>',
-  /** UNTRANSLATED */
-  support_website: 'Support website: <link></link>',
+    'أدخل {{types, list(type: disjunction;)}} الخاص بك لإنشاء حساب جديد.',
+  all_account_creation_options: 'جميع خيارات إنشاء الحساب',
+  back_to_sign_in: 'العودة إلى تسجيل الدخول',
+  support_email: 'البريد الإلكتروني للدعم: <link></link>',
+  support_website: 'موقع الدعم: <link></link>',
+  switch_account_title: 'أنت حاليًا مسجل الدخول كـ {{account}}',
+  switch_account_description:
+    'للمتابعة، سيتم تسجيل الخروج من الحساب الحالي، والتبديل تلقائيًا إلى الحساب الجديد.',
 };
 
 export default Object.freeze(description);

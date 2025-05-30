@@ -10,6 +10,7 @@ const description = {
   sign_in: '로그인',
   privacy_policy: '개인정보처리방침',
   create_account: '계정 생성',
+  switch_account: '계정 전환',
   or: '또는',
   and: '그리고',
   enter_passcode: '{{address}} {{target}} 으로 비밀번호가 전송되었어요.',
@@ -59,8 +60,14 @@ const description = {
   password_requirements: '비밀번호는 {{items, list}} 로 이루어져야 합니다.',
   password_requirement: {
     length_one: '최소 {{count}} 자 이상이어야 함',
+    length_two: '최소 {{count}} 문자 이상이어야 함',
+    length_few: '최소 {{count}} 문자 이상이어야 함',
+    length_many: '최소 {{count}} 문자 이상이어야 함',
     length_other: '최소 {{count}} 문자 이상이어야 함',
     character_types_one: '최소 {{count}} 개의 대문자, 소문자, 숫자, 특수 기호를 포함해야 함',
+    character_types_two: '최소 {{count}} 종류의 대문자, 소문자, 숫자, 특수 기호를 포함해야 함',
+    character_types_few: '최소 {{count}} 종류의 대문자, 소문자, 숫자, 특수 기호를 포함해야 함',
+    character_types_many: '최소 {{count}} 종류의 대문자, 소문자, 숫자, 특수 기호를 포함해야 함',
     character_types_other: '최소 {{count}} 개의 대문자, 소문자, 숫자, 특수 기호를 포함해야 함',
   },
   use: '사용',
@@ -68,30 +75,18 @@ const description = {
   single_sign_on_connectors_list:
     '귀하의 기업은 {{email}} 이메일 계정에 대해 Single Sign-On을 활성화했습니다. 다음 SSO 제공업체를 사용하여 로그인을 계속할 수 있습니다.',
   single_sign_on_enabled: '이 계정에는 Single Sign-On이 활성화되어 있습니다.',
-  /** UNTRANSLATED */
-  authorize_title: 'Authorize {{name}}',
-  /** UNTRANSLATED */
-  request_permission: '{{name}} is requesting access to:',
-  /** UNTRANSLATED */
-  grant_organization_access: 'Grant the organization access:',
-  /** UNTRANSLATED */
-  authorize_personal_data_usage: 'Authorize the use of your personal data:',
-  /** UNTRANSLATED */
-  authorize_organization_access: 'Authorize access to the specific organization:',
-  /** UNTRANSLATED */
-  user_scopes: 'Personal user data',
-  /** UNTRANSLATED */
-  organization_scopes: 'Organization access',
-  /** UNTRANSLATED */
-  authorize_agreement: `By authorizing the access, you agree to the {{name}}'s <link></link>.`,
-  /** UNTRANSLATED */
-  authorize_agreement_with_redirect: `By authorizing the access, you agree to the {{name}}'s <link></link>, and will be redirected to {{uri}}.`,
-  /** UNTRANSLATED */
-  not_you: 'Not you?',
-  /** UNTRANSLATED */
-  user_id: 'User ID: {{id}}',
-  /** UNTRANSLATED */
-  redirect_to: 'You will be redirected to {{name}}.',
+  authorize_title: '{{name}} 권한 부여',
+  request_permission: '{{name}} 이(가) 다음에 대한 액세스를 요청하고 있습니다:',
+  grant_organization_access: '조직 접근 권한 부여:',
+  authorize_personal_data_usage: '개인 데이터 사용 권한 부여:',
+  authorize_organization_access: '특정 조직에 대한 접근 권한 부여:',
+  user_scopes: '개인 사용자 데이터',
+  organization_scopes: '조직 액세스',
+  authorize_agreement: `접근을 허용함으로써, {{name}} 의 <link></link>에 동의하게 됩니다.`,
+  authorize_agreement_with_redirect: `접근을 허용함으로써, {{name}} 의 <link></link>에 동의하게 되며 {{uri}} 로 리디렉션됩니다.`,
+  not_you: '당신이 아닌가요?',
+  user_id: '사용자 ID: {{id}}',
+  redirect_to: '{{name}} 으로 리디렉션됩니다.',
   auto_agreement: '계속 진행하면 <link></link>에 동의하는 것입니다.',
   identifier_sign_in_description:
     '로그인하려면 {{types, list(type: disjunction;)}}을(를) 입력하세요.',
@@ -102,6 +97,9 @@ const description = {
   back_to_sign_in: '로그인으로 돌아가기',
   support_email: '지원 이메일: <link></link>',
   support_website: '지원 웹사이트: <link></link>',
+  switch_account_title: '현재 {{account}}으로 로그인 중입니다',
+  switch_account_description:
+    '계속 진행하려면 현재 계정에서 로그아웃되고 새 계정으로 자동 전환됩니다.',
 };
 
 export default Object.freeze(description);

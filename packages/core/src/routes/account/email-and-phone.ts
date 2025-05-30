@@ -5,6 +5,7 @@ import { z } from 'zod';
 import koaGuard from '#src/middleware/koa-guard.js';
 
 import RequestError from '../../errors/RequestError/index.js';
+import { validateEmailAgainstBlocklistPolicy } from '../../libraries/sign-in-experience/email-blocklist-policy.js';
 import { buildVerificationRecordByIdAndType } from '../../libraries/verification.js';
 import assertThat from '../../utils/assert-that.js';
 import type { UserRouter, RouterInitArgs } from '../types.js';
@@ -29,7 +30,7 @@ export default function emailAndPhoneRoutes<T extends UserRouter>(...args: Route
         email: z.string().regex(emailRegEx),
         newIdentifierVerificationRecordId: z.string(),
       }),
-      status: [204, 400, 401],
+      status: [204, 400, 401, 422],
     }),
     async (ctx, next) => {
       const { id: userId, scopes, identityVerified } = ctx.auth;
@@ -45,6 +46,10 @@ export default function emailAndPhoneRoutes<T extends UserRouter>(...args: Route
       );
 
       assertThat(scopes.has(UserScope.Email), 'auth.unauthorized');
+
+      // Validate email blocklist policy
+      const { emailBlocklistPolicy } = await findDefaultSignInExperience();
+      await validateEmailAgainstBlocklistPolicy(emailBlocklistPolicy, email);
 
       // Check new identifier
       const newVerificationRecord = await buildVerificationRecordByIdAndType({
@@ -114,7 +119,7 @@ export default function emailAndPhoneRoutes<T extends UserRouter>(...args: Route
         phone: z.string().regex(phoneRegEx),
         newIdentifierVerificationRecordId: z.string(),
       }),
-      status: [204, 400, 401],
+      status: [204, 400, 401, 422],
     }),
     async (ctx, next) => {
       const { id: userId, scopes, identityVerified } = ctx.auth;

@@ -18,12 +18,14 @@ import { trySubmitSafe } from '@/utils/form';
 import Preview from '../components/Preview';
 import { SignInExperienceContext } from '../contexts/SignInExperienceContextProvider';
 import usePreviewConfigs from '../hooks/use-preview-configs';
-import { SignInExperienceTab } from '../types';
-import { type SignInExperienceForm } from '../types';
+import {
+  SignInExperienceTab,
+  type SignInExperiencePageManagedData,
+  type SignInExperienceForm,
+} from '../types';
 
 import Branding from './Branding';
 import Content from './Content';
-import PasswordPolicy from './PasswordPolicy';
 import SignUpAndSignIn from './SignUpAndSignIn';
 import SignUpAndSignInChangePreview from './SignUpAndSignInChangePreview';
 import styles from './index.module.scss';
@@ -33,7 +35,7 @@ import {
   getContentErrorCount,
   hasSignUpAndSignInConfigChanged,
 } from './utils/form';
-import { sieFormDataParser } from './utils/parser';
+import { sieFormDataParser, signInExperienceToUpdatedDataParser } from './utils/parser';
 
 const PageTab = TabNavItem<`../${SignInExperienceTab}`>;
 
@@ -51,7 +53,7 @@ function PageContent({ data, onSignInExperienceUpdated }: Props) {
   const { getPathname } = useTenantPathname();
   const { isUploading, cancelUpload } = useContext(SignInExperienceContext);
 
-  const [dataToCompare, setDataToCompare] = useState<SignInExperience>();
+  const [dataToCompare, setDataToCompare] = useState<SignInExperiencePageManagedData>();
 
   const methods = useForm<SignInExperienceForm>({
     defaultValues: sieFormDataParser.fromSignInExperience(data),
@@ -75,7 +77,7 @@ function PageContent({ data, onSignInExperienceUpdated }: Props) {
     try {
       const updatedData = await api
         .patch('api/sign-in-exp', {
-          json: sieFormDataParser.toUpdateSignInExperienceData(getValues()),
+          json: sieFormDataParser.toSignInExperience(getValues()),
         })
         .json<SignInExperience>();
 
@@ -96,9 +98,10 @@ function PageContent({ data, onSignInExperienceUpdated }: Props) {
       }
 
       const formatted = sieFormDataParser.toSignInExperience(formData);
+      const original = signInExperienceToUpdatedDataParser(data);
 
       // Sign-in methods changed, need to show confirm modal first.
-      if (!hasSignUpAndSignInConfigChanged(data, formatted)) {
+      if (!hasSignUpAndSignInConfigChanged(original, formatted)) {
         setDataToCompare(formatted);
 
         return;
@@ -130,7 +133,6 @@ function PageContent({ data, onSignInExperienceUpdated }: Props) {
         <PageTab href="../content" errorCount={getContentErrorCount(errors)}>
           {t('sign_in_exp.tabs.content')}
         </PageTab>
-        <PageTab href="../password-policy">{t('sign_in_exp.tabs.password_policy')}</PageTab>
       </TabNav>
       <div className={styles.content}>
         <div className={classNames(styles.contentTop, isDirty && styles.withSubmitActionBar)}>
@@ -139,7 +141,6 @@ function PageContent({ data, onSignInExperienceUpdated }: Props) {
               <Branding isActive={tab === SignInExperienceTab.Branding} />
               <SignUpAndSignIn isActive={tab === SignInExperienceTab.SignUpAndSignIn} />
               <Content isActive={tab === SignInExperienceTab.Content} />
-              <PasswordPolicy isActive={tab === SignInExperienceTab.PasswordPolicy} />
             </form>
           </FormProvider>
           {formData.id && (

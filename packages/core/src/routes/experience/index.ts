@@ -31,6 +31,7 @@ import { type ExperienceInteractionRouterContext } from './types.js';
 import backupCodeVerificationRoutes from './verification-routes/backup-code-verification.js';
 import enterpriseSsoVerificationRoutes from './verification-routes/enterprise-sso-verification.js';
 import newPasswordIdentityVerificationRoutes from './verification-routes/new-password-identity-verification.js';
+import oneTimeTokenRoutes from './verification-routes/one-time-token.js';
 import passwordVerificationRoutes from './verification-routes/password-verification.js';
 import socialVerificationRoutes from './verification-routes/social-verification.js';
 import totpVerificationRoutes from './verification-routes/totp-verification.js';
@@ -58,16 +59,24 @@ export default function experienceApiRoutes<T extends AnonymousRouter>(
     koaGuard({
       body: z.object({
         interactionEvent: z.nativeEnum(InteractionEvent),
+        captchaToken: z.string().optional(),
       }),
-      status: [204],
+      // 422 is returned if the captcha verification fails
+      status: [204, 422],
     }),
     async (ctx, next) => {
-      const { interactionEvent } = ctx.guard.body;
+      const { interactionEvent, captchaToken } = ctx.guard.body;
       const { createLog } = ctx;
 
       createLog(`Interaction.${interactionEvent}.Create`);
 
       const experienceInteraction = new ExperienceInteraction(ctx, tenant, interactionEvent);
+
+      // Verify the captcha if provided, this is optional,
+      // whether the captcha is required is determined and guarded when submitting the interaction.
+      if (captchaToken) {
+        await experienceInteraction.verifyCaptcha(captchaToken);
+      }
 
       // Save new experience interaction instance.
       // This will overwrite any existing interaction data in the storage.
@@ -187,6 +196,7 @@ export default function experienceApiRoutes<T extends AnonymousRouter>(
   webAuthnVerificationRoute(experienceRouter, tenant);
   backupCodeVerificationRoutes(experienceRouter, tenant);
   newPasswordIdentityVerificationRoutes(experienceRouter, tenant);
+  oneTimeTokenRoutes(experienceRouter, tenant);
 
   profileRoutes(experienceRouter, tenant);
   experienceAnonymousRoutes(experienceRouter, tenant);

@@ -10,8 +10,10 @@ const sign_up_and_sign_in = {
     title: 'ANMELDEN',
     sign_up_identifier: 'Anmeldeidentifier',
     identifier_description:
-      'Der Anmeldeidentifier ist erforderlich für die Kontoerstellung und muss in Ihrem Anmeldefenster enthalten sein.',
+      'Alle ausgewählten Anmeldekennungen sind erforderlich, wenn ein neues Konto erstellt wird.',
     sign_up_authentication: 'Authentifizierungseinstellung für die Anmeldung',
+    verification_tip:
+      'Benutzer müssen die von dir konfigurierte E-Mail-Adresse oder Telefonnummer durch Eingabe eines Bestätigungscodes bei der Anmeldung überprüfen.',
     authentication_description:
       'Alle ausgewählten Aktionen sind für Benutzer verpflichtend, um den Vorgang abzuschließen.',
     set_a_password_option: 'Erstellen Sie Ihr Passwort',
@@ -21,9 +23,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: 'ANMELDEN',
     sign_in_identifier_and_auth: 'Anmeldeidentifier und Authentifizierungseinstellungen',
-    description:
-      'Benutzer können sich über jede der verfügbaren Optionen anmelden. Passen Sie das Layout an, indem Sie die folgenden Optionen per Drag & Drop anordnen.',
+    description: 'Benutzer können sich über jede der verfügbaren Optionen anmelden.',
     add_sign_in_method: 'Anmeldemethode hinzufügen',
+    add_sign_up_method: 'Anmeldemethode hinzufügen',
     password_auth: 'Passwort',
     verification_code_auth: 'Verifizierungscode',
     auth_swap_tip:
@@ -55,6 +57,8 @@ const sign_up_and_sign_in = {
       'Dies ist unerlässlich, da Sie nur die Möglichkeit aktiviert haben, einen Verifizierungscode bei der Anmeldung bereitzustellen. Sie können das Kontrollkästchen deaktivieren, wenn die Passworteinrichtung im Anmeldeprozess erlaubt ist.',
     delete_sign_in_method:
       'Dies ist unerlässlich, da Sie {{identifier}} als obligatorischen Identifier ausgewählt haben.',
+    password_disabled_notification:
+      'Die Option "Erstellen Sie Ihr Passwort" ist für die Anmeldung mit Benutzername deaktiviert, was Benutzer daran hindern könnte, sich anzumelden. Bestätigen Sie, um mit dem Speichern fortzufahren.',
   },
   advanced_options: {
     title: 'ERWEITERTE OPTIONEN',
@@ -69,6 +73,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: 'Benutzerregistrierung aktivieren',
     enable_user_registration_description:
       'Aktivieren oder deaktivieren Sie die Benutzerregistrierung. Sobald deaktiviert, können Benutzer immer noch über die Admin-Konsole hinzugefügt werden, aber Benutzer können keine Konten mehr über die Anmelde-Benutzeroberfläche einrichten.',
+    unknown_session_redirect_url: 'Unbekannte Sitzungsumleitungs-URL',
+    unknown_session_redirect_url_tip:
+      'Manchmal kann Logto eine Benutzersitzung auf der Anmeldeseite nicht erkennen, z. B. wenn eine Sitzung abläuft oder der Benutzer den Anmeldelink zu den Lesezeichen hinzufügt oder teilt. Standardmäßig erscheint ein 404-Fehler "Unbekannte Sitzung". Um die Benutzererfahrung zu verbessern, legen Sie eine Fallback-URL fest, um Benutzer zurück zu Ihrer App zu leiten und die Authentifizierung neu zu starten.',
   },
 };
 

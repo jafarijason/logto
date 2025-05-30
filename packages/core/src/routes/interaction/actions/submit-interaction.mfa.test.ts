@@ -1,6 +1,6 @@
 import { InteractionEvent, MfaFactor, adminTenantId } from '@logto/schemas';
 import { createMockUtils, pickDefault } from '@logto/shared/esm';
-import type Provider from 'oidc-provider';
+import type { Provider } from 'oidc-provider';
 
 import { mockWebAuthnBind } from '#src/__mocks__/mfa-verification.js';
 import { createMockLogContext } from '#src/test-utils/koa-audit-log.js';
@@ -47,7 +47,7 @@ const userQueries = {
   updateUserById: jest.fn(),
   hasActiveUsers: jest.fn().mockResolvedValue(true),
   hasUserWithEmail: jest.fn().mockResolvedValue(false),
-  hasUserWithPhone: jest.fn().mockResolvedValue(false),
+  hasUserWithNormalizedPhone: jest.fn().mockResolvedValue(false),
 };
 
 const { hasActiveUsers, updateUserById } = userQueries;

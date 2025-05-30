@@ -4,7 +4,7 @@ import SignInExperienceTabWrapper from '../components/SignInExperienceTabWrapper
 
 import AdvancedOptions from './AdvancedOptions';
 import SignInForm from './SignInForm';
-import SignUpForm from './SignUpForm';
+import SignUpFrom from './SignUpForm';
 import SocialSignInForm from './SocialSignInForm';
 
 type Props = {
@@ -17,7 +17,7 @@ function SignUpAndSignIn({ isActive }: Props) {
       {isActive && (
         <PageMeta titleKey={['sign_in_exp.tabs.sign_up_and_sign_in', 'sign_in_exp.page_title']} />
       )}
-      <SignUpForm />
+      <SignUpFrom />
       <SignInForm />
       <SocialSignInForm />
       <AdvancedOptions />

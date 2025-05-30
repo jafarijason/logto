@@ -26,6 +26,7 @@ import { type CloudConnectionLibrary } from '../cloud-connection.js';
 
 export * from './sign-up.js';
 export * from './sign-in.js';
+export * from './email-blocklist-policy.js';
 
 export const developmentTenantPlanId = 'dev';
 
@@ -42,6 +43,7 @@ export const createSignInExperienceLibrary = (
     customPhrases: { findAllCustomLanguageTags },
     signInExperiences: { findDefaultSignInExperience, updateDefaultSignInExperience },
     applicationSignInExperiences: { safeFindSignInExperienceByApplicationId },
+    captchaProviders: { findCaptchaProvider },
     organizations,
   } = queries;
 
@@ -149,6 +151,27 @@ export const createSignInExperienceLibrary = (
     return pick(found, 'branding', 'color', 'type', 'isThirdParty');
   };
 
+  /**
+   * Query the captcha provider and return the public config for front-end usage.
+   * Can not leak the secret key to the front-end.
+   *
+   * @returns The public config of the captcha provider.
+   */
+  const findCaptchaPublicConfig = async () => {
+    const provider = await findCaptchaProvider();
+
+    if (!provider) {
+      return;
+    }
+
+    const { type, siteKey } = provider.config;
+
+    return {
+      type,
+      siteKey,
+    };
+  };
+
   const getFullSignInExperience = async ({
     locale,
     organizationId,
@@ -230,6 +253,14 @@ export const createSignInExperienceLibrary = (
       return pick(appSignInExperience, 'branding', 'color');
     };
 
+    const getCaptchaConfig = async () => {
+      if (!signInExperience.captchaPolicy.enabled) {
+        return;
+      }
+
+      return findCaptchaPublicConfig();
+    };
+
     return {
       ...deepmerge(
         deepmerge(signInExperience, getAppSignInExperience()),
@@ -240,6 +271,7 @@ export const createSignInExperienceLibrary = (
       forgotPassword,
       isDevelopmentTenant,
       googleOneTap: getGoogleOneTap(),
+      captchaConfig: await getCaptchaConfig(),
     };
   };
 
@@ -247,5 +279,6 @@ export const createSignInExperienceLibrary = (
     validateLanguageInfo,
     removeUnavailableSocialConnectorTargets,
     getFullSignInExperience,
+    findCaptchaPublicConfig,
   };
 };

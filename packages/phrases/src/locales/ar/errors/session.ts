@@ -39,6 +39,14 @@ const session = {
   },
   sso_enabled:
     'تم تمكين تسجيل الدخول الموحد لهذا البريد الإلكتروني المحدد. يرجى تسجيل الدخول باستخدام SSO.',
+  captcha_required: 'مطلوب التحقق من Captcha.',
+  captcha_failed: 'فشل التحقق من Captcha.',
+  email_blocklist: {
+    disposable_email_validation_failed: 'فشل التحقق من عنوان البريد الإلكتروني.',
+    invalid_email: 'عنوان البريد الإلكتروني غير صالح.',
+    email_subaddressing_not_allowed: 'لا يُسمح بتوجيه البريد الإلكتروني الإضافي.',
+    email_not_allowed: 'عنوان البريد الإلكتروني "{{email}}" مقيد. يرجى اختيار عنوان آخر.',
+  },
 };
 
 export default Object.freeze(session);

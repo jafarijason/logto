@@ -10,6 +10,7 @@ const description = {
   sign_in: 'Giriş Yap',
   privacy_policy: 'Gizlilik Politikası',
   create_account: 'Hesap Oluştur',
+  switch_account: 'Hesabı değiştir',
   or: 'veya',
   and: 've',
   enter_passcode: 'Doğrulama kodu {{address}} {{target}} adresinize gönderildi',
@@ -62,8 +63,15 @@ const description = {
   password_requirements: 'Şifre {{items, list}}.',
   password_requirement: {
     length_one: 'en az {{count}} karakter gerektirir',
+    length_two: 'en az {{count}} karakter gerektirir',
+    length_few: 'en az {{count}} karakter gerektirir',
+    length_many: 'en az {{count}} karakter gerektirir',
     length_other: 'en az {{count}} karakter gerektirir',
     character_types_one: 'en az {{count}} tane büyük harf, küçük harf, rakam ve sembol içermelidir',
+    character_types_two: 'en az {{count}} tane büyük harf, küçük harf, rakam ve sembol içermelidir',
+    character_types_few: 'en az {{count}} tane büyük harf, küçük harf, rakam ve sembol içermelidir',
+    character_types_many:
+      'en az {{count}} tane büyük harf, küçük harf, rakam ve sembol içermelidir',
     character_types_other:
       'en az {{count}} tane büyük harf, küçük harf, rakam ve sembol içermelidir',
   },
@@ -72,30 +80,18 @@ const description = {
   single_sign_on_connectors_list:
     'Şirketiniz, {{email}} e-posta hesabı için Tekli Oturum Açmayı (Single Sign-On) etkinleştirdi. Aşağıdaki SSO sağlayıcıları ile oturum açmaya devam edebilirsiniz.',
   single_sign_on_enabled: 'Bu hesapta Tekli Oturum Açma etkinleştirildi.',
-  /** UNTRANSLATED */
-  authorize_title: 'Authorize {{name}}',
-  /** UNTRANSLATED */
-  request_permission: '{{name}} is requesting access to:',
-  /** UNTRANSLATED */
-  grant_organization_access: 'Grant the organization access:',
-  /** UNTRANSLATED */
-  authorize_personal_data_usage: 'Authorize the use of your personal data:',
-  /** UNTRANSLATED */
-  authorize_organization_access: 'Authorize access to the specific organization:',
-  /** UNTRANSLATED */
-  user_scopes: 'Personal user data',
-  /** UNTRANSLATED */
-  organization_scopes: 'Organization access',
-  /** UNTRANSLATED */
-  authorize_agreement: `By authorizing the access, you agree to the {{name}}'s <link></link>.`,
-  /** UNTRANSLATED */
-  authorize_agreement_with_redirect: `By authorizing the access, you agree to the {{name}}'s <link></link>, and will be redirected to {{uri}}.`,
-  /** UNTRANSLATED */
-  not_you: 'Not you?',
-  /** UNTRANSLATED */
-  user_id: 'User ID: {{id}}',
-  /** UNTRANSLATED */
-  redirect_to: 'You will be redirected to {{name}}.',
+  authorize_title: '{{name}} yetkilendir',
+  request_permission: '{{name}} erişim izni istiyor:',
+  grant_organization_access: 'Organizasyon erişimi ver:',
+  authorize_personal_data_usage: 'Kişisel verilerinizin kullanımını yetkilendirin:',
+  authorize_organization_access: 'Belirli organizasyonlara erişim yetkisi verin:',
+  user_scopes: 'Kişisel kullanıcı verileri',
+  organization_scopes: 'Organizasyon erişimi',
+  authorize_agreement: `Erişim yetkisi vererek, {{name}}'nin <link></link> şartlarını kabul etmiş olursunuz.`,
+  authorize_agreement_with_redirect: `Erişim yetkisi vererek, {{name}}'nin <link></link> şartlarını kabul etmiş olursunuz ve {{uri}} adresine yönlendirileceksiniz.`,
+  not_you: 'Sen değil misin?',
+  user_id: 'Kullanıcı ID: {{id}}',
+  redirect_to: '{{name}} adresine yönlendirileceksiniz.',
   auto_agreement: 'Devam ederek <link></link> kabul etmiş oluyorsunuz.',
   identifier_sign_in_description: 'Oturum açmak için {{types, list(type: disjunction;)}} girin.',
   all_sign_in_options: 'Tüm oturum açma seçenekleri',
@@ -105,6 +101,9 @@ const description = {
   back_to_sign_in: 'Girişe dön',
   support_email: 'Destek e-postası: <link></link>',
   support_website: 'Destek web sitesi: <link></link>',
+  switch_account_title: 'Şu anda {{account}} olarak oturum açtınız',
+  switch_account_description:
+    'Devam etmek için, mevcut hesaptan çıkış yapacak ve otomatik olarak yeni hesaba geçeceksiniz.',
 };
 
 export default Object.freeze(description);

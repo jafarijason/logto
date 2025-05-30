@@ -18,17 +18,25 @@ export const initClient = async (
   return client;
 };
 
-export const initExperienceClient = async (
-  interactionEvent: InteractionEvent = InteractionEvent.SignIn,
-  config?: Partial<LogtoConfig>,
-  redirectUri?: string,
-  options: Omit<SignInOptions, 'redirectUri'> = {},
-  api?: KyInstance
-) => {
+export const initExperienceClient = async ({
+  interactionEvent = InteractionEvent.SignIn,
+  config,
+  redirectUri,
+  options = {},
+  api,
+  captchaToken,
+}: {
+  interactionEvent?: InteractionEvent;
+  config?: Partial<LogtoConfig>;
+  redirectUri?: string;
+  options?: Omit<SignInOptions, 'redirectUri'>;
+  api?: KyInstance;
+  captchaToken?: string;
+} = {}) => {
   const client = new ExperienceClient(config, api);
   await client.initSession(redirectUri, options);
   assert(client.interactionCookie, new Error('Session not found'));
-  await client.initInteraction({ interactionEvent });
+  await client.initInteraction({ interactionEvent, captchaToken });
 
   return client;
 };

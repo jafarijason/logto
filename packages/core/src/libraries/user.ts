@@ -1,17 +1,18 @@
 import type { BindMfa, CreateUser, Scope, User } from '@logto/schemas';
-import { RoleType, Users, UsersPasswordEncryptionMethod } from '@logto/schemas';
-import { generateStandardId, generateStandardShortId } from '@logto/shared';
-import { condArray, deduplicateByKey, type Nullable } from '@silverhand/essentials';
+import { RoleType, UsersPasswordEncryptionMethod } from '@logto/schemas';
+import { generateStandardShortId, generateStandardId } from '@logto/shared';
+import type { Nullable } from '@silverhand/essentials';
+import { deduplicateByKey, condArray } from '@silverhand/essentials';
 import { argon2Verify, bcryptVerify, md5, sha1, sha256 } from 'hash-wasm';
 import pRetry from 'p-retry';
 
-import { buildInsertIntoWithPool } from '#src/database/insert-into.js';
 import { EnvSet } from '#src/env-set/index.js';
 import RequestError from '#src/errors/RequestError/index.js';
 import { type JitOrganization } from '#src/queries/organization/email-domains.js';
 import { createUsersRolesQueries } from '#src/queries/users-roles.js';
 import type Queries from '#src/tenants/Queries.js';
 import assertThat from '#src/utils/assert-that.js';
+import { legacyVerify } from '#src/utils/password.js';
 import type { OmitAutoSetFields } from '#src/utils/sql.js';
 
 import { convertBindMfaToMfaVerification, encryptUserPassword } from './user.utils.js';
@@ -28,10 +29,11 @@ export const createUserLibrary = (queries: Queries) => {
       hasUser,
       hasUserWithEmail,
       hasUserWithId,
-      hasUserWithPhone,
+      hasUserWithNormalizedPhone,
       hasUserWithIdentity,
       findUsersByIds,
       updateUserById,
+      insertUser: insertUserQuery,
       findUserById,
     },
     usersRoles: { findUsersRolesByRoleId, findUsersRolesByUserId },
@@ -69,10 +71,6 @@ export const createUserLibrary = (queries: Queries) => {
     assertThat(parameterRoles.length === roleNames.length, 'role.default_role_missing');
 
     return pool.transaction(async (connection) => {
-      const insertUserQuery = buildInsertIntoWithPool(connection)(Users, {
-        returning: true,
-      });
-
       const user = await insertUserQuery(data);
       const roles = deduplicateByKey([...parameterRoles, ...defaultRoles], 'id');
 
@@ -102,7 +100,7 @@ export const createUserLibrary = (queries: Queries) => {
       throw new RequestError({ code: 'user.email_already_in_use', status: 422 });
     }
 
-    if (primaryPhone && (await hasUserWithPhone(primaryPhone, excludeUserId))) {
+    if (primaryPhone && (await hasUserWithNormalizedPhone(primaryPhone, excludeUserId))) {
       throw new RequestError({ code: 'user.phone_already_in_use', status: 422 });
     }
 
@@ -221,6 +219,11 @@ export const createUserLibrary = (queries: Queries) => {
         assertThat(result, new RequestError({ code: 'session.invalid_credentials', status: 422 }));
         break;
       }
+      case UsersPasswordEncryptionMethod.Legacy: {
+        const isValid = await legacyVerify(passwordEncrypted, password);
+        assertThat(isValid, new RequestError({ code: 'session.invalid_credentials', status: 422 }));
+        break;
+      }
     }
 
     // Migrate password to default algorithm: argon2i
@@ -258,6 +261,7 @@ export const createUserLibrary = (queries: Queries) => {
         email: string;
         /** The SSO connector ID to determine JIT organizations. */
         ssoConnectorId?: undefined;
+        organizationIds?: undefined;
       }
     | {
         /** The user ID to provision organizations for. */
@@ -266,6 +270,13 @@ export const createUserLibrary = (queries: Queries) => {
         email?: undefined;
         /** The SSO connector ID to determine JIT organizations. */
         ssoConnectorId: string;
+        organizationIds?: undefined;
+      }
+    | {
+        userId: string;
+        email?: undefined;
+        ssoConnectorId?: undefined;
+        organizationIds: string[];
       };
 
   // TODO: If the user's email is not verified, we should not provision the user into any organization.
@@ -277,12 +288,14 @@ export const createUserLibrary = (queries: Queries) => {
     userId,
     email,
     ssoConnectorId,
+    organizationIds,
   }: ProvisionOrganizationsParams): Promise<readonly JitOrganization[]> => {
     const userEmailDomain = email?.split('@')[1];
     const jitOrganizations = condArray(
       userEmailDomain &&
         (await organizations.jit.emailDomains.getJitOrganizations(userEmailDomain)),
-      ssoConnectorId && (await organizations.jit.ssoConnectors.getJitOrganizations(ssoConnectorId))
+      ssoConnectorId && (await organizations.jit.ssoConnectors.getJitOrganizations(ssoConnectorId)),
+      organizationIds && (await organizations.jit.getJitOrganizationsByIds(organizationIds))
     );
 
     if (jitOrganizations.length === 0) {

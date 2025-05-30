@@ -1,5 +1,256 @@
 # Change Log
 
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [35bbc4399]
+  - @logto/shared@3.3.0
+
+## 1.27.0
+
+### Minor Changes
+
+- e69ea0373: feat: add new `sentinelPolicy` field to the `signInExperience` settings
+
+  We have introduced a new field, `sentinelPolicy`, in the `signInExperience` settings. This field allows customization of lockout settings for identifiers in your Logto application. By default, it is set to an empty object, which means the default lockout policy will apply. The properties of the new field are as follows:
+
+  ```ts
+  type SentinelPolicy = {
+    maxAttempts?: number;
+    lockoutDuration?: number;
+  };
+  ```
+
+  1. Maximum failed attempts:
+
+     - This limits the number of consecutive failed authentication attempts per identifier within an hour. If the limit is exceeded, the identifier will be temporarily locked out.
+     - Default Value: 100
+
+  2. Lockout duration (minutes):
+
+     - This specifies the period during which all authentication attempts for the given identifier are blocked after exceeding the maximum failed attempts.
+     - Default Value: 60 minutes
+
+- 2961d355d: bump node version to ^22.14.0
+- 0a76f3389: add captcha bot protection
+
+  You can now enable CAPTCHA bot protection for your sign-in experience with providers like Google reCAPTCHA enterprise and Cloudflare Turnstile.
+
+  To enable CAPTCHA bot protection, you need to:
+
+  1. Go to Console > Security > CAPTCHA > Bot protection.
+  2. Select the CAPTCHA provider you want to use.
+  3. Configure the CAPTCHA provider.
+  4. Save the settings.
+  5. Enable CAPTCHA in the Security page.
+
+  Then take a preview of your sign-in experience to see the CAPTCHA in action.
+
+### Patch Changes
+
+- Updated dependencies [2961d355d]
+- Updated dependencies [0a76f3389]
+- Updated dependencies [e69ea0373]
+  - @logto/connector-kit@4.3.0
+  - @logto/language-kit@1.2.0
+  - @logto/phrases-experience@1.10.0
+  - @logto/core-kit@2.6.0
+  - @logto/phrases@1.19.0
+  - @logto/shared@3.2.0
+
+## 1.26.0
+
+### Minor Changes
+
+- 13d04d776: feat: support multiple sign-up identifiers in sign-in experience
+
+  ## New update
+
+  Introduces a new optional field, `secondaryIdentifiers`, to the sign-in experience sign-up settings. This enhancement allows developers to specify multiple required user identifiers during the user sign-up process. Available options include `email`, `phone`, `username` and `emailOrPhone`.
+
+  ### Explanation of the difference between `signUp.identifiers` and new `signUp.secondaryIdentifiers`
+
+  The existing `signUp.identifiers` field represents the sign-up identifiers enabled for user sign-up and is an array type. In this legacy setup, if multiple identifiers are provided, users can complete the sign-up process using any one of them. The only multi-value case allowed is `[email, phone]`, which signifies that users can provide either an email or a phone number.
+
+  To enhance flexibility and support multiple required sign-up identifiers, the existing `signUp.identifiers` field does not suffice. To maintain backward compatibility with existing data, we have introduced this new `secondaryIdentifiers` field.
+
+  Unlike the `signUp.identifiers` field, the `signUp.secondaryIdentifiers` array follows an `AND` logic, meaning that all elements listed in this field are required during the sign-up process, in addition to the primary identifiers. This new field also accommodates the `emailOrPhone` case by defining an exclusive `emailOrPhone` value type, which indicates that either a phone number or an email address must be provided.
+
+  In summary, while `identifiers` allows for optional selection among email and phone, `secondaryIdentifiers` enforces mandatory inclusion of all specified identifiers.
+
+  ### Examples
+
+  1. `username` as the primary identifier. In addition, user will be required to provide a verified `email` and `phone number` during the sign-up process.
+
+  ```json
+  {
+    "identifiers": ["username"],
+    "secondaryIdentifiers": [
+      {
+        "type": "email",
+        "verify": true
+      },
+      {
+        "type": "phone",
+        "verify": true
+      }
+    ],
+    "verify": true,
+    "password": true
+  }
+  ```
+
+  2. `username` as the primary identifier. In addition, user will be required to provide either a verified `email` or `phone number` during the sign-up process.
+
+  ```json
+  {
+    "identifiers": ["username"],
+    "secondaryIdentifiers": [
+      {
+        "type": "emailOrPhone",
+        "verify": true
+      }
+    ],
+    "verify": true,
+    "password": true
+  }
+  ```
+
+  3. `email` or `phone number` as the primary identifier. In addition, user will be required to provide a `username` during the sign-up process.
+
+  ```json
+  {
+    "identifiers": ["email", "phone"],
+    "secondaryIdentifiers": [
+      {
+        "type": "username",
+        "verify": true
+      }
+    ],
+    "verify": true,
+    "password": false
+  }
+  ```
+
+  ### Sign-in experience settings
+
+  - `@logto/core`: Update the `/api/sign-in-experience` endpoint to support the new `secondaryIdentifiers` field in the sign-up settings.
+  - `@logto/console`: Replace the sign-up identifier single selector with a multi-selector to support multiple sign-up identifiers. The order of the identifiers can be rearranged by dragging and dropping the items in the list. The first item in the list will be considered the primary identifier and stored in the `signUp.identifiers` field, while the rest will be stored in the `signUp.secondaryIdentifiers` field.
+
+  ### End-user experience
+
+  The sign-up flow is now split into two stages:
+
+  - Primary identifiers (`signUp.identifiers`) are collected in the first-screen registration screen.
+  - Secondary identifiers (`signUp.secondaryIdentifiers`) are requested in subsequent steps after the primary registration has been submitted.
+
+  ## Other refactors
+
+  We have fully decoupled the sign-up identifier settings from the sign-in methods. Developers can now require as many user identifiers as needed during the sign-up process without impacting the sign-in process.
+
+  The following restrictions on sign-in and sign-up settings have been removed:
+
+  1. Password requirement is now optional when `username` is configured as a sign-up identifier. However, users without passwords cannot sign in using username authentication.
+  2. Removed the constraint requiring sign-up identifiers to be enabled as sign-in methods.
+  3. Removed the requirement for password verification across all sign-in methods when password is enabled for sign-up.
+
+### Patch Changes
+
+- Updated dependencies [5da01bc47]
+  - @logto/language-kit@1.1.3
+
+## 1.25.0
+
+### Minor Changes
+
+- 1c7bdf9ba: add legacy password type supporting custom hasing function, credits @fre2d0m
+
+  You can now set the type of `password_encryption_method` to `legacy`, and store info with a JSON string format (containing a hash algorithm, arguments, and an encrypted password) in the `password_encrypted` field. By doing this, you can use any hash algorithm supported by Node.js, this is useful when migrating from other password hash algorithms, especially for the ones that include salt.
+
+  The format of the JSON string is as follows:
+
+  ```json
+  ["hash_algorithm", ["argument1", "argument2", ...], "expected_hashed_value"]
+  ```
+
+  And you can use `@` as the input password in the arguments.
+
+  For example, if you are using SHA256 with a salt, you can store the password in the following format:
+
+  ```json
+  [
+    "sha256",
+    ["salt123", "@"],
+    "c465f66c6ac481a7a17e9ed5b4e2e7e7288d892f12bf1c95c140901e9a70436e"
+  ]
+  ```
+
+  Then when the user uses the password (`password123`), the `legacyVerify` function will use the `sha256` algorithm with the `salt123` and the input password to verify the password.
+
+  In this case, `salt123` is the first argument, `@` is the input password, then the following code will be executed:
+
+  ```ts
+  const hash = crypto.createHash("sha256");
+  hash.update("salt123" + "password123");
+  const expectedHashedValue = hash.digest("hex");
+  ```
+
+### Patch Changes
+
+- Updated dependencies [b0135bcd3]
+  - @logto/connector-kit@4.2.0
+
+## 1.24.1
+
+### Patch Changes
+
+- e11e57de8: bump dependencies for security update
+- Updated dependencies [0b785ee0d]
+- Updated dependencies [5086f4bd2]
+- Updated dependencies [e11e57de8]
+  - @logto/phrases@1.18.0
+  - @logto/connector-kit@4.1.1
+  - @logto/language-kit@1.1.1
+  - @logto/core-kit@2.5.4
+  - @logto/shared@3.1.4
+  - @logto/phrases-experience@1.9.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies [1337669e1]
+  - @logto/phrases@1.17.0
+
+## 1.23.1
+
+## 1.23.0
+
+### Minor Changes
+
+- f1b1d9e95: new MFA prompt policy
+
+  You can now cutomize the MFA prompt policy in the Console.
+
+  First, choose if you want to enable **Require MFA**:
+
+  - **Enable**: Users will be prompted to set up MFA during the sign-in process which cannot be skipped. If the user fails to set up MFA or deletes their MFA settings, they will be locked out of their account until they set up MFA again.
+  - **Disable**: Users can skip the MFA setup process during sign-up flow.
+
+  If you choose to **Disable**, you can choose the MFA setup prompt:
+
+  - Do not ask users to set up MFA.
+  - Ask users to set up MFA during registration (skippable, one-time prompt). **The same prompt as previous policy (UserControlled)**
+  - Ask users to set up MFA on their sign-in after registration (skippable, one-time prompt)
+
+### Patch Changes
+
+- Updated dependencies [f1b1d9e95]
+- Updated dependencies [239b81e31]
+  - @logto/phrases@1.16.0
+  - @logto/core-kit@2.5.2
+
 ## 1.22.0
 
 ### Minor Changes

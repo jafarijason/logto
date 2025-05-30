@@ -10,8 +10,10 @@ const sign_up_and_sign_in = {
     title: 'サインアップ',
     sign_up_identifier: 'サインアップ識別子',
     identifier_description:
-      'サインアップ識別子はアカウント作成に必要で、サインイン画面に含める必要があります。',
+      '新しいアカウントを作成する際に、すべての選択されたサインアップ識別子が必要です。',
     sign_up_authentication: 'サインアップの認証設定',
+    verification_tip:
+      'ユーザーはサインアップ中に確認コードを入力することで、設定されたメールや電話番号を確認する必要があります。',
     authentication_description:
       '選択したすべてのアクションは、ユーザーがフローを完了するために必須です。',
     set_a_password_option: 'パスワードの設定',
@@ -21,9 +23,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: 'サインイン',
     sign_in_identifier_and_auth: 'サインインの識別子と認証設定',
-    description:
-      'ユーザーは利用可能なすべてのオプションを使用してサインインできます。下のオプションをドラッグ＆ドロップしてレイアウトを調整してください。',
+    description: 'ユーザーは利用可能なすべてのオプションを使用してサインインできます',
     add_sign_in_method: 'サインイン方法を追加',
+    add_sign_up_method: 'サインアップ方法を追加',
     password_auth: 'パスワード',
     verification_code_auth: '確認コード',
     auth_swap_tip: '以下のオプションを交換して、フローで最初に表示されるオプションを決定します。',
@@ -53,6 +55,8 @@ const sign_up_and_sign_in = {
     verification_code_auth:
       'これは、サインアップ時に確認コードの提供オプションのみを有効にした場合に必要です。サインアッププロセスでパスワード設定を許可する場合は、ボックスのチェックを外してもかまいません。',
     delete_sign_in_method: 'これは {{identifier}} を必須の識別子として選択した場合に必要です。',
+    password_disabled_notification:
+      'ユーザー名のサインアップで「パスワードを作成する」オプションが無効になっており、ユーザーがサインインできない可能性があります。保存を続行するには確認してください。',
   },
   advanced_options: {
     title: '高度なオプション',
@@ -67,6 +71,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: 'ユーザー登録を有効にする',
     enable_user_registration_description:
       'ユーザー登録を有効または無効にできます。無効にすると、ユーザーは管理コンソールで追加できますが、サインイン画面でアカウントを作成することはできません。',
+    unknown_session_redirect_url: '不明なセッションのリダイレクト URL',
+    unknown_session_redirect_url_tip:
+      'Logto がサインインページでユーザーのセッションを認識できないことがあります。例えば、セッションが期限切れになった場合や、ユーザーがサインインリンクをブックマークまたは共有した場合です。デフォルトでは、「不明なセッション」404 エラーが表示されます。ユーザーエクスペリエンスを向上させるために、ユーザーをアプリに戻して認証を再開するためのフォールバック URL を設定します。',
   },
 };
 

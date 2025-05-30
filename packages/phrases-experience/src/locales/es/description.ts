@@ -10,6 +10,7 @@ const description = {
   sign_in: 'Iniciar sesión',
   privacy_policy: 'Política de privacidad',
   create_account: 'Crear cuenta',
+  switch_account: 'Cambiar cuenta',
   or: 'o',
   and: 'y',
   enter_passcode: 'El código de verificación ha sido enviado a su {{address}} {{target}}',
@@ -65,9 +66,18 @@ const description = {
   password_requirements: 'Contraseña {{items, lista}}.',
   password_requirement: {
     length_one: 'requiere un mínimo de {{count}} carácter',
+    length_two: 'requiere un mínimo de {{count}} caracteres',
+    length_few: 'requiere un mínimo de {{count}} caracteres',
+    length_many: 'requiere un mínimo de {{count}} caracteres',
     length_other: 'requiere un mínimo de {{count}} caracteres',
     character_types_one:
       'debe contener al menos {{count}} tipo de letras mayúsculas, letras minúsculas, dígitos y símbolos',
+    character_types_two:
+      'debe contener al menos {{count}} tipos de letras mayúsculas, letras minúsculas, dígitos y símbolos',
+    character_types_few:
+      'debe contener al menos {{count}} tipos de letras mayúsculas, letras minúsculas, dígitos y símbolos',
+    character_types_many:
+      'debe contener al menos {{count}} tipos de letras mayúsculas, letras minúsculas, dígitos y símbolos',
     character_types_other:
       'debe contener al menos {{count}} tipos de letras mayúsculas, letras minúsculas, dígitos y símbolos',
   },
@@ -77,30 +87,18 @@ const description = {
     'Su empresa ha habilitado el inicio de sesión único (Single Sign-On) para la cuenta de correo electrónico {{email}}. Puede continuar iniciando sesión con los siguientes proveedores de SSO.',
   single_sign_on_enabled:
     'El inicio de sesión único (Single Sign-On) está habilitado para esta cuenta',
-  /** UNTRANSLATED */
-  authorize_title: 'Authorize {{name}}',
-  /** UNTRANSLATED */
-  request_permission: '{{name}} is requesting access to:',
-  /** UNTRANSLATED */
-  grant_organization_access: 'Grant the organization access:',
-  /** UNTRANSLATED */
-  authorize_personal_data_usage: 'Authorize the use of your personal data:',
-  /** UNTRANSLATED */
-  authorize_organization_access: 'Authorize access to the specific organization:',
-  /** UNTRANSLATED */
-  user_scopes: 'Personal user data',
-  /** UNTRANSLATED */
-  organization_scopes: 'Organization access',
-  /** UNTRANSLATED */
-  authorize_agreement: `By authorizing the access, you agree to the {{name}}'s <link></link>.`,
-  /** UNTRANSLATED */
-  authorize_agreement_with_redirect: `By authorizing the access, you agree to the {{name}}'s <link></link>, and will be redirected to {{uri}}.`,
-  /** UNTRANSLATED */
-  not_you: 'Not you?',
-  /** UNTRANSLATED */
-  user_id: 'User ID: {{id}}',
-  /** UNTRANSLATED */
-  redirect_to: 'You will be redirected to {{name}}.',
+  authorize_title: 'Autorizar {{name}}',
+  request_permission: '{{name}} solicita acceso a:',
+  grant_organization_access: 'Otorgar acceso a la organización:',
+  authorize_personal_data_usage: 'Autorizar el uso de tus datos personales:',
+  authorize_organization_access: 'Autorizar acceso a la organización específica:',
+  user_scopes: 'Datos personales del usuario',
+  organization_scopes: 'Acceso a la organización',
+  authorize_agreement: `Al autorizar el acceso, aceptas los <link></link> de {{name}}.`,
+  authorize_agreement_with_redirect: `Al autorizar el acceso, aceptas los <link></link> de {{name}}, y serás redirigido a {{uri}}.`,
+  not_you: '¿No eres tú?',
+  user_id: 'ID de usuario: {{id}}',
+  redirect_to: 'Serás redirigido a {{name}}.',
   auto_agreement: 'Al continuar, acepta los <link></link>.',
   identifier_sign_in_description:
     'Ingrese su {{types, list(type: disjunction;)}} para iniciar sesión.',
@@ -111,6 +109,9 @@ const description = {
   back_to_sign_in: 'Volver a iniciar sesión',
   support_email: 'Correo electrónico de soporte: <link></link>',
   support_website: 'Sitio web de soporte: <link></link>',
+  switch_account_title: 'Actualmente has iniciado sesión como {{account}}',
+  switch_account_description:
+    'Para continuar, se cerrará la sesión de la cuenta actual, y se cambiará automáticamente a la nueva cuenta.',
 };
 
 export default Object.freeze(description);

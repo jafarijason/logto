@@ -171,6 +171,31 @@ const quota_item = {
     unlimited: 'カスタム UI',
     not_eligible: 'カスタム UI を削除してください',
   },
+  idp_initiated_sso_enabled: {
+    name: 'IDPによって開始された SSO',
+    limited: 'IDPによって開始された SSO',
+    unlimited: 'IDPによって開始された SSO',
+    not_eligible: 'IDPによって開始された SSO は許可されていません',
+  },
+  saml_applications_limit: {
+    name: 'SAML アプリケーション',
+    limited: '{{count, number}} SAML アプリケーション',
+    limited_other: '{{count, number}} SAML アプリケーション',
+    unlimited: '無制限のSAMLアプリケーション',
+    not_eligible: 'SAMLアプリケーションを削除してください',
+  },
+  captcha_enabled: {
+    name: 'CAPTCHA',
+    limited: 'CAPTCHA',
+    unlimited: 'CAPTCHA',
+    not_eligible: 'あなたの CAPTCHA を削除してください',
+  },
+  security_features_enabled: {
+    name: '高度なセキュリティ',
+    limited: '高度なセキュリティ',
+    unlimited: '高度なセキュリティ',
+    not_eligible: '高度なセキュリティ設定を削除してください',
+  },
 };
 
 export default Object.freeze(quota_item);

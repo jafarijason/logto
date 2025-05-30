@@ -10,8 +10,10 @@ const sign_up_and_sign_in = {
     title: 'REGISTO',
     sign_up_identifier: 'Identificador de registo',
     identifier_description:
-      'O identificador de registo é necessário para a criação de conta e deve ser incluído no ecrã de início de sessão.',
+      'Todos os identificadores de registo selecionados são necessários ao criar uma nova conta.',
     sign_up_authentication: 'Definição de autenticação para registo',
+    verification_tip:
+      'Os usuários devem verificar o email ou número de telefone que configurou inserindo um código de verificação durante o registo.',
     authentication_description:
       'Todas as ações selecionadas serão obrigatórias para os utilizadores concluir o processo de registo.',
     set_a_password_option: 'Criar uma senha',
@@ -21,9 +23,9 @@ const sign_up_and_sign_in = {
   sign_in: {
     title: 'INICIAR SESSÃO',
     sign_in_identifier_and_auth: 'Identificador e definições de autenticação para início de sessão',
-    description:
-      'Os utilizadores podem iniciar sessão usando qualquer uma das opções disponíveis. Ajuste a disposição arrastando e soltando as opções abaixo.',
+    description: 'Os utilizadores podem iniciar sessão usando qualquer uma das opções disponíveis.',
     add_sign_in_method: 'Adicionar Método de Início de Sessão',
+    add_sign_up_method: 'Adicionar método de inscrição',
     password_auth: 'Senha',
     verification_code_auth: 'Código de verificação',
     auth_swap_tip: 'Alterne as opções abaixo para determinar qual aparece primeiro no processo.',
@@ -54,6 +56,8 @@ const sign_up_and_sign_in = {
       'Isto é essencial uma vez que apenas ativou a opção de fornecer um código de verificação ao registar-se. É livre de desmarcar a caixa quando a configuração da senha é permitida durante o processo de registo.',
     delete_sign_in_method:
       'Isto é essencial uma vez que selecionou {{identifier}} como um identificador obrigatório.',
+    password_disabled_notification:
+      'A opção "Criar sua senha" está desativada para registo de nome de utilizador, o que pode impedir os usuários de iniciarem sessão. Confirme para continuar com a gravação.',
   },
   advanced_options: {
     title: 'OPÇÕES AVANÇADAS',
@@ -68,6 +72,9 @@ const sign_up_and_sign_in = {
     enable_user_registration: 'Ativar registo de utilizadores',
     enable_user_registration_description:
       'Ativar ou desativar o registo de utilizadores. Uma vez desativado, os utilizadores ainda podem ser adicionados na consola de administração, mas os utilizadores não podem mais estabelecer contas através da interface de início de sessão.',
+    unknown_session_redirect_url: 'URL de redirecionamento de sessão desconhecida',
+    unknown_session_redirect_url_tip:
+      'Às vezes, o Logto pode não reconhecer a sessão de um utilizador na página de início de sessão, como quando uma sessão expira ou o utilizador adiciona aos favoritos ou partilha o link de início de sessão. Por padrão, aparece um erro "sessão desconhecida" 404. Para melhorar a experiência do utilizador, defina um URL de fallback para redirecionar os utilizadores de volta para a sua aplicação e reiniciar a autenticação.',
   },
 };
 

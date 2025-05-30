@@ -10,6 +10,7 @@ import Button from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import { SmartInputField } from '@/components/InputFields';
 import type { IdentifierInputValue } from '@/components/InputFields/SmartInputField';
+import CaptchaBox from '@/containers/CaptchaBox';
 import TermsAndPrivacyCheckbox from '@/containers/TermsAndPrivacyCheckbox';
 import usePrefilledIdentifier from '@/hooks/use-prefilled-identifier';
 import useSingleSignOnWatch from '@/hooks/use-single-sign-on-watch';
@@ -134,13 +135,10 @@ const IdentifierRegisterForm = ({ className, autoFocus, signUpMethods }: Props) 
           />
         )}
       />
-
       {errorMessage && <ErrorMessage className={styles.formErrors}>{errorMessage}</ErrorMessage>}
-
       {showSingleSignOnForm && (
         <div className={styles.message}>{t('description.single_sign_on_enabled')}</div>
       )}
-
       {/**
        * Have to use css to hide the terms element.
        * Remove element from dom will trigger a form re-render.
@@ -157,7 +155,7 @@ const IdentifierRegisterForm = ({ className, autoFocus, signUpMethods }: Props) 
           agreeToTermsPolicy === AgreeToTermsPolicy.Automatic && styles.hidden
         )}
       />
-
+      <CaptchaBox />
       <Button
         name="submit"
         title={showSingleSignOnForm ? 'action.single_sign_on' : 'action.create_account'}
@@ -165,7 +163,6 @@ const IdentifierRegisterForm = ({ className, autoFocus, signUpMethods }: Props) 
         htmlType="submit"
         isLoading={isSubmitting}
       />
-
       <input hidden type="submit" />
     </form>
   );

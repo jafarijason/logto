@@ -1,5 +1,17 @@
 # Change Log
 
+## 1.5.0
+
+### Minor Changes
+
+- 2961d355d: bump node version to ^22.14.0
+
+## 1.4.2
+
+### Patch Changes
+
+- e11e57de8: bump dependencies for security update
+
 ## 1.4.1
 
 ### Patch Changes

@@ -1,10 +1,15 @@
 import { DemoConnector } from '@logto/connector-kit';
 import { PasswordPolicyChecker } from '@logto/core-kit';
 import { ConnectorType, SignInExperiences } from '@logto/schemas';
-import { tryThat } from '@silverhand/essentials';
+import { conditional, tryThat } from '@silverhand/essentials';
 import { literal, object, string, z } from 'zod';
 
-import { validateSignUp, validateSignIn } from '#src/libraries/sign-in-experience/index.js';
+import {
+  validateSignUp,
+  validateSignIn,
+  parseEmailBlocklistPolicy,
+  isEmailBlocklistPolicyEnabled,
+} from '#src/libraries/sign-in-experience/index.js';
 import { validateMfa } from '#src/libraries/sign-in-experience/mfa.js';
 import koaGuard from '#src/middleware/koa-guard.js';
 
@@ -23,7 +28,7 @@ export default function signInExperiencesRoutes<T extends ManagementApiRouter>(
   const { findUserById } = queries.users;
   const {
     signInExperiences: { validateLanguageInfo },
-    quota: { guardTenantUsageByKey, reportSubscriptionUpdatesUsage },
+    quota,
   } = libraries;
   const { getLogtoConnectors } = connectors;
 
@@ -68,15 +73,16 @@ export default function signInExperiencesRoutes<T extends ManagementApiRouter>(
         )
         .partial(),
       response: SignInExperiences.guard,
-      status: [200, 400, 404, 422],
+      status: [200, 400, 404, 422, 403],
     }),
 
+    // eslint-disable-next-line complexity
     async (ctx, next) => {
       const {
         query: { removeUnusedDemoSocialConnector },
-        body: { socialSignInConnectorTargets, ...rest },
+        body: { socialSignInConnectorTargets, emailBlocklistPolicy, ...rest },
       } = ctx.guard;
-      const { languageInfo, signUp, signIn, mfa } = rest;
+      const { languageInfo, signUp, signIn, mfa, sentinelPolicy, captchaPolicy } = rest;
 
       if (languageInfo) {
         await validateLanguageInfo(languageInfo);
@@ -96,22 +102,36 @@ export default function signInExperiencesRoutes<T extends ManagementApiRouter>(
         validateSignUp(signUp, connectors);
       }
 
-      if (signIn && signUp) {
-        validateSignIn(signIn, signUp, connectors);
-      } else if (signIn) {
-        const signInExperience = await findDefaultSignInExperience();
-        validateSignIn(signIn, signInExperience.signUp, connectors);
+      if (signIn) {
+        const { signUp: signUpSettings } = signUp
+          ? { signUp }
+          : await findDefaultSignInExperience();
+        validateSignIn(signIn, signUpSettings, connectors);
       }
 
       if (mfa) {
         if (mfa.factors.length > 0) {
-          await guardTenantUsageByKey('mfaEnabled');
+          await quota.guardTenantUsageByKey('mfaEnabled');
         }
         validateMfa(mfa);
       }
 
-      // Remove unused demo social connectors, those that are not selected in onboarding SIE config.
+      /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+      // Guard the quota for the security features enabled. Guarded properties are:
+      // - sentinelPolicy: if sentinelPolicy is not empty object, security features are guarded
+      // - captchaPolicy: if captchaPolicy is enabled, security features are guarded
+      // - emailBlocklistPolicy: if any of the blocklist policies are enabled, security features are guarded
+      if (
+        (sentinelPolicy && Object.keys(sentinelPolicy).length > 0) ||
+        (emailBlocklistPolicy && isEmailBlocklistPolicyEnabled(emailBlocklistPolicy)) ||
+        captchaPolicy?.enabled
+      ) {
+        await quota.guardTenantUsageByKey('securityFeaturesEnabled');
+      }
+      /* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
+
       if (removeUnusedDemoSocialConnector && filteredSocialSignInConnectorTargets) {
+        // Remove unused demo social connectors, those that are not selected in onboarding SIE config.
         await Promise.all(
           connectors
             .filter((connector) => {
@@ -125,16 +145,27 @@ export default function signInExperiencesRoutes<T extends ManagementApiRouter>(
         );
       }
 
-      ctx.body = await updateDefaultSignInExperience(
-        filteredSocialSignInConnectorTargets
-          ? {
-              ...rest,
-              socialSignInConnectorTargets: filteredSocialSignInConnectorTargets,
-            }
-          : rest
-      );
+      const payload = {
+        ...rest,
+        ...conditional(
+          filteredSocialSignInConnectorTargets && {
+            socialSignInConnectorTargets: filteredSocialSignInConnectorTargets,
+          }
+        ),
+        ...conditional(
+          emailBlocklistPolicy && {
+            emailBlocklistPolicy: parseEmailBlocklistPolicy(emailBlocklistPolicy),
+          }
+        ),
+      };
 
-      await reportSubscriptionUpdatesUsage('mfaEnabled');
+      ctx.body = await updateDefaultSignInExperience(payload);
+
+      void quota.reportSubscriptionUpdatesUsage('mfaEnabled');
+
+      if (sentinelPolicy ?? captchaPolicy ?? emailBlocklistPolicy) {
+        void quota.reportSubscriptionUpdatesUsage('securityFeaturesEnabled');
+      }
 
       return next();
     }

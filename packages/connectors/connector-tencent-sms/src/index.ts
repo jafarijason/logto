@@ -45,8 +45,14 @@ function sendMessage(getConfig: GetConnectorConfig): SendMessageFunction {
       )
     );
 
+    // Filter out locale from payload
+    const { locale, ...filteredPayload } = payload;
+
+    // Tencent SMS API requires all parameters to be strings. Force parse all payload values to string.
+    const parametersSet = Object.values(filteredPayload).map(String);
+
     try {
-      const httpResponse = await sendSmsRequest(template.templateCode, Object.values(payload), to, {
+      const httpResponse = await sendSmsRequest(template.templateCode, parametersSet, to, {
         secretId: accessKeyId,
         secretKey: accessKeySecret,
         sdkAppId,

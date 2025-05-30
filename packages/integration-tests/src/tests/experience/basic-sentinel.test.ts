@@ -4,7 +4,21 @@ import { setupUsernameAndEmailExperience } from '#src/ui-helpers/index.js';
 
 describe('basic sentinel', () => {
   beforeAll(async () => {
-    await setupUsernameAndEmailExperience();
+    await setupUsernameAndEmailExperience(
+      undefined,
+      /**
+       * The default policy settings is way too big for the test.
+       * We need to override it to make the test.
+       * Update the sign-in experience to use the legacy policy settings:
+       *
+       * - maxAttempts: 5
+       * - lockoutDuration: 10 minutes
+       */
+      {
+        maxAttempts: 5,
+        lockoutDuration: 10,
+      }
+    );
   });
 
   it('should block a non-existing identifier after 5 failed attempts in 1 hour', async () => {

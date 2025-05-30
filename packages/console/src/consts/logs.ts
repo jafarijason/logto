@@ -9,6 +9,7 @@ export const auditLogEventTitle: Record<string, Optional<string>> & {
   'ExchangeTokenBy.RefreshToken': 'Exchange token by Refresh Token',
   'ExchangeTokenBy.TokenExchange': 'Token exchange',
   'Interaction.Create': 'Interaction started',
+  'Interaction.Create.Captcha': 'CAPTCHA verification',
   'Interaction.End': 'Interaction ended',
   'Interaction.ForgotPassword.Identifier.VerificationCode.Create':
     'Create and send forgot-password verification code',
@@ -108,6 +109,8 @@ export const auditLogEventTitle: Record<string, Optional<string>> & {
     'Create IdP-initiated SAML SSO authentication session',
   'JwtCustomizer.AccessToken': 'Get custom user access token claims',
   'JwtCustomizer.ClientCredential': 'Get custom M2M access token claims',
+  'SamlApplication.AuthnRequest': 'Receive SAML application authentication request',
+  'SamlApplication.Callback': 'Handle SAML application callback',
 });
 
 export const logEventTitle: Record<string, Optional<string>> & {

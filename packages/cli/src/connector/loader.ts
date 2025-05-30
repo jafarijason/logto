@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 import type { AllConnector, CreateConnector } from '@logto/connector-kit';
-import connectorKitMeta from '@logto/connector-kit/package.json' assert { type: 'json' };
+import connectorKitMeta from '@logto/connector-kit/package.json' with { type: 'json' };
 import { satisfies } from 'semver';
 
 import { consoleLog } from '../utils.js';
@@ -43,7 +43,7 @@ export const loadConnector = async (
     default: { dependencies },
     // eslint-disable-next-line no-restricted-syntax
   } = (await import(path.join(connectorPath, 'package.json'), {
-    assert: { type: 'json' },
+    with: { type: 'json' },
   })) as { default: Record<string, unknown> };
 
   checkConnectorKitVersion(dependencies, ignoreVersionMismatch);

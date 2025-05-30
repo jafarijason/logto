@@ -18,7 +18,7 @@ import Drawer from '@/components/Drawer';
 import EmptyDataPlaceholder from '@/components/EmptyDataPlaceholder';
 import OrganizationList from '@/components/OrganizationList';
 import UnsavedChangesAlertModal from '@/components/UnsavedChangesAlertModal';
-import { ApplicationDetailsTabs, logtoThirdPartyGuideLink, protectedAppLink } from '@/consts';
+import { ApplicationDetailsTabs, logtoThirdPartyGuideLink, protectedApp } from '@/consts';
 import DeleteConfirmModal from '@/ds-components/DeleteConfirmModal';
 import TabNav, { TabNavItem } from '@/ds-components/TabNav';
 import TabWrapper from '@/ds-components/TabWrapper';
@@ -30,13 +30,14 @@ import useTenantPathname from '@/hooks/use-tenant-pathname';
 import { applicationTypeI18nKey } from '@/types/applications';
 import { trySubmitSafe } from '@/utils/form';
 
+import Branding from '../components/Branding';
+import Permissions from '../components/Permissions';
+
 import BackchannelLogout from './BackchannelLogout';
-import Branding from './Branding';
 import EndpointsAndCredentials, { type ApplicationSecretRow } from './EndpointsAndCredentials';
 import GuideDrawer from './GuideDrawer';
 import MachineLogs from './MachineLogs';
 import MachineToMachineApplicationRoles from './MachineToMachineApplicationRoles';
-import Permissions from './Permissions';
 import RefreshTokenSettings from './RefreshTokenSettings';
 import Settings from './Settings';
 import styles from './index.module.scss';
@@ -141,7 +142,7 @@ function ApplicationDetailsContent({ data, secrets, oidcConfig, onApplicationUpd
             }
             // Open protected app docs link in new tab
             if (data.type === ApplicationType.Protected) {
-              window.open(getDocumentationUrl(protectedAppLink), '_blank');
+              window.open(getDocumentationUrl(protectedApp), '_blank');
               return;
             }
 

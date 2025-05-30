@@ -37,6 +37,14 @@ const session = {
     mfa_factor_not_enabled: 'MFA 因素未启用。',
   },
   sso_enabled: '该邮箱已开启单点登录，请使用 SSO 登录。',
+  captcha_required: '需要验证码。',
+  captcha_failed: '验证码验证失败。',
+  email_blocklist: {
+    disposable_email_validation_failed: '电子邮件地址验证失败。',
+    invalid_email: '无效的电子邮件地址。',
+    email_subaddressing_not_allowed: '不允许电子邮件子地址。',
+    email_not_allowed: '电子邮件地址 "{{email}}" 受限。请选择其他地址。',
+  },
 };
 
 export default Object.freeze(session);

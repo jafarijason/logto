@@ -34,9 +34,7 @@ export const handleSearchParametersData = () => {
     }
   }
 
-  window.history.replaceState(
-    {},
-    '',
-    window.location.pathname + condString(parameters.size > 0 && `?${parameters.toString()}`)
-  );
+  const conditionalParamString = condString(parameters.size > 0 && `?${parameters.toString()}`);
+
+  window.history.replaceState({}, '', window.location.pathname + conditionalParamString);
 };

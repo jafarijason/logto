@@ -10,6 +10,7 @@ const description = {
   sign_in: '登錄',
   privacy_policy: '隱私政策',
   create_account: '創建帳號',
+  switch_account: '切換帳號',
   or: '或',
   and: '和',
   enter_passcode: '驗證碼已經發送至你的{{ address }} {{target}}',
@@ -55,8 +56,14 @@ const description = {
   password_requirements: '要求密碼 {{items, list}}。',
   password_requirement: {
     length_one: '要求至少 {{count}} 個字符',
+    length_two: '要求至少 {{count}} 個字符',
+    length_few: '要求至少 {{count}} 個字符',
+    length_many: '要求至少 {{count}} 個字符',
     length_other: '要求至少 {{count}} 個字符',
     character_types_one: '要求包含至少 {{count}} 類型的大寫字母，小寫字母，數字和符號',
+    character_types_two: '要求包含至少 {{count}} 類型的大寫字母，小寫字母，數字和符號',
+    character_types_few: '要求包含至少 {{count}} 類型的大寫字母，小寫字母，數字和符號',
+    character_types_many: '要求包含至少 {{count}} 類型的大寫字母，小寫字母，數字和符號',
     character_types_other: '要求包含至少 {{count}} 類型的大寫字母，小寫字母，數字和符號',
   },
   use: '使用',
@@ -64,30 +71,18 @@ const description = {
   single_sign_on_connectors_list:
     '您的企業已為電郵賬戶{{email}}啟用單一登入。您可以繼續使用以下的SSO供應商登入。',
   single_sign_on_enabled: '該帳戶已啟用單一登入',
-  /** UNTRANSLATED */
-  authorize_title: 'Authorize {{name}}',
-  /** UNTRANSLATED */
-  request_permission: '{{name}} is requesting access to:',
-  /** UNTRANSLATED */
-  grant_organization_access: 'Grant the organization access:',
-  /** UNTRANSLATED */
-  authorize_personal_data_usage: 'Authorize the use of your personal data:',
-  /** UNTRANSLATED */
-  authorize_organization_access: 'Authorize access to the specific organization:',
-  /** UNTRANSLATED */
-  user_scopes: 'Personal user data',
-  /** UNTRANSLATED */
-  organization_scopes: 'Organization access',
-  /** UNTRANSLATED */
-  authorize_agreement: `By authorizing the access, you agree to the {{name}}'s <link></link>.`,
-  /** UNTRANSLATED */
-  authorize_agreement_with_redirect: `By authorizing the access, you agree to the {{name}}'s <link></link>, and will be redirected to {{uri}}.`,
-  /** UNTRANSLATED */
-  not_you: 'Not you?',
-  /** UNTRANSLATED */
-  user_id: 'User ID: {{id}}',
-  /** UNTRANSLATED */
-  redirect_to: 'You will be redirected to {{name}}.',
+  authorize_title: '授權 {{name}}',
+  request_permission: '{{name}} 正在請求訪問：',
+  grant_organization_access: '授予組織訪問權限：',
+  authorize_personal_data_usage: '授權使用你的個人數據：',
+  authorize_organization_access: '授權訪問指定的組織：',
+  user_scopes: '個人用戶數據',
+  organization_scopes: '組織訪問',
+  authorize_agreement: `通過授權訪問，您同意 {{name}} 的 <link></link>。`,
+  authorize_agreement_with_redirect: `通過授權訪問，您同意 {{name}} 的 <link></link>，並將被重定向到 {{uri}}。`,
+  not_you: '不是你？',
+  user_id: '用戶 ID：{{id}}',
+  redirect_to: '您將被重定向到 {{name}}。',
   auto_agreement: '繼續即表示您同意<link></link>。',
   identifier_sign_in_description: '輸入您的{{types, list(type: disjunction;)}}以登入。',
   all_sign_in_options: '所有登入選項',
@@ -96,6 +91,8 @@ const description = {
   back_to_sign_in: '返回登入',
   support_email: '支持郵件：<link></link>',
   support_website: '支持網站：<link></link>',
+  switch_account_title: '你當前以 {{account}} 登錄',
+  switch_account_description: '要繼續，你將退出當前帳號，並自動切換到新帳號。',
 };
 
 export default Object.freeze(description);

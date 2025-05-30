@@ -20,6 +20,11 @@ const sign_in_experiences = {
   at_least_one_authentication_factor: 'Вы должны выбрать как минимум один фактор аутентификации.',
   backup_code_cannot_be_enabled_alone: 'Резервный код не может быть включен самостоятельно.',
   duplicated_mfa_factors: 'Факторы MFA не должны повторяться.',
+  duplicated_sign_up_identifiers: 'Обнаружены дублирующие идентификаторы создания учетной записи.',
+  missing_sign_up_identifiers:
+    'Основной идентификатор создания учетной записи не может быть пустым.',
+  invalid_custom_email_blocklist_format:
+    'Неверный формат пользовательского списка блокировки электронной почты: {{items, list(type:conjunction)}}. Каждый элемент должен быть действительным адресом электронной почты или доменом, например, foo@example.com или @example.com.',
 };
 
 export default Object.freeze(sign_in_experiences);

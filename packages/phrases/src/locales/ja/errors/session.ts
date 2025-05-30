@@ -46,6 +46,15 @@ const session = {
   },
   sso_enabled:
     'このメールアドレスではシングルサインオンが有効になっています。SSO でサインインしてください。',
+  captcha_required: 'Captcha が必要です。',
+  captcha_failed: 'Captcha 検証に失敗しました。',
+  email_blocklist: {
+    disposable_email_validation_failed: 'メールアドレスの検証に失敗しました。',
+    invalid_email: '無効なメールアドレス。',
+    email_subaddressing_not_allowed: 'メールのサブアドレッシングは許可されていません。',
+    email_not_allowed:
+      'メールアドレス "{{email}}" は制限されています。別のものを選択してください。',
+  },
 };
 
 export default Object.freeze(session);

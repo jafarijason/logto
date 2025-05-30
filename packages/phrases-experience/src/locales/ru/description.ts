@@ -10,6 +10,7 @@ const description = {
   sign_in: 'Войти',
   privacy_policy: 'Политикой конфиденциальности',
   create_account: 'Создать аккаунт',
+  switch_account: 'Сменить аккаунт',
   or: 'или',
   and: 'и',
   enter_passcode: 'Код подтверждения был отправлен на {{address}}',
@@ -65,9 +66,18 @@ const description = {
   password_requirements: 'Требования к паролю {{items, list}}.',
   password_requirement: {
     length_one: 'требуется минимум {{count}} символ',
+    length_two: 'требуется минимум {{count}} символа',
+    length_few: 'требуется минимум {{count}} символа',
+    length_many: 'требуется минимум {{count}} символов',
     length_other: 'требуется минимум {{count}} символов',
     character_types_one:
       'должен содержать по крайней мере {{count}} тип прописных букв, строчных букв, цифр и символов',
+    character_types_two:
+      'должен содержать по крайней мере {{count}} типа прописных букв, строчных букв, цифр и символов',
+    character_types_few:
+      'должен содержать по крайней мере {{count}} типа прописных букв, строчных букв, цифр и символов',
+    character_types_many:
+      'должен содержать по крайней мере {{count}} типов прописных букв, строчных букв, цифр и символов',
     character_types_other:
       'должен содержать по крайней мере {{count}} типа прописных букв, строчных букв, цифр и символов',
   },
@@ -76,30 +86,18 @@ const description = {
   single_sign_on_connectors_list:
     'Ваше предприятие включило функцию единого входа для электронной почты {{email}}. Вы можете продолжить вход в систему с помощью следующих провайдеров SSO.',
   single_sign_on_enabled: 'Единый вход в систему включен для этой учетной записи',
-  /** UNTRANSLATED */
-  authorize_title: 'Authorize {{name}}',
-  /** UNTRANSLATED */
-  request_permission: '{{name}} is requesting access to:',
-  /** UNTRANSLATED */
-  grant_organization_access: 'Grant the organization access:',
-  /** UNTRANSLATED */
-  authorize_personal_data_usage: 'Authorize the use of your personal data:',
-  /** UNTRANSLATED */
-  authorize_organization_access: 'Authorize access to the specific organization:',
-  /** UNTRANSLATED */
-  user_scopes: 'Personal user data',
-  /** UNTRANSLATED */
-  organization_scopes: 'Organization access',
-  /** UNTRANSLATED */
-  authorize_agreement: `By authorizing the access, you agree to the {{name}}'s <link></link>.`,
-  /** UNTRANSLATED */
-  authorize_agreement_with_redirect: `By authorizing the access, you agree to the {{name}}'s <link></link>, and will be redirected to {{uri}}.`,
-  /** UNTRANSLATED */
-  not_you: 'Not you?',
-  /** UNTRANSLATED */
-  user_id: 'User ID: {{id}}',
-  /** UNTRANSLATED */
-  redirect_to: 'You will be redirected to {{name}}.',
+  authorize_title: 'Авторизовать {{name}}',
+  request_permission: '{{name}} запрашивает доступ к:',
+  grant_organization_access: 'Предоставить доступ организации:',
+  authorize_personal_data_usage: 'Авторизовать использование ваших личных данных:',
+  authorize_organization_access: 'Авторизовать доступ к конкретной организации:',
+  user_scopes: 'Личные данные пользователя',
+  organization_scopes: 'Доступ к организации',
+  authorize_agreement: `Авторизуя доступ, вы соглашаетесь с <link></link> {{name}}.`,
+  authorize_agreement_with_redirect: `Авторизуя доступ, вы соглашаетесь с <link></link> {{name}}, и будете перенаправлены на {{uri}}.`,
+  not_you: 'Это не вы?',
+  user_id: 'ID пользователя: {{id}}',
+  redirect_to: 'Вы будете перенаправлены на {{name}}.',
   auto_agreement: 'Продолжая, вы соглашаетесь с <link></link>.',
   identifier_sign_in_description: 'Введите свои {{types, list(type: disjunction;)}} для входа.',
   all_sign_in_options: 'Все варианты входа',
@@ -109,6 +107,9 @@ const description = {
   back_to_sign_in: 'Вернуться ко входу',
   support_email: 'Поддержка по электронной почте: <link></link>',
   support_website: 'Сайт поддержки: <link></link>',
+  switch_account_title: 'В настоящее время вы вошли как {{account}}',
+  switch_account_description:
+    'Чтобы продолжить, вы будете выйти из текущей учетной записи и автоматически переключены на новую учетную запись.',
 };
 
 export default Object.freeze(description);

@@ -8,6 +8,7 @@ import { type LogtoSkuQuota } from '@/types/skus';
 export const ticketSupportResponseTimeMap: Record<string, number> = {
   [ReservedPlanId.Free]: 0,
   [ReservedPlanId.Pro]: 48,
+  [ReservedPlanId.Pro202411]: 48,
 };
 
 /**
@@ -36,4 +37,5 @@ export const skuQuotaItemOrder: Array<keyof LogtoSkuQuota> = [
   'ticketSupportResponseTime',
 ];
 
-export const comingSoonSkuQuotaKeys: Array<keyof LogtoSkuQuota> = [];
+// TODO: @sijie remove this after the captcha quota is removed from the plan
+export const comingSoonSkuQuotaKeys: Array<keyof LogtoSkuQuota> = ['captchaEnabled'];

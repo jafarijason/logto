@@ -171,6 +171,31 @@ const quota_item = {
     unlimited: '自定义 UI',
     not_eligible: '移除你的自定义 UI 资产',
   },
+  idp_initiated_sso_enabled: {
+    name: 'IDP 启动的 SSO',
+    limited: 'IDP 启动的 SSO',
+    unlimited: 'IDP 启动的 SSO',
+    not_eligible: '不允许 IDP 启动的 SSO',
+  },
+  saml_applications_limit: {
+    name: 'SAML 应用',
+    limited: '{{count, number}} SAML 应用',
+    limited_other: '{{count, number}} SAML 应用',
+    unlimited: '无限制 SAML 应用',
+    not_eligible: '移除你的 SAML 应用',
+  },
+  captcha_enabled: {
+    name: '验证码',
+    limited: '验证码',
+    unlimited: '验证码',
+    not_eligible: '移除你的验证码',
+  },
+  security_features_enabled: {
+    name: '高级安全',
+    limited: '高级安全',
+    unlimited: '高级安全',
+    not_eligible: '移除你的高级安全设置',
+  },
 };
 
 export default Object.freeze(quota_item);

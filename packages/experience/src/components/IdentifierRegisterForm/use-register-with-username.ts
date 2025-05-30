@@ -1,20 +1,30 @@
-import { useState, useCallback, useMemo } from 'react';
+import { InteractionEvent } from '@logto/schemas';
+import { useState, useCallback, useMemo, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { registerWithUsername } from '@/apis/experience';
+import CaptchaContext from '@/Providers/CaptchaContextProvider/CaptchaContext';
+import { identifyAndSubmitInteraction, registerWithUsername } from '@/apis/experience';
 import useApi from '@/hooks/use-api';
 import type { ErrorHandlers } from '@/hooks/use-error-handler';
 import useErrorHandler from '@/hooks/use-error-handler';
+import useGlobalRedirectTo from '@/hooks/use-global-redirect-to';
+import { useSieMethods } from '@/hooks/use-sie';
+import useSubmitInteractionErrorHandler from '@/hooks/use-submit-interaction-error-handler';
 
 const useRegisterWithUsername = () => {
   const navigate = useNavigate();
+  const redirectTo = useGlobalRedirectTo();
+  const { executeCaptcha } = useContext(CaptchaContext);
+
   const [errorMessage, setErrorMessage] = useState<string>();
+
+  const { passwordRequiredForSignUp, secondaryIdentifiers } = useSieMethods();
 
   const clearErrorMessage = useCallback(() => {
     setErrorMessage('');
   }, []);
 
-  const errorHandlers: ErrorHandlers = useMemo(
+  const usernameErrorHandlers: ErrorHandlers = useMemo(
     () => ({
       'user.username_already_in_use': (error) => {
         setErrorMessage(error.message);
@@ -23,21 +33,57 @@ const useRegisterWithUsername = () => {
     []
   );
 
+  const preRegisterErrorHandler = useSubmitInteractionErrorHandler(InteractionEvent.Register, {
+    replace: true,
+  });
+
   const handleError = useErrorHandler();
   const asyncRegister = useApi(registerWithUsername);
 
+  const asyncSubmitInteraction = useApi(identifyAndSubmitInteraction);
+  const onSubmitInteraction = useCallback(async () => {
+    const [error, result] = await asyncSubmitInteraction();
+
+    if (error) {
+      await handleError(error, preRegisterErrorHandler);
+      return;
+    }
+
+    if (result) {
+      await redirectTo(result.redirectTo);
+    }
+  }, [asyncSubmitInteraction, handleError, preRegisterErrorHandler, redirectTo]);
+
   const onSubmit = useCallback(
     async (username: string) => {
-      const [error] = await asyncRegister(username);
+      const captchaToken = await executeCaptcha();
+      const [error] = await asyncRegister(username, captchaToken);
 
       if (error) {
-        await handleError(error, errorHandlers);
+        await handleError(error, usernameErrorHandlers);
         return;
       }
 
-      navigate('password');
+      // If password is required and no secondary identifiers are present, (current behavior without multi-sign-up identifiers support)
+      // navigate to password screen directly
+      if (passwordRequiredForSignUp && secondaryIdentifiers.length === 0) {
+        navigate('password');
+        return;
+      }
+
+      // Otherwise, identify and submit interaction let the backend decide the next step
+      await onSubmitInteraction();
     },
-    [asyncRegister, errorHandlers, handleError, navigate]
+    [
+      asyncRegister,
+      passwordRequiredForSignUp,
+      secondaryIdentifiers.length,
+      onSubmitInteraction,
+      handleError,
+      usernameErrorHandlers,
+      navigate,
+      executeCaptcha,
+    ]
   );
 
   return { errorMessage, clearErrorMessage, onSubmit };

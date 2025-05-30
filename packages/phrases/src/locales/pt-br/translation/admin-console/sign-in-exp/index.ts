@@ -1,12 +1,11 @@
 import content from './content.js';
-import password_policy from './password-policy.js';
 import sign_up_and_sign_in from './sign-up-and-sign-in.js';
 
 const sign_in_exp = {
   page_title: 'Experiência de login',
   title: 'Experiência de login',
   description:
-    'Personalize a interface do usuário de login para corresponder à sua marca e visualize em tempo real',
+    'Personalize os fluxos de autenticação e a interface do usuário, e visualize a experiência pronta para uso em tempo real.',
   tabs: {
     branding: 'Marca',
     sign_up_and_sign_in: 'Inscreva-se e faça login',
@@ -87,7 +86,6 @@ const sign_in_exp = {
   },
   sign_up_and_sign_in,
   content,
-  password_policy,
   setup_warning: {
     no_connector_sms:
       'Nenhum conector SMS configurado ainda. Até terminar de configurar seu conector SMS, seus usuários não poderão fazer login. <a>{{link}}</a> em "Conectores"',

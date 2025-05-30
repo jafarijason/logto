@@ -2,7 +2,7 @@ const enterprise_sso = {
   page_title: "SSO d'entreprise",
   title: "SSO d'entreprise",
   subtitle:
-    "Connectez le fournisseur d'identité de l'entreprise et activez la connexion unique initiée par le fournisseur de services.",
+    "Connectez le fournisseur d'identité d'entreprise et activez l'authentification unique.",
   create: "Ajouter un connecteur d'entreprise",
   col_connector_name: 'Nom du connecteur',
   col_type: 'Type',
@@ -27,7 +27,12 @@ const enterprise_sso = {
       "Créez une nouvelle intégration d'application par SAML 2.0 dans votre fournisseur d'identité {{name}}. Ensuite, collez la valeur suivante.",
     saml: {
       acs_url_field_name: "URL de service de consommation d'assertions (URL de réponse)",
-      audience_uri_field_name: "URI de l'audience (ID de l'entité SP)",
+      audience_uri_field_name: "URI de l'audience (ID d'entité du fournisseur de services)",
+      entity_id_field_name: "ID d'entité du fournisseur de services (SP)",
+      entity_id_field_tooltip:
+        "L'ID d'entité SP peut être dans n'importe quel format de chaîne, généralement en utilisant une forme URI ou une forme URL comme identifiant, mais ce n'est pas obligatoire.",
+      acs_url_field_placeholder: 'https://your-domain.com/api/saml/callback',
+      entity_id_field_placeholder: 'urn:your-domain.com:sp:saml:{serviceProviderId}',
     },
     oidc: {
       redirect_uri_field_name: 'URI de redirection (URL de rappel)',

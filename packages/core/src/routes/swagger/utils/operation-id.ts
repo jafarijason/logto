@@ -83,6 +83,11 @@ export const customRoutes: Readonly<RouteDictionary> = Object.freeze({
   'get /.well-known/sign-in-exp': 'GetSignInExperienceConfig',
   // Custom UI assets
   'post /sign-in-exp/default/custom-ui-assets': 'UploadCustomUiAssets',
+  // One-time tokens
+  'post /one-time-tokens': 'AddOneTimeTokens',
+  'post /one-time-tokens/verify': 'VerifyOneTimeToken',
+  // Sentinel activities
+  'post /sentinel-activities/delete': 'DeleteSentinelActivities',
   ...(EnvSet.values.isDevFeaturesEnabled ? devFeatureCustomRoutes : {}),
 } satisfies RouteDictionary); // Key assertion doesn't work without `satisfies`
 

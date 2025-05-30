@@ -11,6 +11,10 @@ export type LogtoSkuResponse = GetArrayElementType<GuardedResponse<GetRoutes['/a
 
 export type Subscription = GuardedResponse<GetRoutes['/api/tenants/:tenantId/subscription']>;
 
+export type TenantUsageAddOnSkus = GuardedResponse<
+  GetRoutes['/api/tenants/:tenantId/subscription/add-on-skus']
+>;
+
 /* ===== Use `New` in the naming to avoid confusion with legacy types ===== */
 export type NewSubscriptionUsageResponse = GuardedResponse<
   GetRoutes['/api/tenants/:tenantId/subscription-usage']
@@ -46,7 +50,7 @@ export type InvitationResponse = GuardedResponse<GetRoutes['/api/invitations/:in
 
 export type InvitationListResponse = GuardedResponse<GetRoutes['/api/invitations']>;
 
-// The response of GET /api/tenants is TenantResponse[].
+/** Type for the response of the `/api/tenants` endpoint. */
 export type TenantResponse = GetArrayElementType<GuardedResponse<GetRoutes['/api/tenants']>>;
 
 // Start of the auth routes types. Accessing the auth routes requires an organization token.

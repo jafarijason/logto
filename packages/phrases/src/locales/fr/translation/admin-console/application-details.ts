@@ -24,6 +24,7 @@ const application_details = {
   description_placeholder: 'Entrez la description de votre application',
   config_endpoint: 'Point de configuration du fournisseur OpenID',
   issuer_endpoint: 'Point de terminaison de l’émetteur',
+  jwks_uri: 'URI JWKS',
   authorization_endpoint: "Point de terminaison d'autorisation",
   authorization_endpoint_tip:
     "Le point de terminaison pour effectuer l'authentification et l'autorisation. Il est utilisé pour <a>l'authentification</a> OpenID Connect.",
@@ -41,6 +42,8 @@ const application_details = {
   redirect_uri_placeholder_native: 'io.logto://callback',
   redirect_uri_tip:
     "L'URI de redirection après la connexion d'un utilisateur (qu'elle soit réussie ou non). Voir OpenID Connect <a>AuthRequest</a> pour plus d'informations.",
+  mixed_redirect_uri_warning:
+    "Le type de votre application n'est pas compatible avec au moins une des URIs de redirection. Cela ne suit pas les meilleures pratiques et nous recommandons fortement de garder les URIs de redirection cohérentes.",
   post_sign_out_redirect_uri: 'URI de redirection post-déconnexion',
   post_sign_out_redirect_uris: 'URI de redirection après la déconnexion',
   post_sign_out_redirect_uri_placeholder: 'https://votre.site.com/home',
@@ -64,6 +67,8 @@ const application_details = {
   rotate_refresh_token: 'Tourner le Refresh Token',
   rotate_refresh_token_label:
     "Lorsqu'elle est activée, Logto émettra un nouveau Refresh Token pour les demandes de jeton lorsque 70% de la durée de vie (TTL) d'origine est écoulée ou que certaines conditions sont remplies. <a>En savoir plus</a>",
+  rotate_refresh_token_label_for_public_clients:
+    "Lorsqu'elle est activée, Logto émettra un nouveau token de rafraîchissement pour chaque demande de token. <a>En savoir plus</a>",
   backchannel_logout: 'Déconnexion en backchannel',
   backchannel_logout_description:
     'Configurez le point de terminaison de déconnexion en backchannel OpenID Connect et si une session est requise pour cette application.',
@@ -92,6 +97,8 @@ const application_details = {
   protect_origin_server: "Protéger votre serveur d'origine",
   protect_origin_server_description:
     "Assurez-vous de protéger votre serveur d'origine contre un accès direct. Référez-vous au guide pour plus de <a>instructions détaillées</a>.",
+  third_party_settings_description:
+    "Intégrez des applications tierces avec Logto comme votre fournisseur d'identité (IdP) en utilisant OIDC / OAuth 2.0, avec un écran de consentement pour l'autorisation de l'utilisateur.",
   session_duration: 'Durée de la session (jours)',
   try_it: 'Essayez',
   no_organization_placeholder: 'Aucune organisation trouvée. <a>Aller aux organisations</a>',
@@ -179,6 +186,9 @@ const application_details = {
     create_new_secret: 'Créer un nouveau secret',
     delete_confirmation:
       'Cette action ne peut pas être annulée. Êtes-vous sûr de vouloir supprimer ce secret ?',
+    deleted: 'Le secret a été supprimé avec succès.',
+    activated: 'Le secret a été activé avec succès.',
+    deactivated: 'Le secret a été désactivé avec succès.',
     legacy_secret: 'Secret hérité',
     expired: 'Expiré',
     expired_tooltip: 'Ce secret a expiré le {{date}}.',
@@ -190,12 +200,66 @@ const application_details = {
         "Le secret n'expirera jamais. Nous recommandons de définir une date d'expiration pour une sécurité renforcée.",
       days: '{{count}} jour',
       days_other: '{{count}} jours',
+      years: '{{count}} an',
+      years_other: '{{count}} ans',
       created: 'Le secret {{name}} a été créé avec succès.',
     },
     edit_modal: {
       title: "Modifier le secret de l'application",
       edited: 'Le secret {{name}} a été modifié avec succès.',
     },
+  },
+  saml_idp_config: {
+    title: 'Métadonnées SAML IdP',
+    description:
+      'Utilisez les métadonnées suivantes et le certificat pour configurer le SAML IdP dans votre application.',
+    metadata_url_label: 'URL des métadonnées IdP',
+    single_sign_on_service_url_label: 'URL du service de connexion unique',
+    idp_entity_id_label: "ID d'entité IdP",
+  },
+  saml_idp_certificates: {
+    title: 'Certificat de signature SAML',
+    expires_at: 'Expire à',
+    finger_print: 'Empreinte digitale',
+    status: 'Statut',
+    active: 'Actif',
+    inactive: 'Inactif',
+  },
+  saml_idp_name_id_format: {
+    title: "Format de l'ID de nom",
+    description: "Sélectionnez le format d'ID de nom du SAML IdP.",
+    persistent: 'Persistant',
+    persistent_description: "Utilisez l'ID utilisateur Logto comme ID de nom",
+    transient: 'Transitoire',
+    transient_description: 'Utilisez un ID utilisateur unique comme ID de nom',
+    unspecified: 'Non spécifié',
+    unspecified_description: "Utilisez l'ID utilisateur Logto comme ID de nom",
+    email_address: 'Adresse e-mail',
+    email_address_description: "Utilisez l'adresse e-mail comme ID de nom",
+  },
+  saml_encryption_config: {
+    encrypt_assertion: "Crypter l'assertion SAML",
+    encrypt_assertion_description: "En activant cette option, l'assertion SAML sera cryptée.",
+    encrypt_then_sign: 'Crypter puis signer',
+    encrypt_then_sign_description:
+      "En activant cette option, l'assertion SAML sera cryptée puis signée ; sinon, l'assertion SAML sera signée puis cryptée.",
+    certificate: 'Certificat',
+    certificate_tooltip:
+      "Copiez et collez le certificat x509 que vous obtenez de votre fournisseur de services pour chiffrer l'assertion SAML.",
+    certificate_placeholder:
+      '-----BEGIN CERTIFICATE-----\nMIICYDCCAcmgAwIBA...\n-----END CERTIFICATE-----\n',
+    certificate_missing_error: 'Le certificat est requis.',
+    certificate_invalid_format_error:
+      'Format de certificat invalide détecté. Veuillez vérifier le format du certificat et réessayer.',
+  },
+  saml_app_attribute_mapping: {
+    name: 'Mappages des attributs',
+    title: 'Mappages des attributs de base',
+    description:
+      "Ajoutez des mappages d'attributs pour synchroniser le profil utilisateur de Logto vers votre application.",
+    col_logto_claims: 'Valeur de Logto',
+    col_sp_claims: 'Nom de la valeur de votre application',
+    add_button: 'Ajouter un autre',
   },
 };
 

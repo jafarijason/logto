@@ -1,7 +1,7 @@
 const enterprise_sso = {
   page_title: 'تسجيل الدخول الموحد للمؤسسة',
   title: 'تسجيل الدخول الموحد للمؤسسة',
-  subtitle: 'قم بتوصيل موفر هوية المؤسسة وتمكين تسجيل الدخول الموحد بواسطة مزود الخدمة.',
+  subtitle: 'ربط مزود هوية المؤسسة وتمكين تسجيل الدخول الموحد.',
   create: 'إضافة موصل المؤسسة',
   col_connector_name: 'اسم الموصل',
   col_type: 'النوع',
@@ -26,7 +26,12 @@ const enterprise_sso = {
       'قم بإنشاء تكامل تطبيق جديد باستخدام SAML 2.0 في موفر الهوية {{name}} الخاص بك. ثم قم بلصق القيمة التالية فيه.',
     saml: {
       acs_url_field_name: 'عنوان URL لخدمة المستهلك للتأكيد (رد URL)',
-      audience_uri_field_name: 'معرف الجمهور (معرف SP)',
+      audience_uri_field_name: 'معرف URI للجمهور (معرف الكيان لمزود الخدمة)',
+      entity_id_field_name: 'معرف كيان مزود الخدمة',
+      entity_id_field_tooltip:
+        'يمكن أن يكون معرف كيان مزود الخدمة في أي تنسيق نصي، عادةً باستخدام صيغة URI أو URL كمُعرِّف، ولكن هذا ليس إلزاميًا.',
+      acs_url_field_placeholder: 'https://your-domain.com/api/saml/callback',
+      entity_id_field_placeholder: 'urn:your-domain.com:sp:saml:{serviceProviderId}',
     },
     oidc: {
       redirect_uri_field_name: 'عنوان URL لإعادة التوجيه (عنوان URL للرد)',

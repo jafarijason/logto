@@ -6,6 +6,8 @@ const routes = Object.freeze({
   resetPassword: 'reset-password',
   identifierSignIn: 'identifier-sign-in',
   identifierRegister: 'identifier-register',
+  switchAccount: 'switch-account',
+  oneTimeToken: 'one-time-token',
 } as const);
 
 export const experience = Object.freeze({

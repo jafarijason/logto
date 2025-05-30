@@ -1,3 +1,4 @@
+import account_center from './account-center.js';
 import application from './application.js';
 import auth from './auth.js';
 import connector from './connector.js';
@@ -9,6 +10,7 @@ import jwt_customizer from './jwt-customizer.js';
 import localization from './localization.js';
 import log from './log.js';
 import oidc from './oidc.js';
+import one_time_token from './one-time-token.js';
 import organization from './organization.js';
 import password from './password.js';
 import request from './request.js';
@@ -23,6 +25,7 @@ import subscription from './subscription.js';
 import swagger from './swagger.js';
 import user from './user.js';
 import verification_code from './verification-code.js';
+import verification_record from './verification-record.js';
 
 const errors = {
   request,
@@ -50,6 +53,9 @@ const errors = {
   application,
   organization,
   single_sign_on,
+  verification_record,
+  account_center,
+  one_time_token,
 };
 
 export default Object.freeze(errors);

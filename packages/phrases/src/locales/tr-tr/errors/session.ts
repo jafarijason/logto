@@ -45,6 +45,14 @@ const session = {
     mfa_factor_not_enabled: 'MFA faktörü etkin değil.',
   },
   sso_enabled: 'Bu e-posta için tek oturum açma etkin. Lütfen SSO ile oturum açın.',
+  captcha_required: 'Captcha gereklidir.',
+  captcha_failed: 'Captcha doğrulaması başarısız oldu.',
+  email_blocklist: {
+    disposable_email_validation_failed: 'E-posta adresi doğrulaması başarısız oldu.',
+    invalid_email: 'Geçersiz e-posta adresi.',
+    email_subaddressing_not_allowed: 'E-posta alt adreslemesine izin verilmiyor.',
+    email_not_allowed: 'Kısıtlanmış e-posta adresi "{{email}}". Lütfen farklı bir tane seçiniz.',
+  },
 };
 
 export default Object.freeze(session);

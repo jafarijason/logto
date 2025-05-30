@@ -10,6 +10,7 @@ import Button from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import { SmartInputField, PasswordInputField } from '@/components/InputFields';
 import type { IdentifierInputValue } from '@/components/InputFields/SmartInputField';
+import CaptchaBox from '@/containers/CaptchaBox';
 import ForgotPasswordLink from '@/containers/ForgotPasswordLink';
 import TermsAndPrivacyCheckbox from '@/containers/TermsAndPrivacyCheckbox';
 import usePasswordSignIn from '@/hooks/use-password-sign-in';
@@ -171,6 +172,8 @@ const PasswordSignInForm = ({ className, autoFocus, signInMethods }: Props) => {
           agreeToTermsPolicy !== AgreeToTermsPolicy.Manual && styles.hidden
         )}
       />
+
+      <CaptchaBox />
 
       <Button
         name="submit"

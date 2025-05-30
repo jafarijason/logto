@@ -18,13 +18,13 @@ export default function organizationInvitationRoutes<T extends ManagementApiRout
   ...[
     originalRouter,
     {
-      queries: {
-        organizations: { invitations },
-      },
+      queries: { organizations },
       libraries: { organizationInvitations },
     },
   ]: RouterInitArgs<T>
 ) {
+  const { invitations } = organizations;
+
   const router = new SchemaRouter(OrganizationInvitations, invitations, {
     errorHandler,
     disabled: {
@@ -99,9 +99,18 @@ export default function organizationInvitationRoutes<T extends ManagementApiRout
         params: { id },
         body,
       } = ctx.guard;
-      const { invitee } = await invitations.findById(id);
+      const { invitee, organizationId, inviterId } = await invitations.findById(id);
 
-      await organizationInvitations.sendEmail(invitee, body);
+      const templateContext =
+        await organizationInvitations.getOrganizationInvitationTemplateContext(
+          organizationId,
+          inviterId
+        );
+
+      await organizationInvitations.sendEmail(invitee, {
+        ...templateContext,
+        ...body,
+      });
       ctx.status = 204;
       return next();
     }
@@ -145,7 +154,15 @@ export default function organizationInvitationRoutes<T extends ManagementApiRout
         })
       );
 
-      ctx.body = await organizationInvitations.updateStatus(id, status, acceptedUserId);
+      const result = await organizationInvitations.updateStatus(id, status, acceptedUserId);
+
+      const { organizationId } = result;
+      ctx.appendDataHookContext('Organization.Membership.Updated', {
+        organizationId,
+      });
+
+      ctx.body = result;
+
       return next();
     }
   );

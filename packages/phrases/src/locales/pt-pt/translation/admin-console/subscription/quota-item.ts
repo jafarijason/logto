@@ -171,6 +171,31 @@ const quota_item = {
     unlimited: 'Traga a sua interface gráfica',
     not_eligible: 'Remova os teus ativos de UI personalizados',
   },
+  idp_initiated_sso_enabled: {
+    name: 'SSO iniciado por IDP',
+    limited: 'SSO iniciado por IDP',
+    unlimited: 'SSO iniciado por IDP',
+    not_eligible: 'SSO iniciado por IDP não permitido',
+  },
+  saml_applications_limit: {
+    name: 'Aplicações SAML',
+    limited: '{{count, number}} aplicação SAML',
+    limited_other: '{{count, number}} aplicações SAML',
+    unlimited: 'Aplicações SAML ilimitadas',
+    not_eligible: 'Remover as tuas aplicações SAML',
+  },
+  captcha_enabled: {
+    name: 'CAPTCHA',
+    limited: 'CAPTCHA',
+    unlimited: 'CAPTCHA',
+    not_eligible: 'Remove o teu CAPTCHA',
+  },
+  security_features_enabled: {
+    name: 'Segurança avançada',
+    limited: 'Segurança avançada',
+    unlimited: 'Segurança avançada',
+    not_eligible: 'Remove as tuas definições de segurança avançada',
+  },
 };
 
 export default Object.freeze(quota_item);

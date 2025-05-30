@@ -40,6 +40,13 @@ type ConnectorMessageRecord = {
   code: string;
   type: string;
   payload: SendMessagePayload;
+  /**
+   * Mock email connector will insert the template into the record.
+   * The template will be either the default template from connector config or the custom i18n template if it exists.
+   */
+  template?: Record<string, unknown>;
+  subject?: string;
+  content?: string;
 };
 
 /**
@@ -79,6 +86,7 @@ type ExpectedErrorInfo = {
   code: string;
   status: number;
   messageIncludes?: string;
+  unexpectedProperties?: string[];
 };
 
 export const expectRejects = async <T = void>(
@@ -95,7 +103,7 @@ export const expectRejects = async <T = void>(
 };
 
 const expectRequestError = async <T = void>(error: unknown, expected: ExpectedErrorInfo) => {
-  const { code, status, messageIncludes } = expected;
+  const { code, status, messageIncludes, unexpectedProperties = [] } = expected;
 
   if (!(error instanceof HTTPError)) {
     fail('Error should be an instance of RequestError');
@@ -115,6 +123,10 @@ const expectRequestError = async <T = void>(error: unknown, expected: ExpectedEr
 
   if (messageIncludes) {
     expect(body.message.includes(messageIncludes)).toBeTruthy();
+  }
+
+  for (const property of unexpectedProperties) {
+    expect(body.data).not.toHaveProperty(property);
   }
 
   return body.data;

@@ -16,26 +16,33 @@ export const getTenantSubscription = async (
   const client = await cloudConnection.getClient();
   const subscription = await client.get('/api/tenants/my/subscription');
 
-  return subscription;
+  // All the dates will be converted to the ISO 8601 format after json serialization.
+  // Convert the dates to ISO 8601 format to match the exact type of the response.
+  const { currentPeriodStart, currentPeriodEnd, ...rest } = subscription;
+
+  return {
+    ...rest,
+    currentPeriodStart: new Date(currentPeriodStart).toISOString(),
+    currentPeriodEnd: new Date(currentPeriodEnd).toISOString(),
+  };
 };
 
-export const getTenantSubscriptionData = async (
+/**
+ * Get real-time subscription data from Logto Cloud service, including quota, usage, resources, and roles.
+ * Since the core service computing resources may locate in another region other than the Cloud service, the response could take few seconds.
+ */
+export const getTenantUsageData = async (
   cloudConnection: CloudConnectionLibrary
 ): Promise<{
-  planId: string;
-  isEnterprisePlan: boolean;
   quota: SubscriptionQuota;
   usage: SubscriptionUsage;
   resources: Record<string, number>;
   roles: Record<string, number>;
 }> => {
   const client = await cloudConnection.getClient();
-  const [{ planId, isEnterprisePlan }, { quota, usage, resources, roles }] = await Promise.all([
-    client.get('/api/tenants/my/subscription'),
-    client.get('/api/tenants/my/subscription-usage'),
-  ]);
+  const { quota, usage, resources, roles } = await client.get('/api/tenants/my/subscription-usage');
 
-  return { planId, isEnterprisePlan, quota, usage, resources, roles };
+  return { quota, usage, resources, roles };
 };
 
 export const reportSubscriptionUpdates = async (

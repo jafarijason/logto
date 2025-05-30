@@ -47,6 +47,7 @@ export default function verificationRoutes<T extends UserRouter>(
       });
       await withSentinel(
         {
+          ctx,
           sentinel,
           action: SentinelActivityAction.Password,
           identifier: {
@@ -82,13 +83,13 @@ export default function verificationRoutes<T extends UserRouter>(
       status: [201, 501],
     }),
     async (ctx, next) => {
-      const { id: userId } = ctx.auth;
+      const { id: userId, clientId: applicationId } = ctx.auth;
       const { identifier } = ctx.guard.body;
 
       const user = await queries.users.findUserById(userId);
       const isNewIdentifier =
-        (identifier.type === SignInIdentifier.Email && identifier.value === user.primaryEmail) ||
-        (identifier.type === SignInIdentifier.Phone && identifier.value === user.primaryPhone);
+        (identifier.type === SignInIdentifier.Email && identifier.value !== user.primaryEmail) ||
+        (identifier.type === SignInIdentifier.Phone && identifier.value !== user.primaryPhone);
 
       const codeVerification = createNewCodeVerificationRecord(
         libraries,
@@ -97,12 +98,21 @@ export default function verificationRoutes<T extends UserRouter>(
         isNewIdentifier ? TemplateType.BindNewIdentifier : TemplateType.UserPermissionValidation
       );
 
-      await codeVerification.sendVerificationCode();
+      // Build the user context information for the verification code email template.
+      const emailContextPayload =
+        identifier.type === SignInIdentifier.Email
+          ? await libraries.passcodes.buildVerificationCodeContext({ user, applicationId })
+          : undefined;
+
+      await codeVerification.sendVerificationCode({
+        locale: ctx.locale,
+        ...emailContextPayload,
+      });
 
       const { expiresAt } = await insertVerificationRecord(
         codeVerification,
         queries,
-        isNewIdentifier ? userId : undefined
+        isNewIdentifier ? undefined : userId
       );
 
       ctx.body = {
@@ -142,6 +152,7 @@ export default function verificationRoutes<T extends UserRouter>(
 
       await withSentinel(
         {
+          ctx,
           sentinel,
           action: SentinelActivityAction.VerificationCode,
           identifier,

@@ -5,13 +5,15 @@ import {
   VerificationType,
   type User,
   type VerificationCodeIdentifier,
-  type VerificationCodeSignInIdentifier,
 } from '@logto/schemas';
 import { generateStandardId } from '@logto/shared';
 import { z } from 'zod';
 
 import RequestError from '#src/errors/RequestError/index.js';
-import { type createPasscodeLibrary } from '#src/libraries/passcode.js';
+import {
+  type SendPasscodeContextPayload,
+  type createPasscodeLibrary,
+} from '#src/libraries/passcode.js';
 import type Libraries from '#src/tenants/Libraries.js';
 import type Queries from '#src/tenants/Queries.js';
 import assertThat from '#src/utils/assert-that.js';
@@ -42,13 +44,13 @@ type CodeVerificationType =
   | VerificationType.EmailVerificationCode
   | VerificationType.PhoneVerificationCode;
 
-type SinInIdentifierTypeOf = {
+type SignInIdentifierTypeOf = {
   [VerificationType.EmailVerificationCode]: SignInIdentifier.Email;
   [VerificationType.PhoneVerificationCode]: SignInIdentifier.Phone;
 };
 
 type VerificationCodeIdentifierOf<T extends CodeVerificationType> = VerificationCodeIdentifier<
-  SinInIdentifierTypeOf[T]
+  SignInIdentifierTypeOf[T]
 >;
 
 type CodeVerificationIdentifierMap = {
@@ -64,11 +66,6 @@ export type CodeVerificationRecordData<T extends CodeVerificationType = CodeVeri
   templateType: TemplateType;
   verified: boolean;
 };
-
-export const identifierCodeVerificationTypeMap = Object.freeze({
-  [SignInIdentifier.Email]: VerificationType.EmailVerificationCode,
-  [SignInIdentifier.Phone]: VerificationType.PhoneVerificationCode,
-}) satisfies Record<VerificationCodeSignInIdentifier, CodeVerificationType>;
 
 /**
  * This is the parent class for `EmailCodeVerification` and `PhoneCodeVerification`. Not publicly exposed.
@@ -107,11 +104,13 @@ abstract class CodeVerification<T extends CodeVerificationType>
   /**
    * Send the verification code to the current `identifier`
    *
-   * @remark Instead of session jti,
+   * @param {SendPasscodeContextPayload} payload - The extra context information for the verification code template.
+   * @remarks
+   * Instead of session jti,
    * the verification id is used as `interaction_jti` to uniquely identify the passcode record in DB
    * for the current interaction.
    */
-  async sendVerificationCode() {
+  async sendVerificationCode(payload?: SendPasscodeContextPayload) {
     const { createPasscode, sendPasscode } = this.libraries.passcodes;
 
     const verificationCode = await createPasscode(
@@ -120,7 +119,7 @@ abstract class CodeVerification<T extends CodeVerificationType>
       getPasscodeIdentifierPayload(this.identifier)
     );
 
-    await sendPasscode(verificationCode);
+    await sendPasscode(verificationCode, payload);
   }
 
   /**

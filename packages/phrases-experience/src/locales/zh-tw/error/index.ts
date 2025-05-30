@@ -19,6 +19,10 @@ const error = {
   timeout: '請求超時，請稍後重試。',
   password_rejected,
   sso_not_enabled: '此郵箱帳戶未啟用單一登錄。',
+  invalid_link: '無效的鏈接',
+  invalid_link_description: '你的一次性令牌可能已過期或不再有效。',
+  something_went_wrong: '出了些問題。',
+  captcha_verification_failed: '驗證碼驗證失敗。',
 };
 
 export default Object.freeze(error);

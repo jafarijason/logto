@@ -1,5 +1,29 @@
 # Change Log
 
+## 3.3.0
+
+### Minor Changes
+
+- 35bbc4399: add phone number validation and parsing to ensure the correct format when updating an existing user’s primary phone number or creating a new user with a phone number
+
+## 3.2.0
+
+### Minor Changes
+
+- 2961d355d: bump node version to ^22.14.0
+
+## 3.1.4
+
+### Patch Changes
+
+- e11e57de8: bump dependencies for security update
+
+## 3.1.3
+
+### Patch Changes
+
+- a8080e891: bump dependencies
+
 ## 3.1.2
 
 ### Patch Changes

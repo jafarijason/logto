@@ -1,6 +1,7 @@
 const action = {
   sign_in: 'Iniciar sesión',
   continue: 'Continuar',
+  continue_as: 'Continuar como {{name}}',
   create_account: 'Crear una cuenta',
   create_account_without_linking: 'Crear uno nuevo en su lugar',
   create: 'Crear',
@@ -29,10 +30,9 @@ const action = {
   verify_via_passkey: 'Verificar mediante clave de acceso',
   download: 'Descargar',
   single_sign_on: 'Inicio de sesión único',
-  /** UNTRANSLATED */
-  authorize: 'Authorize',
-  /** UNTRANSLATED */
-  use_another_account: 'Use another account',
+  authorize: 'Autorizar',
+  use_another_account: 'Usar otra cuenta',
+  back_to_current_account: 'Regresar a la cuenta actual',
 };
 
 export default Object.freeze(action);

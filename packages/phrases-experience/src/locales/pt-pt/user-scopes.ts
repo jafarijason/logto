@@ -1,23 +1,14 @@
 const user_scopes = {
   descriptions: {
-    /** UNTRANSLATED */
-    custom_data: 'Your custom data',
-    /** UNTRANSLATED */
-    email: 'Your email address',
-    /** UNTRANSLATED */
-    phone: 'Your phone number',
-    /** UNTRANSLATED */
-    profile: 'Your name, username, avatar, and other profile info',
-    /** UNTRANSLATED */
-    roles: 'Your roles',
-    /** UNTRANSLATED */
-    identities: 'Your linked social identities',
-    /** UNTRANSLATED */
-    'urn:logto:scope:organizations': 'Your organizations info',
-    /** UNTRANSLATED */
-    'urn:logto:scope:organization_roles': 'Your organization roles',
-    /** UNTRANSLATED */
-    address: 'Your address',
+    custom_data: 'Os teus dados personalizados',
+    email: 'O teu endereço de e-mail',
+    phone: 'O teu número de telefone',
+    profile: 'O teu nome, nome de utilizador, avatar e outras informações pessoais',
+    roles: 'Os teus papéis',
+    identities: 'As tuas identidades sociais associadas',
+    'urn:logto:scope:organizations': 'As tuas informações de organização',
+    'urn:logto:scope:organization_roles': 'Os teus papéis na organização',
+    address: 'A tua morada',
   },
 };
 

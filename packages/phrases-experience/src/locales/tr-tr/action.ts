@@ -1,6 +1,7 @@
 const action = {
   sign_in: 'Giriş Yap',
   continue: 'İlerle',
+  continue_as: '{{name}} olarak devam et',
   create_account: 'Hesap Oluştur',
   create_account_without_linking: 'Bunun yerine yenisini oluştur',
   create: 'Oluştur',
@@ -29,10 +30,9 @@ const action = {
   verify_via_passkey: 'Parola ile doğrula',
   download: 'İndir',
   single_sign_on: 'Tek oturum açma',
-  /** UNTRANSLATED */
-  authorize: 'Authorize',
-  /** UNTRANSLATED */
-  use_another_account: 'Use another account',
+  authorize: 'Yetkilendir',
+  use_another_account: 'Başka bir hesap kullan',
+  back_to_current_account: 'Mevcut hesaba geri dön',
 };
 
 export default Object.freeze(action);

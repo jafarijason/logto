@@ -21,6 +21,10 @@ const error = {
   timeout: "Délai d'attente de la requête dépassé. Veuillez réessayer plus tard.",
   password_rejected,
   sso_not_enabled: "La authentification unique n'est pas activée pour ce compte de messagerie.",
+  invalid_link: 'Lien invalide',
+  invalid_link_description: "Votre jeton à usage unique a peut-être expiré ou n'est plus valide.",
+  captcha_verification_failed: 'Erreur lors de la vérification du captcha.',
+  something_went_wrong: 'Quelque chose a mal tourné.',
 };
 
 export default Object.freeze(error);

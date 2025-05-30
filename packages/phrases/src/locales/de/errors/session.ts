@@ -49,6 +49,14 @@ const session = {
   },
   sso_enabled:
     'Einmaliges Anmelden ist für diese gegebene E-Mail aktiviert. Bitte melden Sie sich mit SSO an.',
+  captcha_required: 'Captcha ist erforderlich.',
+  captcha_failed: 'Captcha-Verifizierung fehlgeschlagen.',
+  email_blocklist: {
+    disposable_email_validation_failed: 'E-Mail-Adressvalidierung fehlgeschlagen.',
+    invalid_email: 'Ungültige E-Mail-Adresse.',
+    email_subaddressing_not_allowed: 'E-Mail-Subadressierung ist nicht erlaubt.',
+    email_not_allowed: 'Die E-Mail-Adresse "{{email}}" ist eingeschränkt. Bitte wähle eine andere.',
+  },
 };
 
 export default Object.freeze(session);

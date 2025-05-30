@@ -7,6 +7,7 @@ import {
   SentinelActivities,
   SentinelActionResult,
   SentinelActivityAction,
+  defaultSentinelPolicy,
 } from '@logto/schemas';
 import { generateStandardId } from '@logto/shared';
 import { type Nullable } from '@silverhand/essentials';
@@ -14,6 +15,7 @@ import { sql, type CommonQueryMethods } from '@silverhand/slonik';
 import { addMinutes } from 'date-fns';
 
 import { buildInsertIntoWithPool } from '#src/database/insert-into.js';
+import type Queries from '#src/tenants/Queries.js';
 import { convertToIdentifiers } from '#src/utils/sql.js';
 
 const { fields, table } = convertToIdentifiers(SentinelActivities);
@@ -28,6 +30,7 @@ export default class BasicSentinel extends Sentinel {
   static supportedActions = Object.freeze([
     SentinelActivityAction.Password,
     SentinelActivityAction.VerificationCode,
+    SentinelActivityAction.OneTimeToken,
   ] as const);
 
   /** The array of all supported actions in SQL format. */
@@ -54,8 +57,12 @@ export default class BasicSentinel extends Sentinel {
    * designed to be used as an isolated module that can be separated from the core business logic.
    *
    * @param pool A database pool with methods {@link CommonQueryMethods}.
+   * @param {Queries} queries Tenant-level queries.
    */
-  constructor(protected readonly pool: CommonQueryMethods) {
+  constructor(
+    protected readonly pool: CommonQueryMethods,
+    protected readonly queries: Queries
+  ) {
     super();
   }
 
@@ -107,7 +114,21 @@ export default class BasicSentinel extends Sentinel {
         and ${fields.decisionExpiresAt} > now()
       limit 1
     `);
+
     return blocked && [SentinelDecision.Blocked, blocked.decisionExpiresAt];
+  }
+
+  protected async getSentinelPolicy() {
+    const {
+      signInExperiences: { findDefaultSignInExperience },
+    } = this.queries;
+
+    const { sentinelPolicy } = await findDefaultSignInExperience();
+
+    return {
+      ...defaultSentinelPolicy,
+      ...sentinelPolicy,
+    };
   }
 
   protected async decide(
@@ -128,10 +149,14 @@ export default class BasicSentinel extends Sentinel {
         and ${fields.decision} != ${SentinelDecision.Blocked}
         and ${fields.createdAt} > now() - interval '1 hour'
     `);
+
+    const { maxAttempts, lockoutDuration } = await this.getSentinelPolicy();
+
     const now = new Date();
 
-    return failedAttempts + (query.actionResult === SentinelActionResult.Failed ? 1 : 0) >= 5
-      ? [SentinelDecision.Blocked, addMinutes(now, 10).valueOf()]
+    return failedAttempts + (query.actionResult === SentinelActionResult.Failed ? 1 : 0) >=
+      maxAttempts
+      ? [SentinelDecision.Blocked, addMinutes(now, lockoutDuration).valueOf()]
       : [SentinelDecision.Allowed, now.valueOf()];
   }
 }

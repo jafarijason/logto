@@ -1,5 +1,215 @@
 # Change Log
 
+## 1.25.0
+
+### Minor Changes
+
+- 35bbc4399: add phone number validation and parsing to ensure the correct format when updating an existing user’s primary phone number or creating a new user with a phone number
+- e8df19b7e: feat: introduce email blocklist settings page
+
+  Add a new email blocklist settings page to the Logto console under the Security section. This page allows administrators to manage the email blocklist policy for end users. Use this policy to restrict users from signing up or linking their accounts with any email addresses that are against the specified blocklist.
+
+### Patch Changes
+
+- 80112708d: always show enable CAPTCHA toggle
+
+  Even if there is no CAPTCHA provider, the toggle will be shown but disabled.
+
+  Also the back link of the captcha details page is changed to `/security/captcha`.
+
+## 1.24.0
+
+### Minor Changes
+
+- 2961d355d: bump node version to ^22.14.0
+- 0a76f3389: add captcha bot protection
+
+  You can now enable CAPTCHA bot protection for your sign-in experience with providers like Google reCAPTCHA enterprise and Cloudflare Turnstile.
+
+  To enable CAPTCHA bot protection, you need to:
+
+  1. Go to Console > Security > CAPTCHA > Bot protection.
+  2. Select the CAPTCHA provider you want to use.
+  3. Configure the CAPTCHA provider.
+  4. Save the settings.
+  5. Enable CAPTCHA in the Security page.
+
+  Then take a preview of your sign-in experience to see the CAPTCHA in action.
+
+- e69ea0373: feat: introduced new `security` section to Logto console.
+
+  We have introduced a new security section in the Logto console, which includes the following features:
+
+  - Password policy: This feature has been migrated from the signInExperience section to the new security section.
+  - CAPTCHA: Enable CAPTCHA for sign-up, sign-in, and password recovery to mitigate automated threats.
+  - Identifier lockout: Temporarily lock an identifier after multiple failed authentication attempts (e.g., consecutive incorrect passwords or verification codes) to prevent brute force access.
+
+## 1.23.0
+
+### Minor Changes
+
+- 13d04d776: feat: support multiple sign-up identifiers in sign-in experience
+
+  ## New update
+
+  Introduces a new optional field, `secondaryIdentifiers`, to the sign-in experience sign-up settings. This enhancement allows developers to specify multiple required user identifiers during the user sign-up process. Available options include `email`, `phone`, `username` and `emailOrPhone`.
+
+  ### Explanation of the difference between `signUp.identifiers` and new `signUp.secondaryIdentifiers`
+
+  The existing `signUp.identifiers` field represents the sign-up identifiers enabled for user sign-up and is an array type. In this legacy setup, if multiple identifiers are provided, users can complete the sign-up process using any one of them. The only multi-value case allowed is `[email, phone]`, which signifies that users can provide either an email or a phone number.
+
+  To enhance flexibility and support multiple required sign-up identifiers, the existing `signUp.identifiers` field does not suffice. To maintain backward compatibility with existing data, we have introduced this new `secondaryIdentifiers` field.
+
+  Unlike the `signUp.identifiers` field, the `signUp.secondaryIdentifiers` array follows an `AND` logic, meaning that all elements listed in this field are required during the sign-up process, in addition to the primary identifiers. This new field also accommodates the `emailOrPhone` case by defining an exclusive `emailOrPhone` value type, which indicates that either a phone number or an email address must be provided.
+
+  In summary, while `identifiers` allows for optional selection among email and phone, `secondaryIdentifiers` enforces mandatory inclusion of all specified identifiers.
+
+  ### Examples
+
+  1. `username` as the primary identifier. In addition, user will be required to provide a verified `email` and `phone number` during the sign-up process.
+
+  ```json
+  {
+    "identifiers": ["username"],
+    "secondaryIdentifiers": [
+      {
+        "type": "email",
+        "verify": true
+      },
+      {
+        "type": "phone",
+        "verify": true
+      }
+    ],
+    "verify": true,
+    "password": true
+  }
+  ```
+
+  2. `username` as the primary identifier. In addition, user will be required to provide either a verified `email` or `phone number` during the sign-up process.
+
+  ```json
+  {
+    "identifiers": ["username"],
+    "secondaryIdentifiers": [
+      {
+        "type": "emailOrPhone",
+        "verify": true
+      }
+    ],
+    "verify": true,
+    "password": true
+  }
+  ```
+
+  3. `email` or `phone number` as the primary identifier. In addition, user will be required to provide a `username` during the sign-up process.
+
+  ```json
+  {
+    "identifiers": ["email", "phone"],
+    "secondaryIdentifiers": [
+      {
+        "type": "username",
+        "verify": true
+      }
+    ],
+    "verify": true,
+    "password": false
+  }
+  ```
+
+  ### Sign-in experience settings
+
+  - `@logto/core`: Update the `/api/sign-in-experience` endpoint to support the new `secondaryIdentifiers` field in the sign-up settings.
+  - `@logto/console`: Replace the sign-up identifier single selector with a multi-selector to support multiple sign-up identifiers. The order of the identifiers can be rearranged by dragging and dropping the items in the list. The first item in the list will be considered the primary identifier and stored in the `signUp.identifiers` field, while the rest will be stored in the `signUp.secondaryIdentifiers` field.
+
+  ### End-user experience
+
+  The sign-up flow is now split into two stages:
+
+  - Primary identifiers (`signUp.identifiers`) are collected in the first-screen registration screen.
+  - Secondary identifiers (`signUp.secondaryIdentifiers`) are requested in subsequent steps after the primary registration has been submitted.
+
+  ## Other refactors
+
+  We have fully decoupled the sign-up identifier settings from the sign-in methods. Developers can now require as many user identifiers as needed during the sign-up process without impacting the sign-in process.
+
+  The following restrictions on sign-in and sign-up settings have been removed:
+
+  1. Password requirement is now optional when `username` is configured as a sign-up identifier. However, users without passwords cannot sign in using username authentication.
+  2. Removed the constraint requiring sign-up identifiers to be enabled as sign-in methods.
+  3. Removed the requirement for password verification across all sign-in methods when password is enabled for sign-up.
+
+- dc13cc73d: feat(console): add Logto WordPress plugin guide
+
+## 1.22.1
+
+### Patch Changes
+
+- 31adfb6ac: fix docs link
+
+## 1.22.0
+
+### Minor Changes
+
+- 0b785ee0d: feat(console): display jwks uri on application details page
+
+### Patch Changes
+
+- 096367ff5: add missing `/api` segment in SAML application Single-sign-on service URL
+- 5086f4bd2: update documentation links in Console
+- e11e57de8: bump dependencies for security update
+- d44007faa: apply custom domain to SAML SSO and SAML applications
+
+## 1.21.0
+
+### Minor Changes
+
+- 1337669e1: add support on SAML applications
+
+  Logto now supports acting as a SAML identity provider (IdP), enabling enterprise users to achieve secure Single Sign-On (SSO) through the standardized SAML protocol. Key features include:
+
+  - Full support for SAML 2.0 protocol
+  - Flexible attribute mapping configuration
+  - Metadata auto-configuration support
+  - Enterprise-grade encryption and signing
+
+  [View full documentation](https://docs.logto.io/integrate-logto/saml-app) for more details.
+
+## 1.20.0
+
+### Minor Changes
+
+- f1b1d9e95: new MFA prompt policy
+
+  You can now cutomize the MFA prompt policy in the Console.
+
+  First, choose if you want to enable **Require MFA**:
+
+  - **Enable**: Users will be prompted to set up MFA during the sign-in process which cannot be skipped. If the user fails to set up MFA or deletes their MFA settings, they will be locked out of their account until they set up MFA again.
+  - **Disable**: Users can skip the MFA setup process during sign-up flow.
+
+  If you choose to **Disable**, you can choose the MFA setup prompt:
+
+  - Do not ask users to set up MFA.
+  - Ask users to set up MFA during registration (skippable, one-time prompt). **The same prompt as previous policy (UserControlled)**
+  - Ask users to set up MFA on their sign-in after registration (skippable, one-time prompt)
+
+### Patch Changes
+
+- 239b81e31: loose redirect uri restrictions
+
+  Logto has been following the industry best practices for OAuth2.0 and OIDC from the start. However, in the real world, there are things we cannot control, like third-party services or operation systems like Windows.
+
+  This update relaxes restrictions on redirect URIs to allow the following:
+
+  1. A mix of native and HTTP(S) redirect URIs. For example, a native app can now use a redirect URI like `https://example.com`.
+  2. Native schemes without a period (`.`). For example, `myapp://callback` is now allowed.
+
+  When such URIs are configured, Logto Console will display a prominent warning. This change is backward-compatible and will not affect existing applications.
+
+  We hope this change will make it easier for you to integrate Logto with your applications.
+
 ## 1.19.0
 
 ### Minor Changes

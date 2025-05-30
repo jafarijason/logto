@@ -47,6 +47,15 @@ const session = {
     mfa_factor_not_enabled: 'Il fattore MFA non è abilitato.',
   },
   sso_enabled: "L'accesso singolo è abilitato per questa email. Accedi con SSO.",
+  captcha_required: 'È richiesto il Captcha.',
+  captcha_failed: 'La verifica del Captcha non è riuscita.',
+  email_blocklist: {
+    disposable_email_validation_failed: "La validazione dell'indirizzo email non è riuscita.",
+    invalid_email: 'Indirizzo email non valido.',
+    email_subaddressing_not_allowed: "Non è consentito l'indirizzamento secondario delle email.",
+    email_not_allowed:
+      'L\'indirizzo email "{{email}}" è ristretto. Si prega di sceglierne un altro.',
+  },
 };
 
 export default Object.freeze(session);

@@ -7,6 +7,7 @@ import UserInteractionContext from '@/Providers/UserInteractionContextProvider/U
 import Button from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import { SmartInputField } from '@/components/InputFields';
+import CaptchaBox from '@/containers/CaptchaBox';
 import useSendVerificationCode from '@/hooks/use-send-verification-code';
 import type { VerificationCodeIdentifier } from '@/types';
 import { UserFlow } from '@/types';
@@ -113,6 +114,7 @@ const ForgotPasswordForm = ({ className, autoFocus, defaultValue = '', enabledTy
 
       {errorMessage && <ErrorMessage className={styles.formErrors}>{errorMessage}</ErrorMessage>}
 
+      <CaptchaBox />
       <Button title="action.continue" htmlType="submit" isLoading={isSubmitting} />
 
       <input hidden type="submit" />

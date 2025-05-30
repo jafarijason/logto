@@ -37,6 +37,14 @@ const session = {
     mfa_factor_not_enabled: 'MFA 因素未啟用。',
   },
   sso_enabled: '該郵箱已開啟單點登錄，請使用 SSO 登錄。',
+  captcha_required: '需要驗證碼。',
+  captcha_failed: '驗證碼驗證失敗。',
+  email_blocklist: {
+    disposable_email_validation_failed: '電子郵件地址驗證失敗。',
+    invalid_email: '無效的電子郵件地址。',
+    email_subaddressing_not_allowed: '不允許使用電子郵件子地址。',
+    email_not_allowed: '電子郵件地址 "{{email}}" 受到限制。請選擇不同的地址。',
+  },
 };
 
 export default Object.freeze(session);

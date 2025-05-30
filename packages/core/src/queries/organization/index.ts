@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {
   type Organization,
   type CreateOrganization,
@@ -32,7 +33,7 @@ import { conditionalSql, convertToIdentifiers } from '#src/utils/sql.js';
 
 import { ApplicationRelationQueries } from './application-relations.js';
 import { ApplicationRoleRelationQueries } from './application-role-relations.js';
-import { EmailDomainQueries } from './email-domains.js';
+import { EmailDomainQueries, type JitOrganization } from './email-domains.js';
 import { SsoConnectorQueries } from './sso-connectors.js';
 import { UserRelationQueries } from './user-relations.js';
 import { UserRoleRelationQueries } from './user-role-relations.js';
@@ -60,6 +61,16 @@ class OrganizationRolesQueries extends SchemaQueries<
       this.findTotalNumber(search),
       this.pool.any(this.#findWithScopesSql(undefined, limit, offset, search)),
     ]);
+  }
+
+  async findAllByNames(names: string[]): Promise<Readonly<OrganizationRole[]>> {
+    const { table, fields } = convertToIdentifiers(OrganizationRoles);
+
+    return this.pool.any<OrganizationRole>(sql`
+      select ${table}.*
+      from ${table}
+      where ${fields.name} = any(${sql.array(names, 'text')})  
+    `);
   }
 
   #findWithScopesSql(
@@ -308,6 +319,7 @@ export default class OrganizationQueries extends SchemaQueries<
       OrganizationRoles
     ),
     ssoConnectors: new SsoConnectorQueries(this.pool),
+    getJitOrganizationsByIds: this.getJitOrganizationsByIds.bind(this),
   };
 
   constructor(pool: CommonQueryMethods) {
@@ -341,4 +353,27 @@ export default class OrganizationQueries extends SchemaQueries<
         ) as "hasMfaConfigured";
     `);
   }
+
+  private async getJitOrganizationsByIds(
+    organizationIds: string[]
+  ): Promise<readonly JitOrganization[]> {
+    if (organizationIds.length === 0) {
+      return [];
+    }
+    const organization = convertToIdentifiers(Organizations, true);
+    const organizationJitRoles = convertToIdentifiers(OrganizationJitRoles, true);
+    return this.pool.any<JitOrganization>(sql`
+      select
+        ${organization.fields.id} as "organizationId",
+        array_remove(
+          array_agg(${organizationJitRoles.fields.organizationRoleId}),
+          null
+        ) as "organizationRoleIds"
+      from ${organization.table} left join ${organizationJitRoles.table}
+        on ${organization.fields.id} = ${organizationJitRoles.fields.organizationId}
+      where ${organization.fields.id} in (${sql.join(organizationIds, sql`, `)})
+      group by ${organization.fields.id}
+    `);
+  }
 }
+/* eslint-enable max-lines */

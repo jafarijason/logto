@@ -103,14 +103,30 @@ export default function koaSecurityHeaders<StateT, ContextT, ResponseBodyT>(
         scriptSrc: [
           "'self'",
           "'unsafe-inline'",
+          "'unsafe-hashes'",
           `${gsiOrigin}client`,
           // Some of our users may use the Cloudflare Web Analytics service. We need to allow it to
           // load its scripts.
           'https://static.cloudflareinsights.com/',
+          // Cloudflare Turnstile
+          'https://challenges.cloudflare.com/turnstile/v0/api.js',
+          // Google Recaptcha Enterprise
+          'https://www.google.com/recaptcha/enterprise.js',
+          // Google Recaptcha static resources
+          'https://www.gstatic.com/recaptcha/',
           // Allow "unsafe-eval" for debugging purpose in non-production environment
           ...conditionalArray(!isProduction && "'unsafe-eval'"),
         ],
-        connectSrc: ["'self'", gsiOrigin, tenantEndpointOrigin, ...developmentOrigins],
+        scriptSrcAttr: ["'unsafe-inline'"],
+        connectSrc: [
+          "'self'",
+          gsiOrigin,
+          tenantEndpointOrigin,
+          // Allow reCAPTCHA API calls
+          'https://www.google.com/recaptcha/',
+          'https://www.gstatic.com/recaptcha/',
+          ...developmentOrigins,
+        ],
         // WARNING (high risk): Need to allow self-hosted terms of use page loaded in an iframe
         frameSrc: ["'self'", 'https:', gsiOrigin],
         // Allow being loaded by console preview iframe

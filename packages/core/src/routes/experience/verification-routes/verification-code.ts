@@ -1,13 +1,18 @@
 import {
   InteractionEvent,
+  logtoCookieKey,
+  logtoUiCookieGuard,
   SentinelActivityAction,
+  SignInIdentifier,
   type VerificationCodeIdentifier,
   verificationCodeIdentifierGuard,
 } from '@logto/schemas';
 import { Action } from '@logto/schemas/lib/types/log/interaction.js';
+import { trySafe } from '@silverhand/essentials';
 import type Router from 'koa-router';
 import { z } from 'zod';
 
+import { type PasscodeLibrary } from '#src/libraries/passcode.js';
 import { type LogContext } from '#src/middleware/koa-audit-log.js';
 import koaGuard from '#src/middleware/koa-guard.js';
 import type TenantContext from '#src/tenants/TenantContext.js';
@@ -33,6 +38,27 @@ const createVerificationCodeAuditLog = (
   return createLog(`Interaction.${interactionEvent}.Verification.${verificationType}.${action}`);
 };
 
+const buildVerificationCodeTemplateContext = async (
+  passcodeLibrary: PasscodeLibrary,
+  ctx: ExperienceInteractionRouterContext,
+  { type }: VerificationCodeIdentifier
+) => {
+  // Build extra context for email verification only
+  if (type !== SignInIdentifier.Email) {
+    return {};
+  }
+
+  // Safely get the orgId and appId context from cookie
+  const { appId: applicationId, organizationId } =
+    trySafe(() => logtoUiCookieGuard.parse(JSON.parse(ctx.cookies.get(logtoCookieKey) ?? '{}'))) ??
+    {};
+
+  return passcodeLibrary.buildVerificationCodeContext({
+    applicationId,
+    organizationId,
+  });
+};
+
 export default function verificationCodeRoutes<T extends ExperienceInteractionRouterContext>(
   router: Router<unknown, T>,
   { libraries, queries, sentinel }: TenantContext
@@ -48,10 +74,11 @@ export default function verificationCodeRoutes<T extends ExperienceInteractionRo
         verificationId: z.string(),
       }),
       // 501: connector not found
-      status: [200, 400, 404, 501],
+      status: [200, 400, 404, 422, 501],
     }),
     async (ctx, next) => {
       const { identifier, interactionEvent } = ctx.guard.body;
+      await ctx.experienceInteraction.guardCaptcha();
 
       const log = createVerificationCodeAuditLog(
         ctx,
@@ -74,7 +101,26 @@ export default function verificationCodeRoutes<T extends ExperienceInteractionRo
         getTemplateTypeByEvent(interactionEvent)
       );
 
-      await codeVerification.sendVerificationCode();
+      // Pre validate the email against email blocklist if the interaction event is register
+      if (
+        interactionEvent === InteractionEvent.Register &&
+        identifier.type === SignInIdentifier.Email
+      ) {
+        await ctx.experienceInteraction.signInExperienceValidator.guardEmailBlocklist(
+          codeVerification
+        );
+      }
+
+      const templateContext = await buildVerificationCodeTemplateContext(
+        libraries.passcodes,
+        ctx,
+        identifier
+      );
+
+      await codeVerification.sendVerificationCode({
+        locale: ctx.locale,
+        ...templateContext,
+      });
 
       ctx.experienceInteraction.setVerificationRecord(codeVerification);
 
@@ -128,6 +174,7 @@ export default function verificationCodeRoutes<T extends ExperienceInteractionRo
 
       await withSentinel(
         {
+          ctx,
           sentinel,
           action: SentinelActivityAction.VerificationCode,
           identifier,

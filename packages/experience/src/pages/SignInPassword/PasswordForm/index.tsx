@@ -9,6 +9,7 @@ import Button from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import { PasswordInputField } from '@/components/InputFields';
 import type { IdentifierInputValue } from '@/components/InputFields/SmartInputField';
+import CaptchaBox from '@/containers/CaptchaBox';
 import ForgotPasswordLink from '@/containers/ForgotPasswordLink';
 import usePasswordSignIn from '@/hooks/use-password-sign-in';
 import { useForgotPasswordSettings } from '@/hooks/use-sie';
@@ -114,6 +115,7 @@ const PasswordForm = ({
         <ForgotPasswordLink className={styles.link} identifier={identifier} value={value} />
       )}
 
+      <CaptchaBox />
       <Button title="action.continue" name="submit" htmlType="submit" isLoading={isSubmitting} />
 
       {identifier !== SignInIdentifier.Username && isVerificationCodeEnabled && (

@@ -1,5 +1,5 @@
 import { Domains, domainResponseGuard, domainSelectFields } from '@logto/schemas';
-import { pick } from '@silverhand/essentials';
+import { pick, trySafe } from '@silverhand/essentials';
 import { z } from 'zod';
 
 import RequestError from '#src/errors/RequestError/index.js';
@@ -9,14 +9,14 @@ import assertThat from '#src/utils/assert-that.js';
 import type { ManagementApiRouter, RouterInitArgs } from './types.js';
 
 export default function domainRoutes<T extends ManagementApiRouter>(
-  ...[router, { queries, libraries }]: RouterInitArgs<T>
+  ...[router, { id: tenantId, queries, libraries }]: RouterInitArgs<T>
 ) {
   const {
     domains: { findAllDomains, findDomainById },
   } = queries;
   const {
-    quota,
     domains: { syncDomainStatus, addDomain, deleteDomain },
+    samlApplications: { syncCustomDomainsToSamlApplicationRedirectUrls },
   } = libraries;
 
   router.get(
@@ -27,6 +27,11 @@ export default function domainRoutes<T extends ManagementApiRouter>(
       const syncedDomains = await Promise.all(
         domains.map(async (domain) => syncDomainStatus(domain))
       );
+
+      void trySafe(async () =>
+        syncCustomDomainsToSamlApplicationRedirectUrls(tenantId, [...syncedDomains])
+      );
+
       ctx.body = syncedDomains.map((domain) => pick(domain, ...domainSelectFields));
 
       return next();
@@ -45,7 +50,16 @@ export default function domainRoutes<T extends ManagementApiRouter>(
         params: { id },
       } = ctx.guard;
 
-      const syncedDomain = await syncDomainStatus(await findDomainById(id));
+      const domain = await findDomainById(id);
+      const syncedDomain = await syncDomainStatus(domain);
+
+      void trySafe(async () => {
+        const domains = await findAllDomains();
+        const syncedDomains = await Promise.all(
+          domains.map(async (domain) => syncDomainStatus(domain))
+        );
+        await syncCustomDomainsToSamlApplicationRedirectUrls(tenantId, [...syncedDomains]);
+      });
 
       ctx.body = pick(syncedDomain, ...domainSelectFields);
 
@@ -86,6 +100,15 @@ export default function domainRoutes<T extends ManagementApiRouter>(
     async (ctx, next) => {
       const { id } = ctx.guard.params;
       await deleteDomain(id);
+
+      await trySafe(async () => {
+        const domains = await findAllDomains();
+        const syncedDomains = await Promise.all(
+          domains.map(async (domain) => syncDomainStatus(domain))
+        );
+        await syncCustomDomainsToSamlApplicationRedirectUrls(tenantId, [...syncedDomains]);
+      });
+
       ctx.status = 204;
 
       return next();

@@ -1,3 +1,4 @@
+import { type PublicRegionName } from '@logto/cloud/routes';
 import { ReservedPlanId, TenantTag, defaultManagementApi } from '@logto/schemas';
 import dayjs from 'dayjs';
 
@@ -7,7 +8,7 @@ import {
   type TenantResponse,
   type NewSubscriptionCountBasedUsage,
 } from '@/cloud/types/router';
-import { RegionName } from '@/components/Region';
+import { defaultRegionName } from '@/components/Region';
 import { LogtoSkuType } from '@/types/skus';
 
 import { adminEndpoint, isCloud } from './env';
@@ -43,7 +44,7 @@ export const defaultTenantResponse: TenantResponse = {
   openInvoices: [],
   isSuspended: false,
   planId: defaultSubscriptionPlanId, // Reserved for compatibility with cloud
-  regionName: RegionName.EU, // Reserved for compatibility with cloud
+  regionName: defaultRegionName, // Reserved for compatibility with cloud
   createdAt: new Date(),
 };
 
@@ -83,6 +84,8 @@ export const defaultLogtoSku: LogtoSkuResponse = {
     subjectTokenEnabled: true,
     bringYourUiEnabled: true,
     idpInitiatedSsoEnabled: false,
+    captchaEnabled: true,
+    securityFeaturesEnabled: true,
   },
 };
 
@@ -109,6 +112,9 @@ export const defaultSubscriptionQuota: NewSubscriptionQuota = {
   subjectTokenEnabled: false,
   bringYourUiEnabled: false,
   idpInitiatedSsoEnabled: false,
+  samlApplicationsLimit: 0,
+  captchaEnabled: false,
+  securityFeaturesEnabled: false,
 };
 
 export const defaultSubscriptionUsage: NewSubscriptionCountBasedUsage = {
@@ -130,6 +136,9 @@ export const defaultSubscriptionUsage: NewSubscriptionCountBasedUsage = {
   subjectTokenEnabled: false,
   bringYourUiEnabled: false,
   idpInitiatedSsoEnabled: false,
+  samlApplicationsLimit: 0,
+  captchaEnabled: false,
+  securityFeaturesEnabled: false,
 };
 
 const getAdminTenantEndpoint = () => {
@@ -146,3 +155,11 @@ const getAdminTenantEndpoint = () => {
 export const adminTenantEndpoint = getAdminTenantEndpoint();
 
 export const mainTitle = isCloud ? 'Logto Cloud' : 'Logto Console';
+
+// Manually maintaining the list of regions to avoid unexpected changes. We may consider using an API in the future.
+export const availableRegions = Object.freeze([
+  'EU',
+  'US',
+  'AU',
+  'JP',
+] as const satisfies PublicRegionName[]);

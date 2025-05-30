@@ -1,5 +1,6 @@
-import { SignInIdentifier } from '@logto/schemas';
+import { AlternativeSignUpIdentifier, SignInIdentifier } from '@logto/schemas';
 import { conditional } from '@silverhand/essentials';
+import { useCallback } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -7,9 +8,9 @@ import { DragDropProvider, DraggableItem } from '@/ds-components/DragDrop';
 import useEnabledConnectorTypes from '@/hooks/use-enabled-connector-types';
 
 import type { SignInExperienceForm } from '../../../../types';
-import { signInIdentifiers, signUpIdentifiersMapping } from '../../../constants';
+import { signInIdentifiers } from '../../../constants';
 import { identifierRequiredConnectorMapping } from '../../constants';
-import { getSignUpRequiredConnectorTypes, createSignInMethod } from '../../utils';
+import { createSignInMethod, getSignUpIdentifiersRequiredConnectors } from '../../utils';
 
 import AddButton from './AddButton';
 import SignInMethodItem from './SignInMethodItem';
@@ -41,17 +42,38 @@ function SignInMethodEditBox() {
 
   const { isConnectorTypeEnabled } = useEnabledConnectorTypes();
 
-  const {
-    identifier: signUpIdentifier,
-    password: isSignUpPasswordRequired,
-    verify: isSignUpVerificationRequired,
-  } = signUp;
+  const { identifiers, password: isSignUpPasswordRequired } = signUp;
 
-  const requiredSignInIdentifiers = signUpIdentifiersMapping[signUpIdentifier];
-  const ignoredWarningConnectors = getSignUpRequiredConnectorTypes(signUpIdentifier);
+  const signUpIdentifiers = identifiers.map(({ identifier }) => identifier);
+
+  const ignoredWarningConnectors = getSignUpIdentifiersRequiredConnectors(signUpIdentifiers);
 
   const signInIdentifierOptions = signInIdentifiers.filter((candidateIdentifier) =>
     fields.every(({ identifier }) => identifier !== candidateIdentifier)
+  );
+
+  const isVerificationCodeCheckable = useCallback(
+    (identifier: SignInIdentifier) => {
+      if (identifier === SignInIdentifier.Username) {
+        return false;
+      }
+
+      if (isSignUpPasswordRequired) {
+        return true;
+      }
+
+      // If the email or phone sign-in method is enabled as one of the sign-up identifiers
+      // and password is not required for sign-up, then verification code is required and uncheckable.
+      // This is to ensure new users can sign in without password.
+      const signUpVerificationRequired = signUpIdentifiers.some(
+        (signUpIdentifier) =>
+          signUpIdentifier === identifier ||
+          signUpIdentifier === AlternativeSignUpIdentifier.EmailOrPhone
+      );
+
+      return !signUpVerificationRequired;
+    },
+    [isSignUpPasswordRequired, signUpIdentifiers]
   );
 
   return (
@@ -101,14 +123,10 @@ function SignInMethodEditBox() {
                 }}
                 render={({ field: { value }, fieldState: { error } }) => (
                   <SignInMethodItem
+                    isDeletable
                     signInMethod={value}
-                    isPasswordCheckable={
-                      identifier !== SignInIdentifier.Username && !isSignUpPasswordRequired
-                    }
-                    isVerificationCodeCheckable={
-                      !(isSignUpVerificationRequired && !isSignUpPasswordRequired)
-                    }
-                    isDeletable={!requiredSignInIdentifiers.includes(identifier)}
+                    isPasswordCheckable={identifier !== SignInIdentifier.Username}
+                    isVerificationCodeCheckable={isVerificationCodeCheckable(value.identifier)}
                     requiredConnectors={requiredConnectors}
                     hasError={Boolean(error)}
                     errorMessage={error?.message}

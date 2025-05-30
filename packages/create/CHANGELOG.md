@@ -1,5 +1,63 @@
 # Change Log
 
+## 1.28.0
+
+### Patch Changes
+
+- @logto/cli@1.28.0
+
+## 1.27.0
+
+### Minor Changes
+
+- 2961d355d: bump node version to ^22.14.0
+
+### Patch Changes
+
+- Updated dependencies [2961d355d]
+- Updated dependencies [83e7be741]
+  - @logto/cli@1.27.0
+
+## 1.26.0
+
+### Patch Changes
+
+- @logto/cli@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- @logto/cli@1.25.0
+
+## 1.24.1
+
+### Patch Changes
+
+- e11e57de8: bump dependencies for security update
+- Updated dependencies [cb261024b]
+- Updated dependencies [e11e57de8]
+  - @logto/cli@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- @logto/cli@1.24.0
+
+## 1.23.1
+
+### Patch Changes
+
+- @logto/cli@1.23.1
+
+## 1.23.0
+
+### Patch Changes
+
+- Updated dependencies [217858950]
+  - @logto/cli@1.23.0
+
 ## 1.22.0
 
 ### Patch Changes

@@ -16,7 +16,7 @@ import {
   type UserOnboardingData,
 } from '@logto/schemas';
 import { generateStandardId } from '@logto/shared';
-import { conditional, conditionalArray, trySafe } from '@silverhand/essentials';
+import { condArray, conditional, conditionalArray, trySafe } from '@silverhand/essentials';
 
 import { EnvSet } from '#src/env-set/index.js';
 import type TenantContext from '#src/tenants/TenantContext.js';
@@ -36,6 +36,10 @@ type OrganizationProvisionPayload =
   | {
       userId: string;
       ssoConnectorId: string;
+    }
+  | {
+      userId: string;
+      organizationIds: string[];
     };
 
 export class ProvisionLibrary {
@@ -55,7 +59,6 @@ export class ProvisionLibrary {
       libraries: {
         users: { generateUserId, insertUser },
       },
-      queries: { userSsoIdentities: userSsoIdentitiesQueries },
     } = this.tenantContext;
 
     const { socialIdentity, enterpriseSsoIdentity, syncedEnterpriseSsoIdentity, ...rest } = profile;
@@ -74,11 +77,7 @@ export class ProvisionLibrary {
     );
 
     if (enterpriseSsoIdentity) {
-      await userSsoIdentitiesQueries.insert({
-        id: generateStandardId(),
-        userId: user.id,
-        ...enterpriseSsoIdentity,
-      });
+      await this.addSsoIdentityToUser(user.id, enterpriseSsoIdentity);
     }
 
     if (isCreatingFirstAdminUser) {
@@ -88,7 +87,6 @@ export class ProvisionLibrary {
     await this.provisionNewUserJitOrganizations(user.id, profile);
 
     this.ctx.appendDataHookContext('User.Created', { user });
-    // TODO: log
 
     this.triggerAnalyticReports(user);
 
@@ -110,6 +108,26 @@ export class ProvisionLibrary {
     });
 
     await this.provisionNewUserJitOrganizations(userId, { enterpriseSsoIdentity });
+  }
+
+  /**
+   * Add the user to the specified organizations. This function is called when an existing
+   * user is invited to organization(s) by admin through one-time token (e.g. Magic link).
+   */
+  async provisionJitOrganization(payload: OrganizationProvisionPayload) {
+    const {
+      libraries: { users: usersLibraries },
+    } = this.tenantContext;
+
+    const provisionedOrganizations = await usersLibraries.provisionOrganizations(payload);
+
+    for (const { organizationId } of provisionedOrganizations) {
+      this.ctx.appendDataHookContext('Organization.Membership.Updated', {
+        organizationId,
+      });
+    }
+
+    return provisionedOrganizations;
   }
 
   /**
@@ -203,19 +221,32 @@ export class ProvisionLibrary {
    */
   private async provisionNewUserJitOrganizations(
     userId: string,
-    { primaryEmail, enterpriseSsoIdentity }: InteractionProfile
+    { primaryEmail, enterpriseSsoIdentity, jitOrganizationIds }: InteractionProfile
   ) {
+    const extraJitOrganizations = condArray(
+      jitOrganizationIds &&
+        (await this.provisionJitOrganization({
+          userId,
+          organizationIds: jitOrganizationIds,
+        }))
+    );
     if (enterpriseSsoIdentity) {
-      return this.provisionJitOrganization({
-        userId,
-        ssoConnectorId: enterpriseSsoIdentity.ssoConnectorId,
-      });
+      return [
+        ...extraJitOrganizations,
+        ...(await this.provisionJitOrganization({
+          userId,
+          ssoConnectorId: enterpriseSsoIdentity.ssoConnectorId,
+        })),
+      ];
     }
     if (primaryEmail) {
-      return this.provisionJitOrganization({
-        userId,
-        email: primaryEmail,
-      });
+      return [
+        ...extraJitOrganizations,
+        ...(await this.provisionJitOrganization({
+          userId,
+          email: primaryEmail,
+        })),
+      ];
     }
   }
 
@@ -245,22 +276,6 @@ export class ProvisionLibrary {
       userId: id,
       organizationRoleId: getTenantRole(TenantRole.Admin).id,
     });
-  }
-
-  private async provisionJitOrganization(payload: OrganizationProvisionPayload) {
-    const {
-      libraries: { users: usersLibraries },
-    } = this.tenantContext;
-
-    const provisionedOrganizations = await usersLibraries.provisionOrganizations(payload);
-
-    for (const { organizationId } of provisionedOrganizations) {
-      this.ctx.appendDataHookContext('Organization.Membership.Updated', {
-        organizationId,
-      });
-    }
-
-    return provisionedOrganizations;
   }
 
   private readonly getInitialUserRoles = (

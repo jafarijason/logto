@@ -1,12 +1,11 @@
 import content from './content.js';
-import password_policy from './password-policy.js';
 import sign_up_and_sign_in from './sign-up-and-sign-in.js';
 
 const sign_in_exp = {
   page_title: 'Experiencia de inicio de sesión',
   title: 'Experiencia de inicio de sesión',
   description:
-    'Personalice la interfaz de inicio de sesión para que se adapte a su marca y visualice en tiempo real',
+    'Personaliza los flujos de autenticación y la interfaz de usuario, y previsualiza la experiencia lista para usar en tiempo real.',
   tabs: {
     branding: 'Branding',
     sign_up_and_sign_in: 'Registro e inicio de sesión',
@@ -88,7 +87,6 @@ const sign_in_exp = {
   },
   sign_up_and_sign_in,
   content,
-  password_policy,
   setup_warning: {
     no_connector_sms:
       'Aún no se ha configurado el conector SMS. Antes de completar la configuración, los usuarios no podrán iniciar sesión con este método. <a>{{link}}</a> en "Conectores"',

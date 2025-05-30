@@ -7,11 +7,14 @@ import {
   bindTotpGuard,
   type BindWebAuthn,
   bindWebAuthnGuard,
+  InteractionEvent,
   type JsonObject,
   MfaFactor,
   MfaPolicy,
   type User,
   VerificationType,
+  type Mfa as MfaSettings,
+  OrganizationRequiredMfaPolicy,
 } from '@logto/schemas';
 import { generateStandardId } from '@logto/shared';
 import { deduplicate } from '@silverhand/essentials';
@@ -149,10 +152,13 @@ export class Mfa {
    * @throws {RequestError} with status 422 if the MFA policy is not user controlled
    */
   async skip() {
-    const { policy } = await this.signInExperienceValidator.getMfaSettings();
+    const mfaSettings = await this.signInExperienceValidator.getMfaSettings();
+    const { policy } = mfaSettings;
+    const user = await this.interactionContext.getIdentifiedUser();
 
     assertThat(
-      policy === MfaPolicy.UserControlled,
+      policy !== MfaPolicy.Mandatory &&
+        !(await this.isMfaRequiredByUserOrganizations(mfaSettings, user.id)),
       new RequestError({
         code: 'session.mfa.mfa_policy_not_user_controlled',
         status: 422,
@@ -268,19 +274,47 @@ export class Mfa {
    * @throws {RequestError} with status 422 if the user has not bound the backup code but enabled in the sign-in experience
    * @throws {RequestError} with status 422 if the user existing backup codes is empty, new backup codes is required
    */
+  // eslint-disable-next-line complexity
   async assertUserMandatoryMfaFulfilled() {
-    const { factors, policy } = await this.signInExperienceValidator.getMfaSettings();
+    const mfaSettings = await this.signInExperienceValidator.getMfaSettings();
+    const { policy, factors } = mfaSettings;
 
     // If there are no factors, then there is nothing to check
     if (factors.length === 0) {
       return;
     }
 
-    const { mfaVerifications, logtoConfig } = await this.interactionContext.getIdentifiedUser();
+    const {
+      mfaVerifications,
+      logtoConfig,
+      id: userId,
+    } = await this.interactionContext.getIdentifiedUser();
 
-    // If the policy is user controlled and the user has skipped MFA, then there is nothing to check
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    if ((policy === MfaPolicy.UserControlled && this.#mfaSkipped) || isMfaSkipped(logtoConfig)) {
+    const isMfaRequiredByUserOrganizations = await this.isMfaRequiredByUserOrganizations(
+      mfaSettings,
+      userId
+    );
+
+    // If the policy is no prompt, and mfa is not required by the user organizations, then there is nothing to check
+    if (policy === MfaPolicy.NoPrompt && !isMfaRequiredByUserOrganizations) {
+      return;
+    }
+
+    // If the policy is not mandatory and the user has skipped MFA,
+    // and MFA is not required by the user organizations, then there is nothing to check
+    if (
+      policy !== MfaPolicy.Mandatory &&
+      (this.#mfaSkipped ?? isMfaSkipped(logtoConfig)) &&
+      !isMfaRequiredByUserOrganizations
+    ) {
+      return;
+    }
+
+    // If the policy is prompt only at sign-in, and the event is register, skip check
+    if (
+      this.interactionContext.getInteractionEvent() === InteractionEvent.Register &&
+      policy === MfaPolicy.PromptOnlyAtSignIn
+    ) {
       return;
     }
 
@@ -295,7 +329,7 @@ export class Mfa {
       availableFactors.some((factor) => linkedFactors.includes(factor)),
       new RequestError(
         { code: 'user.missing_mfa', status: 422 },
-        policy === MfaPolicy.Mandatory
+        policy === MfaPolicy.Mandatory || isMfaRequiredByUserOrganizations
           ? { availableFactors }
           : { availableFactors, skippable: true }
       )
@@ -326,5 +360,16 @@ export class Mfa {
     const isFactorsEnabled = factors.every((factor) => enabledFactors.includes(factor));
 
     assertThat(isFactorsEnabled, new RequestError({ code: 'session.mfa.mfa_factor_not_enabled' }));
+  }
+
+  private async isMfaRequiredByUserOrganizations(mfaSettings: MfaSettings, userId: string) {
+    if (mfaSettings.organizationRequiredMfaPolicy !== OrganizationRequiredMfaPolicy.Mandatory) {
+      return false;
+    }
+
+    const organizations =
+      await this.queries.organizations.relations.users.getOrganizationsByUserId(userId);
+
+    return organizations.some(({ isMfaRequired }) => isMfaRequired);
   }
 }

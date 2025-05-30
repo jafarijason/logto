@@ -1,7 +1,6 @@
 import {
   InteractionEvent,
   SignInIdentifier,
-  SignInMode,
   type VerificationCodeIdentifier,
 } from '@logto/schemas';
 import { useCallback, useMemo } from 'react';
@@ -14,8 +13,8 @@ import { useConfirmModal } from '@/hooks/use-confirm-modal';
 import type { ErrorHandlers } from '@/hooks/use-error-handler';
 import useErrorHandler from '@/hooks/use-error-handler';
 import useGlobalRedirectTo from '@/hooks/use-global-redirect-to';
-import usePreSignInErrorHandler from '@/hooks/use-pre-sign-in-error-handler';
 import { useSieMethods } from '@/hooks/use-sie';
+import useSubmitInteractionErrorHandler from '@/hooks/use-submit-interaction-error-handler';
 import { formatPhoneNumberWithCountryCallingCode } from '@/utils/country-code';
 
 import useGeneralVerificationCodeErrorHandler from './use-general-verification-code-error-handler';
@@ -30,7 +29,7 @@ const useSignInFlowCodeVerification = (
   const { show } = useConfirmModal();
   const navigate = useNavigate();
   const redirectTo = useGlobalRedirectTo();
-  const { signInMode, signUpMethods } = useSieMethods();
+  const { isVerificationCodeEnabledForSignUp } = useSieMethods();
   const handleError = useErrorHandler();
   const registerWithIdentifierAsync = useApi(registerWithVerifiedIdentifier);
   const asyncSignInWithVerificationCodeIdentifier = useApi(identifyWithVerificationCode);
@@ -38,10 +37,11 @@ const useSignInFlowCodeVerification = (
   const { errorMessage, clearErrorMessage, generalVerificationCodeErrorHandlers } =
     useGeneralVerificationCodeErrorHandler();
 
-  const preSignInErrorHandler = usePreSignInErrorHandler({ replace: true });
-
-  const preRegisterErrorHandler = usePreSignInErrorHandler({
-    interactionEvent: InteractionEvent.Register,
+  const preSignInErrorHandler = useSubmitInteractionErrorHandler(InteractionEvent.SignIn, {
+    replace: true,
+  });
+  const preRegisterErrorHandler = useSubmitInteractionErrorHandler(InteractionEvent.Register, {
+    replace: true,
   });
 
   const showIdentifierErrorAlert = useIdentifierErrorAlert();
@@ -49,8 +49,8 @@ const useSignInFlowCodeVerification = (
   const identifierNotExistErrorHandler = useCallback(async () => {
     const { type, value } = identifier;
 
-    // Should not redirect user to register if is sign-in only mode or bind social flow
-    if (signInMode === SignInMode.SignIn || !signUpMethods.includes(type)) {
+    // Should not redirect user to register if is sign-in only mode
+    if (!isVerificationCodeEnabledForSignUp(type)) {
       void showIdentifierErrorAlert(IdentifierErrorType.IdentifierNotExist, type, value);
 
       return;
@@ -82,8 +82,7 @@ const useSignInFlowCodeVerification = (
     });
   }, [
     identifier,
-    signInMode,
-    signUpMethods,
+    isVerificationCodeEnabledForSignUp,
     show,
     t,
     showIdentifierErrorAlert,

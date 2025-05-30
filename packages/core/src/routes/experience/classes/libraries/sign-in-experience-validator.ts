@@ -1,4 +1,5 @@
 import {
+  AlternativeSignUpIdentifier,
   InteractionEvent,
   MissingProfile,
   type SignInExperience,
@@ -8,15 +9,18 @@ import {
 } from '@logto/schemas';
 
 import RequestError from '#src/errors/RequestError/index.js';
+import { validateEmailAgainstBlocklistPolicy } from '#src/libraries/sign-in-experience/index.js';
 import type Libraries from '#src/tenants/Libraries.js';
 import type Queries from '#src/tenants/Queries.js';
 import assertThat from '#src/utils/assert-that.js';
 
+import { type EnterpriseSsoVerification } from '../verifications/enterprise-sso-verification.js';
 import { type VerificationRecord } from '../verifications/index.js';
 
 const getEmailIdentifierFromVerificationRecord = (verificationRecord: VerificationRecord) => {
   switch (verificationRecord.type) {
     case VerificationType.Password:
+    case VerificationType.OneTimeToken:
     case VerificationType.EmailVerificationCode:
     case VerificationType.PhoneVerificationCode: {
       const {
@@ -29,9 +33,43 @@ const getEmailIdentifierFromVerificationRecord = (verificationRecord: Verificati
       const { socialUserInfo } = verificationRecord;
       return socialUserInfo?.email;
     }
+    case VerificationType.EnterpriseSso: {
+      const { enterpriseSsoUserInfo } = verificationRecord;
+      return enterpriseSsoUserInfo?.email;
+    }
     default: {
       break;
     }
+  }
+};
+
+/**
+ * @remarks
+ * In our legacy `signUp.identifiers` field design, a list of {@link SignInIdentifier} is accepted.
+ *
+ * `signUp.identifiers` represents the primary identifier for the user to sign up.
+ * If more than one identifier is provided, the user can choose one of them to sign up.
+ * The supported case suppose to be `['email', 'phone']`. In this case, the user can sign up with either email or phone.
+ * However, the current implementation does not provide a safe guard for invalid cases like `['email', 'username']`.
+ * Use this function to safely parse the mandatory primary identifier. Always early return if the primary identifier is found.
+ */
+const parseMandatoryPrimaryIdentifier = (
+  identifiers: SignInIdentifier[]
+): MissingProfile | undefined => {
+  const identifiersSet = new Set(identifiers);
+
+  if (identifiersSet.has(SignInIdentifier.Username)) {
+    return MissingProfile.username;
+  }
+
+  if (identifiersSet.has(SignInIdentifier.Email)) {
+    return identifiersSet.has(SignInIdentifier.Phone)
+      ? MissingProfile.emailOrPhone
+      : MissingProfile.email;
+  }
+
+  if (identifiersSet.has(SignInIdentifier.Phone)) {
+    return MissingProfile.phone;
   }
 };
 
@@ -51,9 +89,11 @@ export class SignInExperienceValidator {
   ) {}
 
   /**
+   * @param event - The interaction event to guard
+   * @param hasVerifiedOneTimeToken - Whether there is a verified one-time token verification record
    * @throws {RequestError} with status 403 if the interaction event is not allowed
    */
-  public async guardInteractionEvent(event: InteractionEvent) {
+  public async guardInteractionEvent(event: InteractionEvent, hasVerifiedOneTimeToken = false) {
     const { signInMode } = await this.getSignInExperienceData();
 
     switch (event) {
@@ -66,7 +106,10 @@ export class SignInExperienceValidator {
       }
       case InteractionEvent.Register: {
         assertThat(
-          signInMode !== SignInMode.SignIn,
+          signInMode !== SignInMode.SignIn ||
+            // This guarantees new users can still be created through one-time token
+            // authentication even if the registration is turned off.
+            hasVerifiedOneTimeToken,
           new RequestError({ code: 'auth.forbidden', status: 403 })
         );
         break;
@@ -81,6 +124,13 @@ export class SignInExperienceValidator {
     event: InteractionEvent.ForgotPassword | InteractionEvent.SignIn,
     verificationRecord: VerificationRecord
   ) {
+    const hasVerifiedOneTimeToken =
+      verificationRecord.type === VerificationType.OneTimeToken && verificationRecord.isVerified;
+
+    if (hasVerifiedOneTimeToken) {
+      return;
+    }
+
     await this.guardInteractionEvent(event);
 
     switch (event) {
@@ -130,32 +180,41 @@ export class SignInExperienceValidator {
 
   public async getMandatoryUserProfileBySignUpMethods(): Promise<Set<MissingProfile>> {
     const {
-      signUp: { identifiers, password },
+      signUp: { identifiers, password, secondaryIdentifiers = [] },
     } = await this.getSignInExperienceData();
+
     const mandatoryUserProfile = new Set<MissingProfile>();
 
+    // Check for mandatory primary identifier
+    const mandatoryPrimaryIdentifier = parseMandatoryPrimaryIdentifier(identifiers);
+    if (mandatoryPrimaryIdentifier) {
+      mandatoryUserProfile.add(mandatoryPrimaryIdentifier);
+    }
+
+    for (const { identifier } of secondaryIdentifiers) {
+      switch (identifier) {
+        case SignInIdentifier.Email: {
+          mandatoryUserProfile.add(MissingProfile.email);
+          continue;
+        }
+        case SignInIdentifier.Phone: {
+          mandatoryUserProfile.add(MissingProfile.phone);
+          continue;
+        }
+        case SignInIdentifier.Username: {
+          mandatoryUserProfile.add(MissingProfile.username);
+          continue;
+        }
+        case AlternativeSignUpIdentifier.EmailOrPhone: {
+          mandatoryUserProfile.add(MissingProfile.emailOrPhone);
+          continue;
+        }
+      }
+    }
+
+    // Check for mandatory password
     if (password) {
       mandatoryUserProfile.add(MissingProfile.password);
-    }
-
-    if (identifiers.includes(SignInIdentifier.Username)) {
-      mandatoryUserProfile.add(MissingProfile.username);
-    }
-
-    if (
-      identifiers.includes(SignInIdentifier.Email) &&
-      identifiers.includes(SignInIdentifier.Phone)
-    ) {
-      mandatoryUserProfile.add(MissingProfile.emailOrPhone);
-      return mandatoryUserProfile;
-    }
-
-    if (identifiers.includes(SignInIdentifier.Email)) {
-      mandatoryUserProfile.add(MissingProfile.email);
-    }
-
-    if (identifiers.includes(SignInIdentifier.Phone)) {
-      mandatoryUserProfile.add(MissingProfile.phone);
     }
 
     return mandatoryUserProfile;
@@ -170,7 +229,9 @@ export class SignInExperienceValidator {
    *
    * @throws {RequestError} with status 422 if the email identifier is SSO enabled
    **/
-  public async guardSsoOnlyEmailIdentifier(verificationRecord: VerificationRecord) {
+  public async guardSsoOnlyEmailIdentifier(
+    verificationRecord: Exclude<VerificationRecord, EnterpriseSsoVerification>
+  ) {
     const emailIdentifier = getEmailIdentifierFromVerificationRecord(verificationRecord);
 
     if (!emailIdentifier) {
@@ -191,6 +252,41 @@ export class SignInExperienceValidator {
         }
       )
     );
+  }
+
+  /**
+   * Guard the captcha required based on the captcha policy.
+   * Only call this method if captcha is not verified or skipped.
+   *
+   * @throws {RequestError} with 422 if the captcha is required
+   */
+  public async guardCaptcha() {
+    const { captchaPolicy } = await this.getSignInExperienceData();
+
+    if (!captchaPolicy.enabled) {
+      return;
+    }
+
+    throw new RequestError({ code: 'session.captcha_required', status: 422 });
+  }
+
+  /**
+   * Guard the email address is not in the blocklist.
+   *
+   * @remarks
+   * Use this method to guard the email address or domain is not in the blocklist.
+   * - guard disposable email domain if enabled
+   * - guard email subaddessing if enabled
+   * - guard custom email address/domain if provided
+   */
+  public async guardEmailBlocklist(verificationRecord: VerificationRecord) {
+    const email = getEmailIdentifierFromVerificationRecord(verificationRecord);
+    if (!email) {
+      return;
+    }
+
+    const { emailBlocklistPolicy } = await this.getSignInExperienceData();
+    await validateEmailAgainstBlocklistPolicy(emailBlocklistPolicy, email);
   }
 
   /**
@@ -223,8 +319,9 @@ export class SignInExperienceValidator {
         break;
       }
 
+      case VerificationType.OneTimeToken:
       case VerificationType.Social: {
-        // No need to verify social verification method
+        // No need to verify one-time token and social verification methods
         break;
       }
       case VerificationType.EnterpriseSso: {
@@ -239,7 +336,9 @@ export class SignInExperienceValidator {
       }
     }
 
-    await this.guardSsoOnlyEmailIdentifier(verificationRecord);
+    if (verificationRecord.type !== VerificationType.EnterpriseSso) {
+      await this.guardSsoOnlyEmailIdentifier(verificationRecord);
+    }
   }
 
   /** Forgot password only supports verification code type verification record */
